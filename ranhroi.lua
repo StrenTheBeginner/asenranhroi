@@ -7,12 +7,7 @@ RanhRoi:MakeNotification({
     Time = 5
 })
 
-local Window = RanhRoi:MakeWindow({
-    Name = "RanhRoi Hub",
-    HidePremium = false,
-    SaveConfig = true,
-    ConfigFolder = "RanhRoi"
-})
+local Window = RanhRoi:MakeWindow({Name = "RanhRoi Hub", HidePremium = false, SaveConfig = true, ConfigFolder = "RanhRoi"})
 
 -- Player Tab
 local PlayerTab = Window:MakeTab({
@@ -132,79 +127,59 @@ local EggsSection = EggsTab:AddSection({
 
 local eggs = {
     "Starter Egg", "Forest Egg", "Desert Egg", "Jungle Egg", "Ocean Egg",
-    "Cave Egg", "Sky Egg", "Volcano Egg", "Space Egg", "Candy Egg", "Winter Egg"
+    "Cave Egg", "Sky Egg", "Volcano Egg", "Space Egg", "Candy Egg", "Winter Egg",
+    "Pirate Egg", "Egyptian Egg", "Medieval Egg", "Futuristic Egg", "Underwater Egg",
+    "Haunted Egg", "Christmas Egg", "Easter Egg", "Halloween Egg", "Valentine's Egg",
+    "St. Patrick's Egg", "Summer Egg", "Autumn Egg", "Spring Egg", "Winter Wonderland Egg",
+    "Beach Egg", "Mountain Egg", "City Egg", "Farm Egg", "Space Station Egg",
+    "Moon Egg", "Mars Egg", "Alien Egg", "Robot Egg", "Superhero Egg", "Villain Egg",
+    "Fairy Egg", "Dragon Egg", "Unicorn Egg", "Mermaid Egg", "Knight Egg", "Wizard Egg",
+    "Pirate Ship Egg", "Treasure Egg", "Kingdom Egg", "Castle Egg", "Dungeon Egg",
+    "Lab Egg", "Factory Egg", "Workshop Egg", "Garage Egg", "Airport Egg", "Train Station Egg",
+    "Bus Station Egg", "Subway Egg", "Amusement Park Egg", "Zoo Egg", "Aquarium Egg",
+    "Museum Egg", "Library Egg", "Park Egg", "Beach Resort Egg", "Mountain Resort Egg",
+    "City Resort Egg", "Farm Resort Egg", "Space Resort Egg", "Moon Resort Egg", "Mars Resort Egg",
+    "Alien Resort Egg", "Robot Resort Egg", "Superhero Resort Egg", "Villain Resort Egg", "Fairy Resort Egg",
+    "Dragon Resort Egg", "Unicorn Resort Egg", "Mermaid Resort Egg", "Knight Resort Egg", "Wizard Resort Egg",
+    "Pirate Ship Resort Egg", "Treasure Resort Egg", "Kingdom Resort Egg", "Castle Resort Egg", "Dungeon Resort Egg",
+    "Lab Resort Egg", "Factory Resort Egg", "Workshop Resort Egg", "Garage Resort Egg", "Airport Resort Egg",
+    "Train Station Resort Egg", "Bus Station Resort Egg", "Subway Resort Egg", "Amusement Park Resort Egg", "Zoo Resort Egg",
+    "Aquarium Resort Egg", "Museum Resort Egg", "Library Resort Egg", "Park Resort Egg"
 }
 
-local autoHatchEnabled = false
+local selectedEgg = "Starter Egg"
 
--- Egg Selection Dropdown
+-- Dropdown for Egg Selection
 EggsSection:AddDropdown({
     Name = "Choose Egg",
-    Default = "Starter Egg",
+    Default = selectedEgg,
     Options = eggs,
     Callback = function(SelectedEgg)
-        local args = { [1] = SelectedEgg, [2] = 1 }
-        game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Eggs_RequestPurchase"):InvokeServer(unpack(args))
+        selectedEgg = SelectedEgg
         RanhRoi:MakeNotification({
             Name = "Egg Selected",
-            Content = "You selected " .. SelectedEgg,
+            Content = "You selected " .. selectedEgg,
             Image = "rbxassetid://4483345998",
             Time = 5
         })
     end
 })
 
--- Auto Hatch Toggle
-EggsSection:AddToggle({
-    Name = "Auto Hatch Eggs",
-    Default = false,
-    Callback = function(Value)
-        autoHatchEnabled = Value
-
-        if autoHatchEnabled then
-            RanhRoi:MakeNotification({
-                Name = "Auto Hatch Enabled",
-                Content = "Auto Hatch is now enabled.",
-                Image = "rbxassetid://4483345998",
-                Time = 5
-            })
-
-            spawn(function()
-                -- Check available hatch slots
-                local hatchCountObj = game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Index: Request Hatch Count")
-                local hatchCount = hatchCountObj and hatchCountObj.Value or 0
-
-                if hatchCount > 0 then
-                    -- Loop through all available slots to hatch eggs
-                    for i = 1, hatchCount do
-                        local args = { [1] = true }  -- Request to start hatching
-                        game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("AutoHatch_Toggle"):FireServer(unpack(args))
-                        wait(1)  -- Add a small delay between hatch requests
-                    end
-                    RanhRoi:MakeNotification({
-                        Name = "Auto Hatch Started",
-                        Content = "Started hatching the maximum available eggs.",
-                        Image = "rbxassetid://4483345998",
-                        Time = 5
-                    })
-                else
-                    RanhRoi:MakeNotification({
-                        Name = "No Hatch Slots Available",
-                        Content = "You don't have any available hatch slots.",
-                        Image = "rbxassetid://4483345998",
-                        Time = 5
-                    })
-                end
-            end)
-        else
-            RanhRoi:MakeNotification({
-                Name = "Auto Hatch Disabled",
-                Content = "Auto Hatch has been disabled.",
-                Image = "rbxassetid://4483345998",
-                Time = 5
-            })
-        end
-    end
+-- Start Hatching Button
+EggsSection:AddButton({
+    Name = "Start Hatching",
+    Callback = function()
+        RanhRoi:MakeNotification({
+            Name = "Hatching Started",
+            Content = "Starting hatching " .. selectedEgg,
+            Image = "rbxassetid://4483345998",
+            Time = 5
+        })
+        
+        -- Trigger the hatching process (you should replace this with the actual event or function from the game)
+        local args = { [1] = selectedEgg }
+        game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Eggs_RequestHatch"):InvokeServer(unpack(args))  -- Replace with the actual event to trigger hatching
+    end    
 })
 
 -- Farming Tab
@@ -276,7 +251,7 @@ ItemsSection:AddButton({
     end    
 })
 
--- Auto Crafting Toggle
+-- Auto Crafting Tab
 local autoCraftingEnabled = false
 
 ItemsSection:AddToggle({
@@ -287,30 +262,22 @@ ItemsSection:AddToggle({
 
         if autoCraftingEnabled then
             RanhRoi:MakeNotification({
-                Name = "Auto Crafting Enabled",
-                Content = "Started auto-crafting Rainbow Fruits.",
+                Name = "Auto Craft Enabled",
+                Content = "Auto crafting for Rainbow Fruit is now enabled.",
                 Image = "rbxassetid://4483345998",
                 Time = 5
             })
             
-            local fruits = {
-                {id = "0cb7d35612fc48929559584cd36fdb38", amount = 10},
-                {id = "0cb7d35612fc48929559584cd36fdb39", amount = 10}
-            }
-
             spawn(function()
                 while autoCraftingEnabled do
-                    for _, fruit in ipairs(fruits) do
-                        local args = {fruit.id, fruit.amount}
-                        game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("RainbowFruit_Craft"):InvokeServer(unpack(args))
-                        wait(2)
-                    end
+                    local rainbowFruitCraft = game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Items_RequestCraft"):InvokeServer("Rainbow Fruit")
+                    wait(2)
                 end
             end)
         else
             RanhRoi:MakeNotification({
-                Name = "Auto Crafting Disabled",
-                Content = "Auto crafting has been disabled.",
+                Name = "Auto Craft Disabled",
+                Content = "Auto crafting for Rainbow Fruit is now disabled.",
                 Image = "rbxassetid://4483345998",
                 Time = 5
             })
@@ -318,4 +285,5 @@ ItemsSection:AddToggle({
     end
 })
 
+-- Finalizing the Window
 RanhRoi:Init()
