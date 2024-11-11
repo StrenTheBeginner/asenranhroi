@@ -1,3 +1,4 @@
+-- Initialize the Orion UI
 local RanhRoi = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))() 
 
 RanhRoi:MakeNotification({
@@ -7,7 +8,12 @@ RanhRoi:MakeNotification({
     Time = 5
 })
 
-local Window = RanhRoi:MakeWindow({Name = "RanhRoi Hub", HidePremium = false, SaveConfig = true, ConfigFolder = "RanhRoi"})
+local Window = RanhRoi:MakeWindow({
+    Name = "RanhRoi Hub",
+    HidePremium = false,
+    SaveConfig = true,
+    ConfigFolder = "RanhRoi"
+})
 
 -- Player Tab
 local PlayerTab = Window:MakeTab({
@@ -89,6 +95,55 @@ MiscsSection:AddToggle({
                 Image = "rbxassetid://4483345998",
                 Time = 5
             })
+        end
+    end
+})
+
+-- Teleport Tab
+local TeleportTab = Window:MakeTab({
+    Name = "Teleport",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+local TeleportSection = TeleportTab:AddSection({
+    Name = "Teleport"
+})
+
+TeleportSection:AddButton({
+    Name = "Auto TP to World 1 Spawn",
+    Callback = function()
+        -- Get the player
+        local player = game.Players.LocalPlayer
+
+        -- Wait for the player's character to load
+        local character = player.Character or player.CharacterAdded:Wait()
+
+        -- Wait for the HumanoidRootPart to load
+        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+        -- Target CFrame (World 1 Spawn coordinates)
+        local targetCFrame = CFrame.new(154.857315, 17.7020283, -209.59523)
+
+        -- Function to teleport the player to the target CFrame
+        local function teleportToTarget()
+            -- Set the CFrame to the target
+            humanoidRootPart.CFrame = targetCFrame
+
+            -- Prevent falling through the void
+            -- Check if the character is above ground (on a platform, not falling)
+            local raycastResult = workspace:Raycast(humanoidRootPart.Position, Vector3.new(0, -10, 0))
+
+            -- If there is no ground below, fix the position by setting a safe height
+            if not raycastResult then
+                humanoidRootPart.CFrame = CFrame.new(humanoidRootPart.Position.X, 10, humanoidRootPart.Position.Z)  -- Set to a safe height (10 studs above ground)
+            end
+        end
+
+        -- Loop to teleport 4 times
+        for i = 1, 4 do
+            teleportToTarget()
+            wait(2)  -- Wait for 2 seconds before the next teleport
         end
     end
 })
@@ -178,8 +233,8 @@ EggsSection:AddButton({
         
         -- Trigger the hatching process (you should replace this with the actual event or function from the game)
         local args = { [1] = selectedEgg }
-        game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Eggs_RequestHatch"):InvokeServer(unpack(args))  -- Replace with the actual event to trigger hatching
-    end    
+        game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Eggs_RequestHatch"):InvokeServer(unpack(args))  -- Replace with actual function/event
+    end
 })
 
 -- Farming Tab
