@@ -262,22 +262,56 @@ ItemsSection:AddToggle({
 
         if autoCraftingEnabled then
             RanhRoi:MakeNotification({
-                Name = "Auto Craft Enabled",
-                Content = "Auto crafting for Rainbow Fruit is now enabled.",
+                Name = "Auto Crafting Enabled",
+                Content = "Started auto-crafting Rainbow Fruits.",
                 Image = "rbxassetid://4483345998",
                 Time = 5
             })
             
-            spawn(function()
+            local fruits = {
+                {id = "0cb7d35612fc48929559584cd36fdb38", amount = 10},
+                {id = "2bb864d7fde344128f542c947d684b8c", amount = 25},
+                {id = "769e2b2ce99844a3ad0d62ac565e59ec", amount = 25},
+                {id = "cf3d41ee78594bc0ac32e5487a856ba7", amount = 25},
+                {id = "58fb1f27c9634b05b6e5e36d09884c7e", amount = 40}
+            }
+
+            local ReplicatedStorage = game:GetService("ReplicatedStorage")
+            local network = ReplicatedStorage:WaitForChild("Network")
+            local upgradeFunction = network:WaitForChild("UpgradeFruitsMachine_Activate")
+
+            local function upgradeFruitsContinuously()
                 while autoCraftingEnabled do
-                    local rainbowFruitCraft = game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Items_RequestCraft"):InvokeServer("Rainbow Fruit")
-                    wait(2)
+                    for _, fruit in ipairs(fruits) do
+                        local args = {
+                            [1] = {
+                                [fruit.id] = fruit.amount
+                            }
+                        }
+
+                        local success, message = pcall(function()
+                            upgradeFunction:InvokeServer(unpack(args))
+                        end)
+
+                        if not success then
+                            RanhRoi:MakeNotification({
+                                Name = "Upgrade Failed",
+                                Content = "Failed to upgrade " .. fruit.id .. ": " .. tostring(message),
+                                Image = "rbxassetid://4483345998",
+                                Time = 5
+                            })
+                        end
+                    end
+
+                    wait(0.0001)
                 end
-            end)
+            end
+
+            upgradeFruitsContinuously()
         else
             RanhRoi:MakeNotification({
-                Name = "Auto Craft Disabled",
-                Content = "Auto crafting for Rainbow Fruit is now disabled.",
+                Name = "Auto Crafting Disabled",
+                Content = "Stopped auto-crafting Rainbow Fruits.",
                 Image = "rbxassetid://4483345998",
                 Time = 5
             })
@@ -285,5 +319,4 @@ ItemsSection:AddToggle({
     end
 })
 
--- Finalizing the Window
 RanhRoi:Init()
