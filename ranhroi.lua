@@ -140,8 +140,8 @@ TeleportSection:AddButton({
             end
         end
 
-        -- Loop to teleport 4 times
-        for i = 1, 4 do
+        -- Loop to teleport 2 times
+        for i = 1, 2 do
             teleportToTarget()
             wait(2)  -- Wait for 2 seconds before the next teleport
         end
