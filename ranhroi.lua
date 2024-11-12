@@ -163,7 +163,7 @@ local function autoFish()
             [2] = "Clicked"
         }
         InvokeFunction:InvokeServer(unpack(args))
-        wait(1)  -- Decreased delay to speed up the fishing process
+        wait(0.1)
     end
 end
 
