@@ -152,18 +152,29 @@ local originalPosition = nil
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Network = ReplicatedStorage:WaitForChild("Network")
+local FireEvent = Network:WaitForChild("Instancing_FireCustomFromClient")
 local InvokeFunction = Network:WaitForChild("Instancing_InvokeCustomFromClient")
 
 local isAutoFishingActive = false
 
 local function autoFish()
     while isAutoFishingActive do
-        local args = {
+        -- Step 1: Send the "Fishing", "Clicked" event
+        local clickArgs = {
             [1] = "Fishing",
             [2] = "Clicked"
         }
-        InvokeFunction:InvokeServer(unpack(args))
-        wait(1)
+        InvokeFunction:InvokeServer(unpack(clickArgs))
+
+        -- Step 2: Send the "Fishing", "RequestReel" event
+        local reelArgs = {
+            [1] = "Fishing",
+            [2] = "RequestReel"
+        }
+        FireEvent:FireServer(unpack(reelArgs))
+        
+        -- Wait before performing the next action
+        wait(0.1)  -- Adjust this delay to suit the game mechanics
     end
 end
 
@@ -216,10 +227,8 @@ TeleportSection:AddToggle({
                 Content = "Player's character or HumanoidRootPart is not found.",
                 Image = "rbxassetid://6023426923",
                 Time = 5
-            })
-        end
-    end
-})
+           
+
 
 
 -- Minigames Tab
