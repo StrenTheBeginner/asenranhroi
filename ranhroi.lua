@@ -227,8 +227,10 @@ TeleportSection:AddToggle({
                 Content = "Player's character or HumanoidRootPart is not found.",
                 Image = "rbxassetid://6023426923",
                 Time = 5
-           
-
+            })
+        end
+    end
+})
 
 
 -- Minigames Tab
