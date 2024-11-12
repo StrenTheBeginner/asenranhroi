@@ -323,13 +323,26 @@ ItemsSection:AddToggle({
                 Time = 5
             })
             
-            local fruits = {
-                {id = "0cb7d35612fc48929559584cd36fdb38", amount = 10},
-                {id = "2bb864d7fde344128f542c947d684b8c", amount = 25},
-                {id = "769e2b2ce99844a3ad0d62ac565e59ec", amount = 25},
-                {id = "cf3d41ee78594bc0ac32e5487a856ba7", amount = 25},
-                {id = "58fb1f27c9634b05b6e5e36d09884c7e", amount = 40}
-            }
+            -- Hàm để lấy ID "fruit" dựa trên tên của chúng
+            local function getRainbowFruitIDs()
+                local fruits = {}
+                local replicatedStorage = game:GetService("ReplicatedStorage")
+                
+                -- Giả sử "FruitData" chứa danh sách các "fruit"
+                local fruitData = replicatedStorage:FindFirstChild("FruitData")
+                
+                if fruitData then
+                    for _, fruit in pairs(fruitData:GetChildren()) do
+                        -- Kiểm tra xem tên có chứa "Rainbow" không
+                        if fruit.Name:find("Rainbow") then
+                            table.insert(fruits, {id = fruit.ID.Value, amount = 10}) -- Thêm ID và số lượng tương ứng
+                        end
+                    end
+                end
+                return fruits
+            end
+            
+            local fruits = getRainbowFruitIDs()
 
             local ReplicatedStorage = game:GetService("ReplicatedStorage")
             local network = ReplicatedStorage:WaitForChild("Network")
@@ -375,3 +388,4 @@ ItemsSection:AddToggle({
 })
 
 RanhRoi:Init()
+
