@@ -156,14 +156,15 @@ local FireEvent = Network:WaitForChild("Instancing_FireCustomFromClient")
 local InvokeFunction = Network:WaitForChild("Instancing_InvokeCustomFromClient")
 
 local castPosition = Vector3.new(1131.682861328125, 75.9141845703125, -3428.92578125)
-local isAutoFishingActive = false  -- Biến để theo dõi trạng thái của auto fishing
+local isAutoFishingActive = false
+local originalPosition  -- Lưu vị trí ban đầu của người chơi
 
 local function autoFish()
-    while isAutoFishingActive do  -- Chỉ tiếp tục nếu toggle đang bật
+    while isAutoFishingActive do
         FireEvent:FireServer("RequestReel", "RequestCast", castPosition)
         
         for i = 1, 100 do
-            if not isAutoFishingActive then return end  -- Thoát vòng lặp nếu toggle tắt
+            if not isAutoFishingActive then return end
             InvokeFunction:InvokeServer("RequestReel", "Clicked")
             wait(0.0005)
         end
@@ -184,28 +185,30 @@ TeleportSection:AddToggle({
 
         if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
             if State then
-                isAutoFishingActive = true  -- Bật auto fishing
+                isAutoFishingActive = true
                 originalPosition = player.Character.HumanoidRootPart.CFrame
+                
                 player.Character.HumanoidRootPart.CFrame = CFrame.new(
-                    797.1300048828125, 20.14695167541504, 1140.8101806640625,
+                    797.1300048828125, 20.14695167541504, 1127.8101806640625,
                     -0.826375067, -1.17252284e-07, 0.563120127,
                     -8.21544859e-08, 1, 8.76577957e-08,
                     -0.563120127, 2.61753765e-08, -0.826375067
                 )
-                
+
                 OrionLib:MakeNotification({
                     Name = "Auto Fishing Activated",
                     Content = "Teleporting to the fishing spot.",
                     Image = "rbxassetid://6023426923",
                     Time = 5
                 })
-                
+
                 task.spawn(autoFish)  -- Chạy autoFish trong một luồng riêng
 
             else
-                isAutoFishingActive = false  -- Tắt auto fishing
+                isAutoFishingActive = false  -- Dừng auto fishing
+
                 if originalPosition then
-                    player.Character.HumanoidRootPart.CFrame = originalPosition
+                    player.Character.HumanoidRootPart.CFrame = originalPosition  -- Trở về vị trí ban đầu
                     OrionLib:MakeNotification({
                         Name = "Auto Fishing Deactivated",
                         Content = "Returning to the original position.",
@@ -224,6 +227,7 @@ TeleportSection:AddToggle({
         end
     end
 })
+
 
 
 
