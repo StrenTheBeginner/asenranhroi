@@ -163,7 +163,7 @@ local function autoFish()
             [2] = "Clicked"
         }
         InvokeFunction:InvokeServer(unpack(args))
-        wait(0.1)
+        wait(0.001)
     end
 end
 
