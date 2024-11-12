@@ -156,7 +156,7 @@ local FireEvent = Network:WaitForChild("Instancing_FireCustomFromClient")
 local InvokeFunction = Network:WaitForChild("Instancing_InvokeCustomFromClient")
 
 local castPosition = Vector3.new(1131.682861328125, 75.9141845703125, -3428.92578125)
-local isAutoFishingActive = false  -- Biến điều khiển cho trạng thái auto fishing
+local isAutoFishingActive = false  -- Biến để theo dõi trạng thái của auto fishing
 
 local function autoFish()
     while isAutoFishingActive do  -- Chỉ tiếp tục nếu toggle đang bật
@@ -224,6 +224,7 @@ TeleportSection:AddToggle({
         end
     end
 })
+
 
 
 
