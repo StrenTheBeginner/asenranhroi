@@ -322,60 +322,63 @@ ItemsSection:AddToggle({
                 Image = "rbxassetid://4483345998",
                 Time = 5
             })
-            
-            -- Hàm để lấy ID "fruit" dựa trên tên của chúng
-            local function getRainbowFruitIDs()
-                local fruits = {}
-                local replicatedStorage = game:GetService("ReplicatedStorage")
-                
-                -- Giả sử "FruitData" chứa danh sách các "fruit"
-                local fruitData = replicatedStorage:FindFirstChild("FruitData")
-                
-                if fruitData then
-                    for _, fruit in pairs(fruitData:GetChildren()) do
-                        -- Kiểm tra xem tên có chứa "Rainbow" không
-                        if fruit.Name:find("Rainbow") then
-                            table.insert(fruits, {id = fruit.ID.Value, amount = 10}) -- Thêm ID và số lượng tương ứng
-                        end
-                    end
-                end
-                return fruits
-            end
-            
-            local fruits = getRainbowFruitIDs()
+
+            -- Define the amount of each fruit type to be crafted
+            local fruitsToCraft = {
+                {name = "Rainbow Fruit", amount = 10},  -- Example: Change name based on actual fruit name
+                {name = "Shiny Fruit", amount = 25},    -- Change name as needed
+                {name = "Magic Fruit", amount = 25},    -- Same here
+            }
 
             local ReplicatedStorage = game:GetService("ReplicatedStorage")
             local network = ReplicatedStorage:WaitForChild("Network")
             local upgradeFunction = network:WaitForChild("UpgradeFruitsMachine_Activate")
 
+            -- Function to find the fruit by name in the inventory or container
+            local function getFruitByName(name)
+                local player = game.Players.LocalPlayer
+                -- Modify the way you get the fruit items according to your game structure
+                for _, fruit in pairs(player.Backpack:GetChildren()) do
+                    if fruit.Name == name then
+                        return fruit  -- Return the fruit item if found
+                    end
+                end
+                return nil  -- Return nil if fruit not found
+            end
+
             local function upgradeFruitsContinuously()
                 while autoCraftingEnabled do
-                    for _, fruit in ipairs(fruits) do
-                        local args = {
-                            [1] = {
-                                [fruit.id] = fruit.amount
+                    for _, fruitData in ipairs(fruitsToCraft) do
+                        local fruit = getFruitByName(fruitData.name)
+                        if fruit then
+                            local args = {
+                                [1] = {
+                                    [fruit.Name] = fruitData.amount  -- Using the fruit's name instead of ID
+                                }
                             }
-                        }
 
-                        local success, message = pcall(function()
-                            upgradeFunction:InvokeServer(unpack(args))
-                        end)
+                            local success, message = pcall(function()
+                                upgradeFunction:InvokeServer(unpack(args))
+                            end)
 
-                        if not success then
-                            RanhRoi:MakeNotification({
-                                Name = "Upgrade Failed",
-                                Content = "Failed to upgrade " .. fruit.id .. ": " .. tostring(message),
-                                Image = "rbxassetid://4483345998",
-                                Time = 5
-                            })
+                            if not success then
+                                RanhRoi:MakeNotification({
+                                    Name = "Upgrade Failed",
+                                    Content = "Failed to upgrade " .. fruit.Name .. ": " .. tostring(message),
+                                    Image = "rbxassetid://4483345998",
+                                    Time = 5
+                                })
+                            end
+                        else
+                            print("Fruit not found:", fruitData.name)
                         end
                     end
-
                     wait(0.0001)
                 end
             end
 
             upgradeFruitsContinuously()
+
         else
             RanhRoi:MakeNotification({
                 Name = "Auto Crafting Disabled",
@@ -388,4 +391,5 @@ ItemsSection:AddToggle({
 })
 
 RanhRoi:Init()
+
 
