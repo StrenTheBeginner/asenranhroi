@@ -152,29 +152,18 @@ local originalPosition = nil
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Network = ReplicatedStorage:WaitForChild("Network")
-local FireEvent = Network:WaitForChild("Instancing_FireCustomFromClient")
 local InvokeFunction = Network:WaitForChild("Instancing_InvokeCustomFromClient")
 
 local isAutoFishingActive = false
 
 local function autoFish()
     while isAutoFishingActive do
-        -- Step 1: Send the "Fishing", "Clicked" event
-        local clickArgs = {
+        local args = {
             [1] = "Fishing",
             [2] = "Clicked"
         }
-        InvokeFunction:InvokeServer(unpack(clickArgs))
-
-        -- Step 2: Send the "Fishing", "RequestReel" event
-        local reelArgs = {
-            [1] = "Fishing",
-            [2] = "RequestReel"
-        }
-        FireEvent:FireServer(unpack(reelArgs))
-        
-        -- Wait before performing the next action
-        wait(0.1)  -- Adjust this delay to suit the game mechanics
+        InvokeFunction:InvokeServer(unpack(args))
+        wait(0.05)  -- Decreased delay to speed up the fishing process
     end
 end
 
@@ -231,7 +220,6 @@ TeleportSection:AddToggle({
         end
     end
 })
-
 
 
 -- Minigames Tab
