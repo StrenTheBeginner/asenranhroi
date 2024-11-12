@@ -152,18 +152,45 @@ local originalPosition = nil
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Network = ReplicatedStorage:WaitForChild("Network")
+local FireEvent = Network:WaitForChild("Instancing_FireCustomFromClient")
 local InvokeFunction = Network:WaitForChild("Instancing_InvokeCustomFromClient")
 
 local isAutoFishingActive = false
 
+local castPosition = Vector3.new(1126.6279296875, 75.91409301757812, -3453.951416015625)
+
 local function autoFish()
     while isAutoFishingActive do
-        local args = {
+        -- Step 1: Fire the RequestCast event
+        local castArgs = {
+            [1] = "Fishing",
+            [2] = "RequestCast",
+            [3] = castPosition
+        }
+        FireEvent:FireServer(unpack(castArgs))
+
+        -- Wait for a short period before clicking
+        wait(1)  -- Adjust this delay based on how long it takes for casting to complete
+
+        -- Step 2: Invoke the "Clicked" event
+        local clickArgs = {
             [1] = "Fishing",
             [2] = "Clicked"
         }
-        InvokeFunction:InvokeServer(unpack(args))
-        wait(0.1)
+        InvokeFunction:InvokeServer(unpack(clickArgs))
+
+        -- Wait for a short period before reeling in
+        wait(0.5)  -- Adjust the wait time between clicking and reeling as needed
+
+        -- Step 3: Fire the RequestReel event to reel the fishing line
+        local reelArgs = {
+            [1] = "Fishing",
+            [2] = "RequestReel"
+        }
+        FireEvent:FireServer(unpack(reelArgs))
+
+        -- Wait before repeating the cycle
+        wait(2)  -- Adjust this delay to control how fast the fishing cycle runs
     end
 end
 
@@ -196,7 +223,7 @@ TeleportSection:AddToggle({
                     Time = 5
                 })
 
-                task.spawn(autoFish)
+                task.spawn(autoFish)  -- Start the fishing loop in a separate thread
             else
                 isAutoFishingActive = false
 
@@ -220,7 +247,6 @@ TeleportSection:AddToggle({
         end
     end
 })
-
 
 
 -- Minigames Tab
