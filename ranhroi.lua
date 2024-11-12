@@ -233,6 +233,7 @@ TeleportSection:AddToggle({
 })
 
 
+
 -- Minigames Tab
 local MinigamesTab = Window:MakeTab({
     Name = "Minigames",
