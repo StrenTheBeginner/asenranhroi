@@ -152,26 +152,18 @@ local originalPosition = nil
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Network = ReplicatedStorage:WaitForChild("Network")
-local FireEvent = Network:WaitForChild("Instancing_FireCustomFromClient")
 local InvokeFunction = Network:WaitForChild("Instancing_InvokeCustomFromClient")
 
-local castPosition = Vector3.new(1131.682861328125, 75.9141845703125, -3428.92578125)
 local isAutoFishingActive = false
-local originalPosition
 
 local function autoFish()
     while isAutoFishingActive do
-        FireEvent:FireServer("RequestReel", "RequestCast", castPosition)
-        
-        for i = 1, 100 do
-            if not isAutoFishingActive then return end
-            InvokeFunction:InvokeServer("RequestReel", "Clicked")
-            wait(0.0005)
-        end
-        
-        FireEvent:FireServer("RequestReel", "RequestReel")
-        
-        wait(2)
+        local args = {
+            [1] = "Fishing",
+            [2] = "Clicked"
+        }
+        InvokeFunction:InvokeServer(unpack(args))
+        wait(0.1)
     end
 end
 
@@ -185,35 +177,26 @@ TeleportSection:AddToggle({
 
         if player and player.Character then
             local humanoidRootPart = player.Character:WaitForChild("HumanoidRootPart")
-            
+
             if State then
                 isAutoFishingActive = true
                 originalPosition = humanoidRootPart.CFrame
 
-                -- Teleport to initial spot first
                 humanoidRootPart.CFrame = CFrame.new(
                     797.1300048828125, 20.14695167541504, 1140.8101806640625,
                     -0.826375067, -1.17252284e-07, 0.563120127,
                     -8.21544859e-08, 1, 8.76577957e-08,
                     -0.563120127, 2.61753765e-08, -0.826375067
                 )
-                
+
                 OrionLib:MakeNotification({
                     Name = "Auto Fishing Activated",
-                    Content = "Teleporting to the fishing spot.",
+                    Content = "Starting the fishing loop.",
                     Image = "rbxassetid://6023426923",
                     Time = 5
                 })
 
-                wait(1) -- Wait for 1 second to ensure teleportation
-
-                -- Now teleport to the cast position
-                humanoidRootPart.CFrame = CFrame.new(castPosition)
-                wait(3)  -- Wait for 3 seconds at the cast position
-
-                -- Start fishing
                 task.spawn(autoFish)
-
             else
                 isAutoFishingActive = false
 
