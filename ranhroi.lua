@@ -213,7 +213,7 @@ TeleportSection:AddToggle({
                     Time = 5
                 })
 
-                wait(5)
+                wait(10)
 
                 humanoidRootPart.CFrame = CFrame.new(1109.35888671875, 81.4054946899414, -3444.4267578125)
 
