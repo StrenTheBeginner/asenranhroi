@@ -178,6 +178,7 @@ TeleportSection:AddToggle({
     Save = true,
     Flag = "autoFishing",
     Callback = function(State)
+        print("Toggle state changed:", State)  -- Debugging line
         local player = game.Players.LocalPlayer
 
         if player and player.Character then
@@ -185,9 +186,9 @@ TeleportSection:AddToggle({
 
             if State then
                 isAutoFishingActive = true
+                print("Auto Fishing activated")  -- Debugging line
 
                 -- Optionally, teleport the player to a specific position before starting fishing
-                -- You can remove this teleport if it's not needed
                 humanoidRootPart.CFrame = CFrame.new(
                     797.1300048828125, 20.14695167541504, 1140.8101806640625,
                     -0.826375067, -1.17252284e-07, 0.563120127,
@@ -203,9 +204,9 @@ TeleportSection:AddToggle({
                 })
 
                 task.spawn(autoFish)  -- Start the fishing loop in a separate thread
-
             else
                 isAutoFishingActive = false
+                print("Auto Fishing deactivated")  -- Debugging line
                 OrionLib:MakeNotification({
                     Name = "Auto Fishing Deactivated",
                     Content = "Stopping the fishing loop.",
@@ -223,6 +224,7 @@ TeleportSection:AddToggle({
         end
     end
 })
+
 
 
 
