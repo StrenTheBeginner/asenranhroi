@@ -148,6 +148,85 @@ TeleportSection:AddButton({
     end
 })
 
+local originalPosition = nil
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Network = ReplicatedStorage:WaitForChild("Network")
+local FireEvent = Network:WaitForChild("Instancing_FireCustomFromClient")
+local InvokeFunction = Network:WaitForChild("Instancing_InvokeCustomFromClient")
+
+local castPosition = Vector3.new(1131.682861328125, 75.9141845703125, -3428.92578125)
+local isAutoFishingActive = false  -- Biến để theo dõi trạng thái của auto fishing
+
+local function autoFish()
+    while isAutoFishingActive do  -- Chỉ tiếp tục nếu toggle đang bật
+        FireEvent:FireServer("RequestReel", "RequestCast", castPosition)
+        
+        for i = 1, 100 do
+            if not isAutoFishingActive then return end  -- Thoát vòng lặp nếu toggle tắt
+            InvokeFunction:InvokeServer("RequestReel", "Clicked")
+            wait(0.0005)
+        end
+        
+        FireEvent:FireServer("RequestReel", "RequestReel")
+        
+        wait(2)
+    end
+end
+
+TeleportSection:AddToggle({
+    Name = "Auto Fishing",
+    Default = false,
+    Save = true,
+    Flag = "autoFishing",
+    Callback = function(State)
+        local player = game.Players.LocalPlayer
+
+        if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            if State then
+                isAutoFishingActive = true  -- Bật auto fishing
+                originalPosition = player.Character.HumanoidRootPart.CFrame
+                player.Character.HumanoidRootPart.CFrame = CFrame.new(
+                    797.1300048828125, 20.14695167541504, 1140.8101806640625,
+                    -0.826375067, -1.17252284e-07, 0.563120127,
+                    -8.21544859e-08, 1, 8.76577957e-08,
+                    -0.563120127, 2.61753765e-08, -0.826375067
+                )
+                
+                OrionLib:MakeNotification({
+                    Name = "Auto Fishing Activated",
+                    Content = "Teleporting to the fishing spot.",
+                    Image = "rbxassetid://6023426923",
+                    Time = 5
+                })
+                
+                task.spawn(autoFish)  -- Chạy autoFish trong một luồng riêng
+
+            else
+                isAutoFishingActive = false  -- Tắt auto fishing
+                if originalPosition then
+                    player.Character.HumanoidRootPart.CFrame = originalPosition
+                    OrionLib:MakeNotification({
+                        Name = "Auto Fishing Deactivated",
+                        Content = "Returning to the original position.",
+                        Image = "rbxassetid://6023426923",
+                        Time = 5
+                    })
+                end
+            end
+        else
+            OrionLib:MakeNotification({
+                Name = "Error",
+                Content = "Player's character or HumanoidRootPart is not found.",
+                Image = "rbxassetid://6023426923",
+                Time = 5
+            })
+        end
+    end
+})
+
+
+
 -- Minigames Tab
 local MinigamesTab = Window:MakeTab({
     Name = "Minigames",
@@ -322,63 +401,47 @@ ItemsSection:AddToggle({
                 Image = "rbxassetid://4483345998",
                 Time = 5
             })
-
-            -- Define the amount of each fruit type to be crafted
-            local fruitsToCraft = {
-                {name = "Rainbow Fruit", amount = 10},  -- Example: Change name based on actual fruit name
-                {name = "Shiny Fruit", amount = 25},    -- Change name as needed
-                {name = "Magic Fruit", amount = 25},    -- Same here
+            
+            local fruits = {
+                {id = "0cb7d35612fc48929559584cd36fdb38", amount = 10},
+                {id = "2bb864d7fde344128f542c947d684b8c", amount = 25},
+                {id = "769e2b2ce99844a3ad0d62ac565e59ec", amount = 25},
+                {id = "cf3d41ee78594bc0ac32e5487a856ba7", amount = 25},
+                {id = "58fb1f27c9634b05b6e5e36d09884c7e", amount = 40}
             }
 
             local ReplicatedStorage = game:GetService("ReplicatedStorage")
             local network = ReplicatedStorage:WaitForChild("Network")
             local upgradeFunction = network:WaitForChild("UpgradeFruitsMachine_Activate")
 
-            -- Function to find the fruit by name in the inventory or container
-            local function getFruitByName(name)
-                local player = game.Players.LocalPlayer
-                -- Modify the way you get the fruit items according to your game structure
-                for _, fruit in pairs(player.Backpack:GetChildren()) do
-                    if fruit.Name == name then
-                        return fruit  -- Return the fruit item if found
-                    end
-                end
-                return nil  -- Return nil if fruit not found
-            end
-
             local function upgradeFruitsContinuously()
                 while autoCraftingEnabled do
-                    for _, fruitData in ipairs(fruitsToCraft) do
-                        local fruit = getFruitByName(fruitData.name)
-                        if fruit then
-                            local args = {
-                                [1] = {
-                                    [fruit.Name] = fruitData.amount  -- Using the fruit's name instead of ID
-                                }
+                    for _, fruit in ipairs(fruits) do
+                        local args = {
+                            [1] = {
+                                [fruit.id] = fruit.amount
                             }
+                        }
 
-                            local success, message = pcall(function()
-                                upgradeFunction:InvokeServer(unpack(args))
-                            end)
+                        local success, message = pcall(function()
+                            upgradeFunction:InvokeServer(unpack(args))
+                        end)
 
-                            if not success then
-                                RanhRoi:MakeNotification({
-                                    Name = "Upgrade Failed",
-                                    Content = "Failed to upgrade " .. fruit.Name .. ": " .. tostring(message),
-                                    Image = "rbxassetid://4483345998",
-                                    Time = 5
-                                })
-                            end
-                        else
-                            print("Fruit not found:", fruitData.name)
+                        if not success then
+                            RanhRoi:MakeNotification({
+                                Name = "Upgrade Failed",
+                                Content = "Failed to upgrade " .. fruit.id .. ": " .. tostring(message),
+                                Image = "rbxassetid://4483345998",
+                                Time = 5
+                            })
                         end
                     end
+
                     wait(0.0001)
                 end
             end
 
             upgradeFruitsContinuously()
-
         else
             RanhRoi:MakeNotification({
                 Name = "Auto Crafting Disabled",
@@ -391,5 +454,3 @@ ItemsSection:AddToggle({
 })
 
 RanhRoi:Init()
-
-
