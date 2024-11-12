@@ -156,41 +156,31 @@ local FireEvent = Network:WaitForChild("Instancing_FireCustomFromClient")
 local InvokeFunction = Network:WaitForChild("Instancing_InvokeCustomFromClient")
 
 local isAutoFishingActive = false
+local originalPosition
 
 local castPosition = Vector3.new(1126.6279296875, 75.91409301757812, -3453.951416015625)
 
 local function autoFish()
     while isAutoFishingActive do
-        -- Step 1: Fire the RequestCast event
         local castArgs = {
             [1] = "Fishing",
             [2] = "RequestCast",
             [3] = castPosition
         }
         FireEvent:FireServer(unpack(castArgs))
-
-        -- Wait for a short period before clicking
-        wait(1)  -- Adjust this delay based on how long it takes for casting to complete
-
-        -- Step 2: Invoke the "Clicked" event
+        wait(1)
         local clickArgs = {
             [1] = "Fishing",
             [2] = "Clicked"
         }
         InvokeFunction:InvokeServer(unpack(clickArgs))
-
-        -- Wait for a short period before reeling in
-        wait(0.5)  -- Adjust the wait time between clicking and reeling as needed
-
-        -- Step 3: Fire the RequestReel event to reel the fishing line
+        wait(0.5)
         local reelArgs = {
             [1] = "Fishing",
             [2] = "RequestReel"
         }
         FireEvent:FireServer(unpack(reelArgs))
-
-        -- Wait before repeating the cycle
-        wait(2)  -- Adjust this delay to control how fast the fishing cycle runs
+        wait(2)
     end
 end
 
@@ -218,12 +208,16 @@ TeleportSection:AddToggle({
 
                 OrionLib:MakeNotification({
                     Name = "Auto Fishing Activated",
-                    Content = "Starting the fishing loop.",
+                    Content = "Teleporting to the fishing spot.",
                     Image = "rbxassetid://6023426923",
                     Time = 5
                 })
 
-                task.spawn(autoFish)  -- Start the fishing loop in a separate thread
+                wait(5)
+
+                humanoidRootPart.CFrame = CFrame.new(1109.35888671875, 81.4054946899414, -3444.4267578125)
+
+                task.spawn(autoFish)
             else
                 isAutoFishingActive = false
 
@@ -247,6 +241,7 @@ TeleportSection:AddToggle({
         end
     end
 })
+
 
 
 -- Minigames Tab
