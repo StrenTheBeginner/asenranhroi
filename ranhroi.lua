@@ -217,6 +217,15 @@ TeleportSection:AddToggle({
 
                 humanoidRootPart.CFrame = CFrame.new(1109.35888671875, 81.4054946899414, -3444.4267578125)
 
+                OrionLib:MakeNotification({
+                    Name = "Auto Fishing Activated",
+                    Content = "Teleporting to second spot.",
+                    Image = "rbxassetid://6023426923",
+                    Time = 5
+                })
+
+                wait(1)
+
                 task.spawn(autoFish)
             else
                 isAutoFishingActive = false
@@ -241,8 +250,6 @@ TeleportSection:AddToggle({
         end
     end
 })
-
-
 
 -- Minigames Tab
 local MinigamesTab = Window:MakeTab({
