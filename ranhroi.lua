@@ -190,6 +190,7 @@ TeleportSection:AddToggle({
                 isAutoFishingActive = true
                 originalPosition = humanoidRootPart.CFrame
 
+                -- Teleport to initial spot first
                 humanoidRootPart.CFrame = CFrame.new(
                     797.1300048828125, 20.14695167541504, 1140.8101806640625,
                     -0.826375067, -1.17252284e-07, 0.563120127,
@@ -204,7 +205,13 @@ TeleportSection:AddToggle({
                     Time = 5
                 })
 
-                wait(1)
+                wait(1) -- Wait for 1 second to ensure teleportation
+
+                -- Now teleport to the cast position
+                humanoidRootPart.CFrame = CFrame.new(castPosition)
+                wait(3)  -- Wait for 3 seconds at the cast position
+
+                -- Start fishing
                 task.spawn(autoFish)
 
             else
