@@ -299,15 +299,6 @@ for i,v in next, ReplicatedStorage.__DIRECTORY.Zones:GetChildren() do
         end
     end
 end
-
-for i,v in next, Workspace.__THINGS.__INSTANCE_CONTAINER.Active.AutumnEvent:GetChildren() do
-    for i,v in next, v:GetChildren() do
-        if v:IsA("ModuleScript") then
-            local String = string.split(v.Name, "| ", "")[2]
-            table.insert(AutumnZones, String)
-        end
-    end
-end
  
 for i,v in next, ReplicatedStorage.Assets.Instancing:GetChildren() do
     table.insert(Hehe, v.Name)
