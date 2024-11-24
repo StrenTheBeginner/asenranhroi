@@ -350,7 +350,7 @@ do
     Fluent:Notify({
         Title = "Ranh Roi Hub loaded !",
         Content = "We are your #1",
-        SubContent = "", -- Optional
+        SubContent = "Join discord now", -- Optional
         Duration = 15 -- Set to nil to make the notification not disappear
     })
     local Toggle = Tabs.AutoFarm:AddToggle("Rend", {Title = "White Screen | Disable Rendering", Default = false})
@@ -552,7 +552,7 @@ Window:SelectTab(1)
  
 Fluent:Notify({
     Title = "RanhRoi Hub",
-    Content = "Im coming !!!",
+    Content = "Casually Trash Hub !!!",
     Duration = 8
 })
  
