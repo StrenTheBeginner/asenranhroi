@@ -65,7 +65,7 @@ end
 local RequestCast = function()
     if Method == "Fishing" and not GetRod():FindFirstChild("FishingLine") and wait(5) then
         I:FireServer("Fishing","RequestCast",Vector3.new(1139, 75, -3445))
-    elseif Method == "AdvancedFishing"  and not GetRod():FindFirstChild("FishingLine") and wait(5) then
+    elseif Method == "AdvancedFishing"  and not GetRod():FindFirstChild("FishingLine") and wait(3) then
         I:FireServer("AdvancedFishing","RequestCast",Vector3.new(1460, 61, -4442))
     end
 end
@@ -264,7 +264,7 @@ end
 local GetCoinInZone = function()
     local Target = nil
     local MaxDistance = math.huge
-    for i,v in next, Workspace.__THINGS.Breakables:GetChildren() do
+    for i,v in next, Workspace.__THINGS.__INSTANCE_CONTAINER.Active.AutumnEvent:GetChildren() do
         if v:IsA("Model") and (v:GetAttribute("ParentID") == PickedZone) then
             local Mag = VG.Mag(v:GetModelCFrame(), Player.Character:GetModelCFrame())
             if Mag <= MaxDistance then
@@ -397,6 +397,12 @@ do
     Dropdown:OnChanged(function(Value)
         PickedZone = Value
     end)
+    local Dropdown = Tabs.AutoFarm:AddDropdown("Ds", {
+        Title = "Auto Use Flags",
+        Values = Zones,
+        Multi = false,
+        Default = 1,
+    })
     local Toggle = Tabs.AutoFarm:AddToggle("Toyou", {Title = "Auto Eat Fruits", Default = false})
     Toggle:OnChanged(function()
         Frut = Options.Toyou.Value
