@@ -3,7 +3,6 @@ VG.DisableConnection(Error)
 VG.DisableConnection(Idled)
 local Hehe = {}
 local Zones = {}
-local AutumnZones = {}
 local Flags = {}
 local Fruits = {}
 
