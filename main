@@ -3,6 +3,7 @@ VG.DisableConnection(Error)
 VG.DisableConnection(Idled)
 local Hehe = {}
 local Zones = {}
+local AutumnZones = {}
 local Flags = {}
 local Fruits = {}
 
@@ -336,6 +337,7 @@ local Window = Fluent:CreateWindow({
  
 local Tabs = {
     AutoFarm = Window:AddTab({ Title = "Auto Farm", Icon = "gamepad" }),
+    Eggs = Window:AddTab({ Title = "Eggs", Icon = "egg"}),
     Obbys = Window:AddTab({ Title = "Obbys etc", Icon = "carrot" }),
     AutoMinigame = Window:AddTab({ Title = "AutoMinigames", Icon = "dice-3" }),
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
@@ -407,7 +409,7 @@ do
         PickedZone = Value
     end)
     local Dropdown = Tabs.AutoFarm:AddDropdown("Ds", {
-        Title = "Auto Use Flags",
+        Title = "Teleport to Autumn Maps:",
         Values = AutumnZones,
         Multi = false,
         Default = 1,
