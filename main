@@ -264,7 +264,7 @@ end
 local GetCoinInZone = function()
     local Target = nil
     local MaxDistance = math.huge
-    for i,v in next, Workspace.__THINGS.__INSTANCE_CONTAINER.Active.AutumnEvent:GetChildren() do
+    for i,v in next, Workspace.__THINGS.Breakables:GetChildren() do
         if v:IsA("Model") and (v:GetAttribute("ParentID") == PickedZone) then
             local Mag = VG.Mag(v:GetModelCFrame(), Player.Character:GetModelCFrame())
             if Mag <= MaxDistance then
@@ -296,6 +296,15 @@ for i,v in next, ReplicatedStorage.__DIRECTORY.Zones:GetChildren() do
         if v:IsA("ModuleScript") then
             local String = string.split(v.Name, "| ", "")[2]
             table.insert(Zones, String)
+        end
+    end
+end
+
+for i,v in next, Workspace.__THINGS.__INSTANCE_CONTAINER.Active.AutumnEvent:GetChildren() do
+    for i,v in next, v:GetChildren() do
+        if v:IsA("ModuleScript") then
+            local String = string.split(v.Name, "| ", "")[2]
+            table.insert(AutumnZones, String)
         end
     end
 end
@@ -399,7 +408,7 @@ do
     end)
     local Dropdown = Tabs.AutoFarm:AddDropdown("Ds", {
         Title = "Auto Use Flags",
-        Values = Zones,
+        Values = AutumnZones,
         Multi = false,
         Default = 1,
     })
