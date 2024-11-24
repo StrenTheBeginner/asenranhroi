@@ -340,6 +340,7 @@ local Tabs = {
     Eggs = Window:AddTab({ Title = "Eggs", Icon = "egg"}),
     Obbys = Window:AddTab({ Title = "Obbys etc", Icon = "carrot" }),
     AutoMinigame = Window:AddTab({ Title = "AutoMinigames", Icon = "dice-3" }),
+    Miscs = Window:AddTab({ Title = "Miscs", Icon = "cog" })
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
  
 }
@@ -349,9 +350,9 @@ local Options = Fluent.Options
 do
     Fluent:Notify({
         Title = "Ranh Roi Hub loaded !",
-        Content = "We are your #" .. Verison,
+        Content = "We are your #1",
         SubContent = "", -- Optional
-        Duration = 10 -- Set to nil to make the notification not disappear
+        Duration = 15 -- Set to nil to make the notification not disappear
     })
     local Toggle = Tabs.AutoFarm:AddToggle("Rend", {Title = "White Screen | Disable Rendering", Default = false})
     Toggle:OnChanged(function()
@@ -454,7 +455,7 @@ do
         end)
     end)
 
-    Tabs.Obbys:AddButton({Title = "Auto Grab All ShinyRelics",Description = "Grabs all relics Working",Callback = function()
+    Tabs.Obbys:AddButton({Title = "Auto Grab All Shiny Relics",Description = "Grabs all relics Working",Callback = function()
         for i,v in next, Workspace.__THINGS.ShinyRelics:GetChildren() do
             if v:IsA("BasePart") and v.Transparency == 0 then
                 RelicClicked(getShiny(v))
