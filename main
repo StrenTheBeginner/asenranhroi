@@ -1,9 +1,8 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/StrenTheBeginner/asenranhroi/refs/heads/main/RanhRoiMain.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/1201for/V.G-Hub/main/Extras/Global"))()
 VG.DisableConnection(Error)
 VG.DisableConnection(Idled)
 local Hehe = {}
 local Zones = {}
-local AutumnZones = {}
 local Flags = {}
 local Fruits = {}
 
