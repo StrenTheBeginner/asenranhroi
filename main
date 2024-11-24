@@ -3,6 +3,7 @@ VG.DisableConnection(Error)
 VG.DisableConnection(Idled)
 local Hehe = {}
 local Zones = {}
+local AutumnZones = {}
 local Flags = {}
 local Fruits = {}
 
@@ -350,7 +351,7 @@ do
     Fluent:Notify({
         Title = "Ranh Roi Hub loaded !",
         Content = "We are your #1",
-        SubContent = "Join discord now", -- Optional
+        SubContent = "", -- Optional
         Duration = 15 -- Set to nil to make the notification not disappear
     })
     local Toggle = Tabs.AutoFarm:AddToggle("Rend", {Title = "White Screen | Disable Rendering", Default = false})
@@ -552,7 +553,13 @@ Window:SelectTab(1)
  
 Fluent:Notify({
     Title = "RanhRoi Hub",
-    Content = "Casually Trash Hub !!!",
+    Content = "Im coming !!!",
+    Duration = 8
+})
+
+Fluent:Notify({
+    Title = "Anti AFK",
+    Content = "Turned on, dont worry :)",
     Duration = 8
 })
  
