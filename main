@@ -315,7 +315,7 @@ local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/d
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
  
 local Window = Fluent:CreateWindow({
-    Title = "RanhRoi Hub:" .. MarketplaceService:GetProductInfo(game.PlaceId).Name,
+    Title = "RanhRoi Hub: " .. MarketplaceService:GetProductInfo(game.PlaceId).Name,
     SubTitle = "by AsenDitBu",
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
@@ -326,9 +326,9 @@ local Window = Fluent:CreateWindow({
  
  
 local Tabs = {
-    AutoFarm = Window:AddTab({ Title = "AutoFarm", Icon = "" }),
-    Obbys = Window:AddTab({ Title = "Obbys etc", Icon = "" }),
-    AutoMinigame = Window:AddTab({ Title = "AutoMinigames", Icon = "" }),
+    AutoFarm = Window:AddTab({ Title = "Auto Farm", Icon = "gamepad" }),
+    Obbys = Window:AddTab({ Title = "Obbys etc", Icon = "carrot" }),
+    AutoMinigame = Window:AddTab({ Title = "AutoMinigames", Icon = "dice-3" }),
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
  
 }
@@ -338,7 +338,7 @@ local Options = Fluent.Options
 do
     Fluent:Notify({
         Title = "Ranh Roi Hub loaded !",
-        Content = "We are you #" .. Verison,
+        Content = "We are your #" .. Verison,
         SubContent = "", -- Optional
         Duration = 10 -- Set to nil to make the notification not disappear
     })
