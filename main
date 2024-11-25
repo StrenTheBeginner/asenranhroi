@@ -1,4 +1,4 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/1201for/V.G-Hub/main/Extras/Global"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/StrenTheBeginner/asenranhroi/refs/heads/main/RanhRoiMain.lua"))()
 VG.DisableConnection(Error)
 VG.DisableConnection(Idled)
 local Hehe = {}
