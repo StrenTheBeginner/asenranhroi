@@ -13,8 +13,7 @@ local Active = Things.__INSTANCE_CONTAINER:WaitForChild("Active")
 local I = Network:WaitForChild("Instancing_FireCustomFromClient")
 local I2 = Network:WaitForChild("Instancing_InvokeCustomFromClient")
 local Client = require(ReplicatedStorage:WaitForChild("Library"))
-local ReplicatedStorage = game.ReplicatedStorage
-local HatchEgg = ReplicatedStorage.Network.CustomEggs_Hatch
+local HatchEgg = Network:WaitForChild("CustomEggs_Hatch")
 
 for i,v in next, getgc(true) do
     if type(v) == "function" then
@@ -449,6 +448,7 @@ do
             end
         end)
     end)
+
     local Toggle = Tabs.Eggs:AddToggle("Egg", {Title = "Auto Hatch Nearest Egg", Default = false})
     Toggle:OnChanged(function()
         AutoHatch = Toggle.Value -- Cập nhật trạng thái AutoHatch theo toggle
@@ -489,14 +489,14 @@ do
                 Content = "",
                 Duration = 7
             })
-            ReplicatedStorage.Network.Toggle:FireServer(true) -- Bật Golden Egg
+            Toggle:FireServer(true) -- Bật Golden Egg
         else
             Fluent:Notify({
                 Title = "Golden Egg Hatch | OFF",
                 Content = "",
                 Duration = 7
             })
-            ReplicatedStorage.Network.Toggle:FireServer(false) -- Tắt Golden Egg
+            Toggle:FireServer(false) -- Tắt Golden Egg
         end
     end)
 
@@ -509,14 +509,14 @@ do
                 Content = "",
                 Duration = 7
             })
-            ReplicatedStorage.Network.Toggle:FireServer(true) -- Bật Charged Egg
+            Toggle:FireServer(true) -- Bật Charged Egg
         else
             Fluent:Notify({
                 Title = "Golden Egg Hatch | OFF",
                 Content = "",
                 Duration = 7
             })
-            ReplicatedStorage.Network.Toggle:FireServer(false) -- Tắt Charged Egg
+            Toggle:FireServer(false) -- Tắt Charged Egg
         end
     end)
 
