@@ -451,7 +451,7 @@ do
 
     local Toggle = Tabs.Eggs:AddToggle("Egg", {Title = "Auto Hatch Nearest Egg", Default = false})
     Toggle:OnChanged(function()
-        AutoHatch = Toggle.Value -- Cập nhật trạng thái AutoHatch theo toggle
+        local AutoHatch = Toggle.Value -- Cập nhật trạng thái AutoHatch theo toggle
         if AutoHatch then
             Fluent:Notify({
                 Title = "Auto Hatch Nearest Egg | ON",
