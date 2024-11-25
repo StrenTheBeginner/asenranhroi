@@ -13,7 +13,7 @@ local Active = Things.__INSTANCE_CONTAINER:WaitForChild("Active")
 local I = Network:WaitForChild("Instancing_FireCustomFromClient")
 local I2 = Network:WaitForChild("Instancing_InvokeCustomFromClient")
 local Client = require(ReplicatedStorage:WaitForChild("Library"))
-local HatchEgg = Network:WaitForChild("CustomEggs_Hatch")
+local AutoHatch = Network:WaitForChild("CustomEggs_Hatch")
 
 for i,v in next, getgc(true) do
     if type(v) == "function" then
@@ -451,7 +451,7 @@ do
 
     local Toggle = Tabs.Eggs:AddToggle("Egg", {Title = "Auto Hatch Nearest Egg", Default = false})
     Toggle:OnChanged(function()
-        local AutoHatch = Toggle.Value -- Cập nhật trạng thái AutoHatch theo toggle
+        AutoHatch = Toggle.Value -- Cập nhật trạng thái AutoHatch theo toggle
         if AutoHatch then
             Fluent:Notify({
                 Title = "Auto Hatch Nearest Egg | ON",
