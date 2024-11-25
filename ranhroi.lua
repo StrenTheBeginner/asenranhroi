@@ -315,8 +315,8 @@ local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/d
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
  
 local Window = Fluent:CreateWindow({
-    Title = "Tien Dung Suc Vat: " .. MarketplaceService:GetProductInfo(game.PlaceId).Name,
-    SubTitle = "by AsenDitBu",
+    Title = "V.G Hub: Game " .. MarketplaceService:GetProductInfo(game.PlaceId).Name,
+    SubTitle = "by DekuDimz",
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
     Acrylic = false, -- The blur may be detectable, setting this to false disables blur entirely
@@ -337,12 +337,12 @@ local Options = Fluent.Options
  
 do
     Fluent:Notify({
-        Title = "RanhRoi Hub",
-        Content = "Script Rac Nhat TG" .. Verison,
-        SubContent = "tien dung oc cac", -- Optional
+        Title = "V.G Hub Loaded",
+        Content = "Congrats your using V.G Hub " .. Verison,
+        SubContent = "", -- Optional
         Duration = 10 -- Set to nil to make the notification not disappear
     })
-    local Toggle = Tabs.AutoFarm:AddToggle("Rend", {Title = "White Screen | Disable 3D Rendering", Default = false})
+    local Toggle = Tabs.AutoFarm:AddToggle("Rend", {Title = "Disable 3D Rendering", Default = false})
     Toggle:OnChanged(function()
         Norender = Options.Rend.Value
         if Norender then
@@ -351,7 +351,7 @@ do
             RunService:Set3dRenderingEnabled(true)
         end
     end)
-    local Toggle = Tabs.AutoFarm:AddToggle("PetCoin", {Title = "Farm Nearest Coin", Default = false})
+    local Toggle = Tabs.AutoFarm:AddToggle("PetCoin", {Title = "Auto Break Nearest Coin", Default = false})
     Toggle:OnChanged(function()
         AutoFarm = Options.PetCoin.Value
         spawn(function()
@@ -363,7 +363,7 @@ do
         end)
     end)
  
-    local Toggle = Tabs.AutoFarm:AddToggle("PetCoin1", {Title = "Auto Farm In Selected Zone", Default = false})
+    local Toggle = Tabs.AutoFarm:AddToggle("PetCoin1", {Title = "Auto Break In Selected Zone", Default = false})
     Toggle:OnChanged(function()
         AutoFarm1 = Options.PetCoin1.Value
         spawn(function()
@@ -534,9 +534,9 @@ SaveManager:BuildConfigSection(Tabs.Settings)
 Window:SelectTab(1)
  
 Fluent:Notify({
-    Title = "RanhRoi Hub",
+    Title = "V.G Hub",
     Content = "The script has been loaded.",
-    Duration = 12
+    Duration = 8
 })
  
 SaveManager:LoadAutoloadConfig()
