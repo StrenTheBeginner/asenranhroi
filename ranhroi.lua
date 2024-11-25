@@ -13,6 +13,9 @@ local Active = Things.__INSTANCE_CONTAINER:WaitForChild("Active")
 local I = Network:WaitForChild("Instancing_FireCustomFromClient")
 local I2 = Network:WaitForChild("Instancing_InvokeCustomFromClient")
 local Client = require(ReplicatedStorage:WaitForChild("Library"))
+local rs = game.ReplicatedStorage
+local HatchEgg = rs.Network.CustomEggs_Hatch
+local AutoHatch = false
 
 for i,v in next, getgc(true) do
     if type(v) == "function" then
@@ -315,8 +318,8 @@ local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/d
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
  
 local Window = Fluent:CreateWindow({
-    Title = "V.G Hub: Game " .. MarketplaceService:GetProductInfo(game.PlaceId).Name,
-    SubTitle = "by DekuDimz",
+    Title = "RanhRoi Hub: " .. MarketplaceService:GetProductInfo(game.PlaceId).Name,
+    SubTitle = "by nesalessev",
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
     Acrylic = false, -- The blur may be detectable, setting this to false disables blur entirely
@@ -326,9 +329,11 @@ local Window = Fluent:CreateWindow({
  
  
 local Tabs = {
-    AutoFarm = Window:AddTab({ Title = "AutoFarm", Icon = "" }),
-    Obbys = Window:AddTab({ Title = "Obbys etc", Icon = "" }),
-    AutoMinigame = Window:AddTab({ Title = "AutoMinigames", Icon = "" }),
+    AutoFarm = Window:AddTab({ Title = "AutoFarm", Icon = "gamepad" }),
+    Eggs = Window:AddTab({ Title = "Eggs", Icon = "egg" }),
+    Obbys = Window:AddTab({ Title = "Obbys etc", Icon = "carrot" }),
+    AutoMinigame = Window:AddTab({ Title = "AutoMinigames", Icon = "dice-6" }),
+    Miscs = Window:AddTab({ Title = "Miscs", Icon = "cog" })
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
  
 }
@@ -337,12 +342,12 @@ local Options = Fluent.Options
  
 do
     Fluent:Notify({
-        Title = "V.G Hub Loaded",
-        Content = "Congrats your using V.G Hub " .. Verison,
+        Title = "RanhRoi Hub Loaded",
+        Content = "We are your #1 choice",
         SubContent = "", -- Optional
-        Duration = 10 -- Set to nil to make the notification not disappear
+        Duration = 13 -- Set to nil to make the notification not disappear
     })
-    local Toggle = Tabs.AutoFarm:AddToggle("Rend", {Title = "Disable 3D Rendering", Default = false})
+    local Toggle = Tabs.AutoFarm:AddToggle("Rend", {Title = "White Screen | Disable 3D Rendering", Default = false})
     Toggle:OnChanged(function()
         Norender = Options.Rend.Value
         if Norender then
@@ -351,7 +356,7 @@ do
             RunService:Set3dRenderingEnabled(true)
         end
     end)
-    local Toggle = Tabs.AutoFarm:AddToggle("PetCoin", {Title = "Auto Break Nearest Coin", Default = false})
+    local Toggle = Tabs.AutoFarm:AddToggle("PetCoin", {Title = "Farm Nearest Area", Default = false})
     Toggle:OnChanged(function()
         AutoFarm = Options.PetCoin.Value
         spawn(function()
@@ -363,7 +368,7 @@ do
         end)
     end)
  
-    local Toggle = Tabs.AutoFarm:AddToggle("PetCoin1", {Title = "Auto Break In Selected Zone", Default = false})
+    local Toggle = Tabs.AutoFarm:AddToggle("PetCoin1", {Title = "Auto Farm In Selected Zone", Default = false})
     Toggle:OnChanged(function()
         AutoFarm1 = Options.PetCoin1.Value
         spawn(function()
@@ -436,6 +441,80 @@ do
             end
         end)
     end)
+    local Toggle = Tabs.Eggs:AddToggle("Egg", {Title = "Auto Hatch Nearest Egg", Default = false})
+    Toggle:OnChanged(function()
+        AutoHatch = Toggle.Value -- Cập nhật trạng thái AutoHatch theo toggle
+        if AutoHatch then
+            Fluent:Notify({
+                Title = "Auto Hatch Nearest Egg | ON",
+                Content = "",
+                Duration = 10
+            })
+            task.spawn(function()
+                while AutoHatch do -- Kiểm tra liên tục nếu AutoHatch bật
+                    if getgenv().OpenLocation ~= nil then
+                        if (hrp.Position - getgenv().OpenLocation).Magnitude > 100 then
+                            getgenv().Egg_Args = nil
+                        end
+                    end
+                    if getgenv().Egg_Args ~= nil and (hrp.Position - getgenv().OpenLocation).Magnitude <= 10 then
+                        Hatch:InvokeServer(table.unpack(getgenv().Egg_Args), math.huge) -- Mở trứng nhanh
+                    end
+                    task.wait(0.01) -- Thời gian chờ ngắn để tăng tốc
+                end
+            end)
+        else
+            Fluent:Notify({
+                Title = "Auto Hatch Nearest Egg | OFF",
+                Content = "",
+                Duration = 10
+            })
+        end
+    end)
+
+    local GoldenEggToggle = Tabs.Eggs:AddToggle("GoldenEgg", {Title = "Auto Golden Egg", Default = false})
+
+GoldenEggToggle:OnChanged(function()
+    local GoldenEggState = GoldenEggToggle.Value -- Lấy trạng thái từ toggle
+    if GoldenEggState then
+        Fluent:Notify({
+            Title = "Golden Egg Hatch | ON",
+            Content = "",
+            Duration = 7
+        })
+        rs.Network.GoldenHatch_Toggle:FireServer(true) -- Bật Golden Egg
+    else
+        Fluent:Notify({
+            Title = "Golden Egg Hatch | OFF",
+            Content = "",
+            Duration = 7
+        })
+        rs.Network.GoldenHatch_Toggle:FireServer(false) -- Tắt Golden Egg
+    end
+end)
+
+-- Toggle cho Charged Egg
+local ChargedEggToggle = Tabs.Eggs:AddToggle("ChargedEgg", {Title = "Auto Charged Egg", Default = false})
+
+ChargedEggToggle:OnChanged(function()
+    local ChargedEggState = ChargedEggToggle.Value -- Lấy trạng thái từ toggle
+    if ChargedEggState then
+        Fluent:Notify({
+            Title = "Charged Egg Hatch | ON",
+            Content = "",
+            Duration = 7
+        })
+        rs.Network.ChargedHatch_Toggle:FireServer(true) -- Bật Charged Egg
+    else
+        Fluent:Notify({
+            Title = "Golden Egg Hatch | OFF",
+            Content = "",
+            Duration = 7
+        })
+        rs.Network.ChargedHatch_Toggle:FireServer(false) -- Tắt Charged Egg
+    end
+end)
+
 
     Tabs.Obbys:AddButton({Title = "Auto Grab All ShinyRelics",Description = "Grabs all relics Working",Callback = function()
         for i,v in next, Workspace.__THINGS.ShinyRelics:GetChildren() do
@@ -534,7 +613,7 @@ SaveManager:BuildConfigSection(Tabs.Settings)
 Window:SelectTab(1)
  
 Fluent:Notify({
-    Title = "V.G Hub",
+    Title = "RanhRoi Hub",
     Content = "The script has been loaded.",
     Duration = 8
 })
