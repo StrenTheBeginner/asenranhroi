@@ -13,19 +13,19 @@ local Active = Things.__INSTANCE_CONTAINER:WaitForChild("Active")
 local I = Network:WaitForChild("Instancing_FireCustomFromClient")
 local I2 = Network:WaitForChild("Instancing_InvokeCustomFromClient")
 local Client = require(ReplicatedStorage:WaitForChild("Library"))
-local rs = game.ReplicatedStorage
-local HatchEgg = rs.Network.CustomEggs_Hatch
+local ReplicatedStorage = game.ReplicatedStorage
+local HatchEgg = ReplicatedStorage.Network.CustomEggs_Hatch
 
 for i,v in next, getgc(true) do
     if type(v) == "function" then
-        if getfenv(v).script == Player.PlayerScripts.Scripts.Game.Misc["Hidden Presents"] then
+        if getfenv(v).script == Player.PlayeReplicatedStoragecripts.Scripts.Game.Misc["Hidden Presents"] then
             if getinfo(v).name == "GetActive" then
                 GetActive = v
             elseif getinfo(v).name == "Clicked" then
                 Clicked = v
             end
         end
-        if getfenv(v).script == Player.PlayerScripts.Scripts.Game.Misc["Shiny Relics"] then
+        if getfenv(v).script == Player.PlayeReplicatedStoragecripts.Scripts.Game.Misc["Shiny Relics"] then
             if getinfo(v).name == "RequestRelics" then
                 RequestRelics = v
             elseif getinfo(v).name == "RelicClicked" then
@@ -61,22 +61,22 @@ local getShiny = function(Shin)
 end
 
 local GetRod = function()
-    return Player.Character:FindFirstChild("Rod", true)
+    return Player.Character:FindFiReplicatedStoragetChild("Rod", true)
 end
 
 local RequestCast = function()
-    if Method == "Fishing" and not GetRod():FindFirstChild("FishingLine") and wait(5) then
+    if Method == "Fishing" and not GetRod():FindFiReplicatedStoragetChild("FishingLine") and wait(5) then
         I:FireServer("Fishing","RequestCast",Vector3.new(1139, 75, -3445))
-    elseif Method == "AdvancedFishing"  and not GetRod():FindFirstChild("FishingLine") and wait(5) then
+    elseif Method == "AdvancedFishing"  and not GetRod():FindFiReplicatedStoragetChild("FishingLine") and wait(3) then
         I:FireServer("AdvancedFishing","RequestCast",Vector3.new(1460, 61, -4442))
     end
 end
 
 local RequestReel = function()
     local Nothing = nil
-    if Method == "Fishing" and GetRod():FindFirstChild("FishingLine") then
+    if Method == "Fishing" and GetRod():FindFiReplicatedStoragetChild("FishingLine") then
         Nothing = GetRod().FishingLine.Attachment1.Parent
-    elseif Method == "AdvancedFishing" and GetRod():FindFirstChild("FishingLine") then
+    elseif Method == "AdvancedFishing" and GetRod():FindFiReplicatedStoragetChild("FishingLine") then
         Nothing = GetRod().FishingLine.Attachment0.Parent
     end
     if Nothing then
@@ -106,9 +106,9 @@ local Walk = function()
 end
 
 local GoTo = function()
-    if Method == "Fishing" and not Active:FindFirstChild("Fishing") then
+    if Method == "Fishing" and not Active:FindFiReplicatedStoragetChild("Fishing") then
         VG.Teleport(Things.Instances.Fishing.Teleports.Enter.Position)
-    elseif Method == "AdvancedFishing" and not Active:FindFirstChild("AdvancedFishing") then
+    elseif Method == "AdvancedFishing" and not Active:FindFiReplicatedStoragetChild("AdvancedFishing") then
         VG.Teleport(Things.Instances.AdvancedFishing.Teleports.Enter.Position)
     end
 end
@@ -198,7 +198,7 @@ local Doobbystuff = function(Obby)
     end
 end
 
-local BuyVenders = function()
+local BuyVendeReplicatedStorage = function()
     local OldPos = Player.Character.HumanoidRootPart.CFrame
 	for i,v in VendingMachines do
 		local Skid = VG.FFD(Workspace.Map, i)
@@ -214,20 +214,20 @@ local BuyVenders = function()
 end
 
 function GoTo2()
-    if Method2 == "Digsite" and not Active:FindFirstChild("Digsite") then
+    if Method2 == "Digsite" and not Active:FindFiReplicatedStoragetChild("Digsite") then
         VG.Teleport(Things.Instances.Digsite.Teleports.Enter.Position)
-    elseif Method2 == "AdvancedDigsite" and not Active:FindFirstChild("AdvancedDigsite") then
+    elseif Method2 == "AdvancedDigsite" and not Active:FindFiReplicatedStoragetChild("AdvancedDigsite") then
         VG.Teleport(Things.Instances.AdvancedDigsite.Teleports.Enter.Position)
     end
 end
 
-local Refrsh = function()
-    if Method2 == "Digsite" and not Active:FindFirstChild("Digsite") then
+local RefReplicatedStorageh = function()
+    if Method2 == "Digsite" and not Active:FindFiReplicatedStoragetChild("Digsite") then
         VG.Teleport(Workspace.__THINGS.Instances["Digsite"].Teleports.Leave.Position)
         wait(5)
         VG.Teleport(Workspace.__THINGS.Instances["Digsite"].Teleports.Enter.Position)
     end
-    if Method2 == "AdvancedDigsite" and not Active:FindFirstChild("AdvancedDigsite") then
+    if Method2 == "AdvancedDigsite" and not Active:FindFiReplicatedStoragetChild("AdvancedDigsite") then
         VG.Teleport(Workspace.__THINGS.Instances["AdvancedDigsite"].Teleports.Leave.Position)
         wait(5)
         VG.Teleport(Workspace.__THINGS.Instances["AdvancedDigsite"].Teleports.Enter.Position)
@@ -238,7 +238,7 @@ local Dig = function()
     GoTo2()
     if (GetBlock() == nil or GetChest() == nil) then
         print("no Blocks")
-        Refrsh()
+        RefReplicatedStorageh()
     end
     if CurrentActive() and CurrentActive().Name == "Digsite" then
         if Player.Character.HumanoidRootPart.Position.Y <= -1991 then
@@ -246,7 +246,7 @@ local Dig = function()
         end
     end
     if GetChest() then
-        VG.Tween(Player.Character.HumanoidRootPart, GetChest():FindFirstChildWhichIsA("BasePart"), 50, Vector3.new(0,0,2), true)
+        VG.Tween(Player.Character.HumanoidRootPart, GetChest():FindFiReplicatedStoragetChildWhichIsA("BasePart"), 50, Vector3.new(0,0,2), true)
         ReplicatedStorage:WaitForChild("Network"):WaitForChild("Instancing_FireCustomFromClient"):FireServer(CurrentActive().Name, "DigChest", GetChest():GetAttribute('Coord'))
         wait(2)
     else
@@ -301,6 +301,7 @@ for i,v in next, ReplicatedStorage.__DIRECTORY.Zones:GetChildren() do
         end
     end
 end
+
  
 for i,v in next, ReplicatedStorage.Assets.Instancing:GetChildren() do
     table.insert(Hehe, v.Name)
@@ -312,15 +313,15 @@ for i,v in next, ReplicatedStorage.__DIRECTORY.Fruits:GetChildren() do
 end
 
 
+
+
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
-local AutoHatch = false
-
-
+ 
 local Window = Fluent:CreateWindow({
     Title = "RanhRoi Hub: " .. MarketplaceService:GetProductInfo(game.PlaceId).Name,
-    SubTitle = "by nesalessev",
+    SubTitle = "by AsenDitBu",
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
     Acrylic = false, -- The blur may be detectable, setting this to false disables blur entirely
@@ -330,10 +331,10 @@ local Window = Fluent:CreateWindow({
  
  
 local Tabs = {
-    AutoFarm = Window:AddTab({ Title = "AutoFarm", Icon = "gamepad" }),
-    Eggs = Window:AddTab({ Title = "Eggs", Icon = "egg" }),
+    AutoFarm = Window:AddTab({ Title = "Auto Farm", Icon = "gamepad" }),
+    Eggs = Window:AddTab({ Title = "Eggs", Icon = "egg"}),
     Obbys = Window:AddTab({ Title = "Obbys etc", Icon = "carrot" }),
-    AutoMinigame = Window:AddTab({ Title = "AutoMinigames", Icon = "dice-6" }),
+    AutoMinigame = Window:AddTab({ Title = "AutoMinigames", Icon = "dice-3" }),
     Miscs = Window:AddTab({ Title = "Miscs", Icon = "cog" })
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
  
@@ -343,12 +344,12 @@ local Options = Fluent.Options
  
 do
     Fluent:Notify({
-        Title = "RanhRoi Hub Loaded",
-        Content = "We are your #1 choice",
+        Title = "Ranh Roi Hub loaded !",
+        Content = "We are your #1",
         SubContent = "", -- Optional
-        Duration = 13 -- Set to nil to make the notification not disappear
+        Duration = 15 -- Set to nil to make the notification not disappear
     })
-    local Toggle = Tabs.AutoFarm:AddToggle("Rend", {Title = "White Screen | Disable 3D Rendering", Default = false})
+    local Toggle = Tabs.AutoFarm:AddToggle("Rend", {Title = "White Screen | Disable Rendering", Default = false})
     Toggle:OnChanged(function()
         Norender = Options.Rend.Value
         if Norender then
@@ -357,7 +358,7 @@ do
             RunService:Set3dRenderingEnabled(true)
         end
     end)
-    local Toggle = Tabs.AutoFarm:AddToggle("PetCoin", {Title = "Farm Nearest Area", Default = false})
+    local Toggle = Tabs.AutoFarm:AddToggle("PetCoin", {Title = "Farm Nearest Coin", Default = false})
     Toggle:OnChanged(function()
         AutoFarm = Options.PetCoin.Value
         spawn(function()
@@ -369,7 +370,7 @@ do
         end)
     end)
  
-    local Toggle = Tabs.AutoFarm:AddToggle("PetCoin1", {Title = "Auto Farm In Selected Zone", Default = false})
+    local Toggle = Tabs.AutoFarm:AddToggle("PetCoin1", {Title = "Auto Break In Selected Zone", Default = false})
     Toggle:OnChanged(function()
         AutoFarm1 = Options.PetCoin1.Value
         spawn(function()
@@ -403,6 +404,12 @@ do
     Dropdown:OnChanged(function(Value)
         PickedZone = Value
     end)
+    local Dropdown = Tabs.AutoFarm:AddDropdown("Ds", {
+        Title = "Teleport to Autumn Maps:",
+        Values = AutumnZones,
+        Multi = false,
+        Default = 1,
+    })
     local Toggle = Tabs.AutoFarm:AddToggle("Toyou", {Title = "Auto Eat Fruits", Default = false})
     Toggle:OnChanged(function()
         Frut = Options.Toyou.Value
@@ -416,13 +423,13 @@ do
             end
         end)
     end)
-    local Toggle = Tabs.AutoFarm:AddToggle("Toyou2", {Title = "Auto Buy Venders", Default = false})
+    local Toggle = Tabs.AutoFarm:AddToggle("Toyou2", {Title = "Auto Buy VendeReplicatedStorage", Default = false})
     Toggle:OnChanged(function()
         vut = Options.Toyou2.Value
         spawn(function()
             while vut and wait() do
                 pcall(function()
-                    BuyVenders()
+                    BuyVendeReplicatedStorage()
                 end)
             end
         end)
@@ -473,51 +480,47 @@ do
         end
     end)
 
-    local GoldenEggToggle = Tabs.Eggs:AddToggle("GoldenEgg", {Title = "Auto Golden Egg", Default = false})
+    local Toggle = Tabs.Eggs:AddToggle("GoldenEgg", {Title = "Auto Golden Egg", Default = false})
+    Toggle:OnChanged(function()
+        local GoldenEggState = Toggle.Value -- Lấy trạng thái từ toggle
+        if GoldenEggState then
+            Fluent:Notify({
+                Title = "Golden Egg Hatch | ON",
+                Content = "",
+                Duration = 7
+            })
+            ReplicatedStorage.Network.Toggle:FireServer(true) -- Bật Golden Egg
+        else
+            Fluent:Notify({
+                Title = "Golden Egg Hatch | OFF",
+                Content = "",
+                Duration = 7
+            })
+            ReplicatedStorage.Network.Toggle:FireServer(false) -- Tắt Golden Egg
+        end
+    end)
 
-GoldenEggToggle:OnChanged(function()
-    local GoldenEggState = GoldenEggToggle.Value -- Lấy trạng thái từ toggle
-    if GoldenEggState then
-        Fluent:Notify({
-            Title = "Golden Egg Hatch | ON",
-            Content = "",
-            Duration = 7
-        })
-        rs.Network.GoldenHatch_Toggle:FireServer(true) -- Bật Golden Egg
-    else
-        Fluent:Notify({
-            Title = "Golden Egg Hatch | OFF",
-            Content = "",
-            Duration = 7
-        })
-        rs.Network.GoldenHatch_Toggle:FireServer(false) -- Tắt Golden Egg
-    end
-end)
+    local Toggle = Tabs.Eggs:AddToggle("ChargedEgg", {Title = "Auto Charged Egg", Default = false})
+    Toggle:OnChanged(function()
+        local ChargedEggState = Toggle.Value -- Lấy trạng thái từ toggle
+        if ChargedEggState then
+            Fluent:Notify({
+                Title = "Charged Egg Hatch | ON",
+                Content = "",
+                Duration = 7
+            })
+            ReplicatedStorage.Network.Toggle:FireServer(true) -- Bật Charged Egg
+        else
+            Fluent:Notify({
+                Title = "Golden Egg Hatch | OFF",
+                Content = "",
+                Duration = 7
+            })
+            ReplicatedStorage.Network.Toggle:FireServer(false) -- Tắt Charged Egg
+        end
+    end)
 
--- Toggle cho Charged Egg
-local ChargedEggToggle = Tabs.Eggs:AddToggle("ChargedEgg", {Title = "Auto Charged Egg", Default = false})
-
-ChargedEggToggle:OnChanged(function()
-    local ChargedEggState = ChargedEggToggle.Value -- Lấy trạng thái từ toggle
-    if ChargedEggState then
-        Fluent:Notify({
-            Title = "Charged Egg Hatch | ON",
-            Content = "",
-            Duration = 7
-        })
-        rs.Network.ChargedHatch_Toggle:FireServer(true) -- Bật Charged Egg
-    else
-        Fluent:Notify({
-            Title = "Golden Egg Hatch | OFF",
-            Content = "",
-            Duration = 7
-        })
-        rs.Network.ChargedHatch_Toggle:FireServer(false) -- Tắt Charged Egg
-    end
-end)
-
-
-    Tabs.Obbys:AddButton({Title = "Auto Grab All ShinyRelics",Description = "Grabs all relics Working",Callback = function()
+    Tabs.Obbys:AddButton({Title = "Auto Grab All Shiny Relics",Description = "Grabs all relics Working",Callback = function()
         for i,v in next, Workspace.__THINGS.ShinyRelics:GetChildren() do
             if v:IsA("BasePart") and v.Transparency == 0 then
                 RelicClicked(getShiny(v))
@@ -615,7 +618,13 @@ Window:SelectTab(1)
  
 Fluent:Notify({
     Title = "RanhRoi Hub",
-    Content = "The script has been loaded.",
+    Content = "Im coming !!!",
+    Duration = 8
+})
+
+Fluent:Notify({
+    Title = "Anti AFK",
+    Content = "Turned on, dont worry :)",
     Duration = 8
 })
  
