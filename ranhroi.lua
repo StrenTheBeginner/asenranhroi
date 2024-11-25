@@ -554,36 +554,37 @@ end
             })
         end
     end)
-local Toggle = Tabs.AutoFarm:AddToggle("HatchEgg", {Title = "Auto Hatch Egg | Skip Animation", Default = false})
-Toggle:OnChanged(function()
-    local Hatch = Options.HatchEgg.Value
-    -- Handle toggle state
-    if Hatch then
-        -- When the toggle is ON, start hatching the selected egg
-        Fluent:Notify({
-            Title = "Egg Hatch | ON",
-            Content = "Hatching process is active.",
-            Duration = 7
-        })
 
-        -- You can add more logic here if you want to automatically start hatching
-        -- based on a previously selected egg or predefined settings
-        if getgenv().Egg_Args ~= nil then
-            local rs = game.ReplicatedStorage
-            rs.Network.CustomEggs_Hatch:InvokeServer(table.unpack(getgenv().Egg_Args))
-        end
-    else
-        -- When the toggle is OFF, stop the hatching process or reset variables
-        Fluent:Notify({
-            Title = "Egg Hatch | OFF",
-            Content = "Hatching process is stopped.",
-            Duration = 7
-        })
-
-        -- Reset or disable any related actions or states here if necessary
-        getgenv().Egg_Args = nil
-    end
-end)
+	local Toggle = Tabs.AutoFarm:AddToggle("HatchEgg", {Title = "Auto Hatch Egg | Skip Animation", Default = false})
+	Toggle:OnChanged(function()
+	    local Hatch = Options.HatchEgg.Value
+	    -- Handle toggle state
+	    if Hatch then
+		-- When the toggle is ON, start hatching the selected egg
+		Fluent:Notify({
+		    Title = "Egg Hatch | ON",
+		    Content = "Hatching process is active.",
+		    Duration = 7
+		})
+	
+		-- You can add more logic here if you want to automatically start hatching
+		-- based on a previously selected egg or predefined settings
+		if getgenv().Egg_Args ~= nil then
+		    local rs = game.ReplicatedStorage
+		    rs.Network.CustomEggs_Hatch:InvokeServer(table.unpack(getgenv().Egg_Args))
+		end
+	    else
+		-- When the toggle is OFF, stop the hatching process or reset variables
+		Fluent:Notify({
+		    Title = "Egg Hatch | OFF",
+		    Content = "Hatching process is stopped.",
+		    Duration = 7
+		})
+	
+		-- Reset or disable any related actions or states here if necessary
+		getgenv().Egg_Args = nil
+	    end
+	end)
 
 -- Dropdown for selecting the egg
 local Dropdown = Tabs.Eggs:AddDropdown("Ds", {
