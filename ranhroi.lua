@@ -13,6 +13,8 @@ local Active = Things.__INSTANCE_CONTAINER:WaitForChild("Active")
 local I = Network:WaitForChild("Instancing_FireCustomFromClient")
 local I2 = Network:WaitForChild("Instancing_InvokeCustomFromClient")
 local Client = require(ReplicatedStorage:WaitForChild("Library"))
+local rs = game.ReplicatedStorage
+local Hatch = rs.Network.CustomEggs_Hatch
 
 for i,v in next, getgc(true) do
     if type(v) == "function" then
@@ -529,7 +531,7 @@ end
             Fluent:Notify({
                 Title = "Auto Hatch Nearest Egg | ON",
                 Content = "",
-                Duration = 10
+                Duration = 7
             })
             task.spawn(function()
                 while AutoHatch do -- Kiểm tra liên tục nếu AutoHatch bật
@@ -541,14 +543,14 @@ end
                     if getgenv().Egg_Args ~= nil and (hrp.Position - getgenv().OpenLocation).Magnitude <= 10 then
                         Hatch:InvokeServer(table.unpack(getgenv().Egg_Args), math.huge) -- Mở trứng nhanh
                     end
-                    task.wait(0.01) -- Thời gian chờ ngắn để tăng tốc
+                    task.wait(0.5) -- Thời gian chờ ngắn để tăng tốc
                 end
             end)
         else
             Fluent:Notify({
                 Title = "Auto Hatch Nearest Egg | OFF",
                 Content = "",
-                Duration = 10
+                Duration = 7
             })
         end
     end)
