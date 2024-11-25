@@ -63,12 +63,18 @@ local GetRod = function()
 end
 
 local RequestCast = function()
-    if Method == "Fishing" and not GetRod():FindFiReplicatedStoragetChild("FishingLine") and wait(5) then
-        I:FireServer("Fishing","RequestCast",Vector3.new(1139, 75, -3445))
-    elseif Method == "AdvancedFishing"  and not GetRod():FindFiReplicatedStoragetChild("FishingLine") and wait(3) then
-        I:FireServer("AdvancedFishing","RequestCast",Vector3.new(1460, 61, -4442))
+    local Rod = GetRod()
+    if Rod then
+        if Method == "Fishing" and not Rod:FindFirstChild("FishingLine") and wait(5) then
+            I:FireServer("Fishing","RequestCast", Vector3.new(1139, 75, -3445))
+        elseif Method == "AdvancedFishing" and not Rod:FindFirstChild("FishingLine") and wait(5) then
+            I:FireServer("AdvancedFishing","RequestCast", Vector3.new(1460, 61, -4442))
+        end
+    else
+        warn("Rod not found!")
     end
 end
+
 
 local RequestReel = function()
     local Nothing = nil
