@@ -13,6 +13,8 @@ local Active = Things.__INSTANCE_CONTAINER:WaitForChild("Active")
 local I = Network:WaitForChild("Instancing_FireCustomFromClient")
 local I2 = Network:WaitForChild("Instancing_InvokeCustomFromClient")
 local Client = require(ReplicatedStorage:WaitForChild("Library"))
+local rs = game.ReplicatedStorage
+local HatchEgg = rs.Network.CustomEggs_Hatch
 
 for i,v in next, getgc(true) do
     if type(v) == "function" then
@@ -313,9 +315,8 @@ end
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
-local rs = game.ReplicatedStorage
-local HatchEgg = rs.Network.CustomEggs_Hatch
 local AutoHatch = false
+
 
 local Window = Fluent:CreateWindow({
     Title = "RanhRoi Hub: " .. MarketplaceService:GetProductInfo(game.PlaceId).Name,
