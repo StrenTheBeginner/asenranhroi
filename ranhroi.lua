@@ -554,6 +554,84 @@ end
             })
         end
     end)
+local Toggle = Tabs.AutoFarm:AddToggle("HatchEgg", {Title = "Auto Hatch Egg | Skip Animation", Default = false})
+Toggle:OnChanged(function()
+    local Hatch = Options.HatchEgg.Value
+    --script here for toggling
+end)
+
+-- Dropdown for selecting the egg
+local Dropdown = Tabs.Eggs:AddDropdown("Ds", {
+    Title = "Select Eggs",
+    Values = {"Pilgrim Egg", "Campfire Egg", "Scarecrow Egg", "Apple Egg", "Autumn Egg"},
+    Multi = false,
+    Default = 1,
+})
+
+Dropdown.OnChanged = function(selected)
+    -- Check the selected egg and teleport accordingly
+    if selected == "Pilgrim Egg" then
+        teleportToEgg("f20eba89e7274e3a9235b6b76b7e8298")  -- Pilgrim Egg
+    elseif selected == "Campfire Egg" then
+        teleportToEgg("103e2cebc6f546488dfd4ae2d35b3bb4")  -- Campfire Egg
+    elseif selected == "Scarecrow Egg" then
+        teleportToEgg("ec9c0cbc5e1e43e1b452878435c5674b")  -- Scarecrow Egg
+    elseif selected == "Apple Egg" then
+        teleportToEgg("fd604af4794942bdbfcaa1a6deb2225b")  -- Apple Egg
+    elseif selected == "Autumn Egg" then
+        teleportToEgg("fd604af4794942bdbfcaa1a6deb2225b")  -- Autumn Egg (same location as Apple Egg)
+    end
+
+    -- Start hatching the selected egg with the appropriate remote
+    startHatchingEgg(selected)
+end
+
+-- Function to teleport player to the selected egg
+local function teleportToEgg(eggId)
+    local eggPart = game:GetService("Workspace").__THINGS.CustomEggs[eggId].Egg
+    local hrp = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+
+    if eggPart and hrp then
+        -- Teleport to the egg's position
+        hrp.CFrame = eggPart.CFrame
+    end
+end
+
+-- Function to start the hatching process for the selected egg
+local function startHatchingEgg(selectedEgg)
+    local Eggs = game.Players.LocalPlayer.PlayerScripts.Scripts.Game["Egg Opening Frontend"]
+    getsenv(Eggs).PlayEggAnimation = function() return end
+    getgenv().Egg_Args = nil
+    getgenv().OpenLocation = nil
+    local rs = game.ReplicatedStorage
+    local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
+
+    task.spawn(function()
+        while task.wait(2) do
+            if getgenv().OpenLocation ~= nil then
+                if (hrp.Position - getgenv().OpenLocation).Magnitude > 100 then
+                    getgenv().Egg_Args = nil
+                end
+            end
+            if getgenv().Egg_Args ~= nil then
+                rs.Network.CustomEggs_Hatch:InvokeServer(table.unpack(getgenv().Egg_Args))
+            end
+        end
+    end)
+
+    local Hook
+    Hook = hookmetamethod(game, "__namecall", newcclosure(function(self, ...)
+        local CalledByExecutor = checkcaller()
+        if not CalledByExecutor and tostring(self) == "CustomEggs_Hatch" then
+            if getgenv().Egg_Args ~= {...} then
+                getgenv().Egg_Args = {...}
+                getgenv().OpenLocation = hrp.Position
+            end
+        end
+        return Hook(self, ...)
+    end))
+end
+
 SaveManager:SetLibrary(Fluent)
 InterfaceManager:SetLibrary(Fluent)
 SaveManager:IgnoreThemeSettings()
