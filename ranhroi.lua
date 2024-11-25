@@ -555,7 +555,7 @@ end
         end
     end)
 
-	local Toggle = Tabs.AutoFarm:AddToggle("HatchEgg", {Title = "Auto Hatch Egg | Skip Animation", Default = false})
+	local Toggle = Tabs.Eggs:AddToggle("HatchEgg", {Title = "Auto Hatch Egg | Skip Animation", Default = false})
 	Toggle:OnChanged(function()
 	    local Hatch = Options.HatchEgg.Value
 	    -- Handle toggle state
