@@ -455,7 +455,7 @@ do
         if AutoHatch then
             Fluent:Notify({
                 Title = "Auto Hatch Nearest Egg | ON",
-                Content = "",
+                Content = ":)",
                 Duration = 10
             })
             task.spawn(function()
@@ -474,7 +474,7 @@ do
         else
             Fluent:Notify({
                 Title = "Auto Hatch Nearest Egg | OFF",
-                Content = "",
+                Content = ":)",
                 Duration = 10
             })
         end
@@ -486,14 +486,14 @@ do
         if GoldenEggState then
             Fluent:Notify({
                 Title = "Golden Egg Hatch | ON",
-                Content = "",
+                Content = ":)",
                 Duration = 7
             })
             Toggle:FireServer(true) -- Bật Golden Egg
         else
             Fluent:Notify({
                 Title = "Golden Egg Hatch | OFF",
-                Content = "",
+                Content = ":)",
                 Duration = 7
             })
             Toggle:FireServer(false) -- Tắt Golden Egg
@@ -506,14 +506,14 @@ do
         if ChargedEggState then
             Fluent:Notify({
                 Title = "Charged Egg Hatch | ON",
-                Content = "",
+                Content = ":)",
                 Duration = 7
             })
             Toggle:FireServer(true) -- Bật Charged Egg
         else
             Fluent:Notify({
                 Title = "Golden Egg Hatch | OFF",
-                Content = "",
+                Content = ":)",
                 Duration = 7
             })
             Toggle:FireServer(false) -- Tắt Charged Egg
