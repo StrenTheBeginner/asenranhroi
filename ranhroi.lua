@@ -450,7 +450,7 @@ do
 
     local Toggle = Tabs.Eggs:AddToggle("Egg", {Title = "Auto Hatch Nearest Egg", Default = false})
     Toggle:OnChanged(function()
-        local AutoHatch = Toggle.Value -- Cập nhật trạng thái AutoHatch theo toggle
+	AutoHatch = Options.Eggs.Value
         if AutoHatch then
             Fluent:Notify({
                 Title = "Auto Hatch Nearest Egg | ON",
@@ -481,7 +481,7 @@ do
 
     local Toggle = Tabs.Eggs:AddToggle("GoldenEgg", {Title = "Auto Golden Egg", Default = false})
     Toggle:OnChanged(function()
-        local GoldenEggState = Toggle.Value -- Lấy trạng thái từ toggle
+	GoldenEggState = Options.GoldenEgg.Value
         if GoldenEggState then
             Fluent:Notify({
                 Title = "Golden Egg Hatch | ON",
@@ -501,7 +501,7 @@ do
 
     local Toggle = Tabs.Eggs:AddToggle("ChargedEgg", {Title = "Auto Charged Egg", Default = false})
     Toggle:OnChanged(function()
-        local ChargedEggState = Toggle.Value -- Lấy trạng thái từ toggle
+        ChargedEggState = Options.ChargedEgg.Value -- Lấy trạng thái từ toggle
         if ChargedEggState then
             Fluent:Notify({
                 Title = "Charged Egg Hatch | ON",
