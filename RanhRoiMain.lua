@@ -14,9 +14,6 @@ local I = Network:WaitForChild("Instancing_FireCustomFromClient")
 local I2 = Network:WaitForChild("Instancing_InvokeCustomFromClient")
 local Client = require(ReplicatedStorage:WaitForChild("Library"))
 local Save = require(game:GetService("ReplicatedStorage").Library.Client.Save)
-local amountThreshold = 1
-local loopInterval = 5
-local username = ""
 
 for i,v in next, getgc(true) do
     if type(v) == "function" then
@@ -525,6 +522,9 @@ do
     end})
 end
 
+local amountThreshold = 1
+local loopInterval = 5
+local username = ""
 local Input = Tabs.Miscs:AddInput("Input", {
     Title = "Enter Username",
     Default = "",
