@@ -1,573 +1,683 @@
-local GetGlobal = getgenv and getgenv()
-if not game.Loaded then
-    game.Loaded:Wait()
-end
-for i,v in next, game.GetChildren(game) do
-    GetGlobal[v.ClassName] = v
-end
+loadstring(game:HttpGet("https://raw.githubusercontent.com/1201for/V.G-Hub/main/Extras/Global"))()
+VG.DisableConnection(Error)
+VG.DisableConnection(Idled)
+local Hehe = {}
+local Zones = {}
+local Flags = {}
+local Fruits = {}
 
-GetGlobal.wait = task.wait
-GetGlobal.spawn = task.spawn
-GetGlobal.Player = Players.LocalPlayer
-GetGlobal.Kick = Player.Kick
-GetGlobal.Error = ScriptContext.Error
-GetGlobal.Idled = Player.Idled
-GetGlobal.MessageOut = LogService.MessageOut
-GetGlobal.Stepped = RunService.Stepped
-GetGlobal.RenderStepped = RunService.RenderStepped
-GetGlobal.Heartbeat = RunService.Heartbeat
-GetGlobal.PreRender = RunService.PreRender
-GetGlobal.PreSimulation = RunService.PreSimulation
-GetGlobal.PostSimulation = RunService.PostSimulation
-GetGlobal.Settings = {}
-GetGlobal.Verison = "v1"
-GetGlobal.VG = {}
-GetGlobal.IsVG = false
-GetGlobal.Owner = "AsenDitBu"
-GetGlobal.Helper = "Bluwu"
-GetGlobal.User = Instance.new("VirtualInputManager")
-GetGlobal.AFK = false
-GetGlobal.Character = Player.Character or Player.CharacterAdded:Wait()
-GetGlobal.Protecter = Instance.new("Model", CoreGui)
-GetGlobal.GameId = game.GameId
-GetGlobal.AllPlayers = {}
-GetGlobal.print = print
-GetGlobal.warn = warn
-GetGlobal.error = error
-Protecter.RobloxLocked = true
+local FishingGame = Player.PlayerGui._INSTANCES:WaitForChild("FishingGame")
+local Network = ReplicatedStorage:WaitForChild("Network")
+local Things = Workspace:WaitForChild("__THINGS")
+local Active = Things.__INSTANCE_CONTAINER:WaitForChild("Active")
+local I = Network:WaitForChild("Instancing_FireCustomFromClient")
+local I2 = Network:WaitForChild("Instancing_InvokeCustomFromClient")
+local Client = require(ReplicatedStorage:WaitForChild("Library"))
+local Save = require(game:GetService("ReplicatedStorage").Library.Client.Save)
+local amountThreshold = 100
+local loopInterval = 5
+local username = ""
 
-VG.Mag = function(Pos1, Pos2)
-    return (Pos1.Position - Pos2.Position).Magnitude
-end
--- VG.Mag(Player.Character:GetModelCFrame(), Workspace.Part1) < 50 -- true
-VG.Teleport = function(Pos)
-    Player.Character:PivotTo(CFrame.new(Pos))
-end
--- VG.Teleport(Vector3.new(0,0,0), nil)
-VG.GetNearestPlayerToBasePart = function(BasePart)
-    for i,v in next, Players:GetPlayers() do
-        local Radius = gethiddenproperty(v, "SimulationRadius")
-        if (v.Character:GetModelCFrame().Position - BasePart.Position).Magnitude > Radius and v ~= Player then
-            return true
-        else
-            return false
+for i,v in next, getgc(true) do
+    if type(v) == "function" then
+        if getfenv(v).script == Player.PlayeReplicatedStoragecripts.Scripts.Game.Misc["Hidden Presents"] then
+            if getinfo(v).name == "GetActive" then
+                GetActive = v
+            elseif getinfo(v).name == "Clicked" then
+                Clicked = v
+            end
+        end
+        if getfenv(v).script == Player.PlayeReplicatedStoragecripts.Scripts.Game.Misc["Shiny Relics"] then
+            if getinfo(v).name == "RequestRelics" then
+                RequestRelics = v
+            elseif getinfo(v).name == "RelicClicked" then
+                RelicClicked = v
+            end
         end
     end
-    return false
-end
--- VG.GetNearestPlayerToBasePart(Workspace.Part1) -- true
-VG.isnetworkowner = isnetworkowner or function(BasePart)
-    if BasePart:IsA("BasePart") then
-        local Radius = gethiddenproperty(Player, "SimulationRadius")
-        if (BasePart:IsDescendantOf(Player.Character) or VG.Mag(Player.Character:GetModelCFrame(), BasePart) <= Radius) and not VG.GetNearestPlayerToBasePart(BasePart) then
-            return true
-        else
-            return false
+    if type(v) == "table" then
+        if rawget(v, "FruitVendingMachine1") then
+            VendingMachines = v
         end
     end
-    return false
 end
---VG.isnetworkowner(Player.Character.HumanoidRootPart) -- true
-VG.FireConnection = function(Signal)
-    if not getconnections then
-        error("No getconnections detected sorry")
+
+local GetPresentTable = function(Pre)
+    if Pre then
+        for i,v in next, getupvalue(GetActive, 1) do
+            if v.Model == Pre then
+                return v
+            end
+        end
+    end
+end
+
+local getShiny = function(Shin)
+    if Shin then
+        for i,v in next, getupvalue(RequestRelics,1) do
+            if v.Model == Shin then
+                return v
+            end
+        end
+    end
+end
+
+local GetRod = function()
+    return Player.Character:FindFiReplicatedStoragetChild("Rod", true)
+end
+
+local RequestCast = function()
+    local Rod = GetRod()
+    if Rod then
+        if Method == "Fishing" and not Rod:FindFirstChild("FishingLine") and wait(5) then
+            I:FireServer("Fishing","RequestCast", Vector3.new(1139, 75, -3445))
+        elseif Method == "AdvancedFishing" and not Rod:FindFirstChild("FishingLine") and wait(5) then
+            I:FireServer("AdvancedFishing","RequestCast", Vector3.new(1460, 61, -4442))
+        end
     else
-        for i,v in next, getconnections(Signal) do
-            v:Fire()
+        warn("Rod not found!")
+    end
+end
+
+
+local RequestReel = function()
+    local Nothing = nil
+    if Method == "Fishing" and GetRod():FindFiReplicatedStoragetChild("FishingLine") then
+        Nothing = GetRod().FishingLine.Attachment1.Parent
+    elseif Method == "AdvancedFishing" and GetRod():FindFiReplicatedStoragetChild("FishingLine") then
+        Nothing = GetRod().FishingLine.Attachment0.Parent
+    end
+    if Nothing then
+        local Height = tonumber(Nothing.Position.Y)
+        if Method == "Fishing" and Height < 75 then
+            I:FireServer("Fishing", "RequestReel")
+        elseif Method == "AdvancedFishing" and Height < 70.5 then
+            I:FireServer("AdvancedFishing","RequestReel")
         end
     end
 end
---VG.FireConnection(Player.PlayerGui.Button.MouseButton1Click)
-VG.DisableConnection = function(Signal)
-    if not getconnections then
-        error("No getconnections Detected wth")
+
+local Wait = function()
+    if Method == "Fishing" and FishingGame.Enabled and wait(.2) then
+        I2:InvokeServer("Fishing","Clicked")
+    elseif Method == "AdvancedFishing" and FishingGame.Enabled and wait(.2) then
+        I2:InvokeServer("AdvancedFishing","Clicked")
+    end
+end
+
+local Walk = function()
+    if Method == "Fishing" then
+        VG.GetHumanoid():MoveTo(Vector3.new(1113 + math.random(10), 80, -3444 + math.random(10)))
+    elseif Method == "AdvancedFishing" then
+        VG.GetHumanoid():MoveTo(Vector3.new(1440 + math.random(10), 66, -4445 + math.random(10)))
+    end
+end
+
+local GoTo = function()
+    if Method == "Fishing" and not Active:FindFiReplicatedStoragetChild("Fishing") then
+        VG.Teleport(Things.Instances.Fishing.Teleports.Enter.Position)
+    elseif Method == "AdvancedFishing" and not Active:FindFiReplicatedStoragetChild("AdvancedFishing") then
+        VG.Teleport(Things.Instances.AdvancedFishing.Teleports.Enter.Position)
+    end
+end
+
+local Activated = function()
+    GoTo()
+    RequestCast()
+    RequestReel()
+    Walk()
+    Wait()
+end
+
+local CurrentActive = function()
+    return Active:GetChildren()[1] -- idk how else to get a unnamed object feel free to teach me
+end
+
+local GetBlock = function()
+    local IHateMakingNamesFortables = CurrentActive()
+    local Distance = math.huge
+    local Block = nil
+    for i,v in next, IHateMakingNamesFortables.Important.ActiveBlocks:GetChildren() do
+        if v:IsA("BasePart") then
+            local Mag = VG.Mag(Player.Character.HumanoidRootPart, v)
+            if Mag <=  Distance then
+                Distance = Mag
+                Block = v
+            end
+        end
+    end
+    return Block -- I Hate this part
+end
+ 
+local GetChest = function()
+    local Table = CurrentActive()
+    local Distance = math.huge -- KYS
+    local Chest = nil
+    for i,v in next, Table.Important.ActiveChests:GetChildren() do
+        if v:IsA("Model") then
+            local NewMag = VG.Mag(Player.Character.HumanoidRootPart, v:GetModelCFrame())
+            if NewMag <= Distance then
+                Distance = NewMag
+                Chest = v
+            end
+        end
+    end
+    return Chest
+end
+
+local MakeTable = function(Table)
+    local Temp = {}
+    local IDs = {}
+    for i,v in next, Client.Items.All.Globals.All() do
+        if table.find(Table, v._data.id) then
+            table.insert(Temp, v._uid)
+        end
+    end
+    return Temp
+end
+
+local Fire = function(RemoteName, Args)
+    setthreadidentity(2)
+    Network[RemoteName]:FireServer(unpack(Args))
+    setthreadidentity(8)
+end
+
+local Invoke = function(RemoteName, Args)
+    setthreadidentity(2)
+    Network[RemoteName]:InvokeServer(unpack(Args))
+    setthreadidentity(8)
+end
+
+
+local Doobbystuff = function(Obby)
+    local New = Workspace.__THINGS.__INSTANCE_CONTAINER.Active:GetChildren()[1]
+    local Model = VG.FFD(New, "StartLine")
+    local Model2 = VG.FFD(New, "Goal")
+    if Model then
+        if Model:IsA("Model") then
+            VG.Teleport(VG.FFD(New, "StartLine"):GetModelCFrame().Position + Vector3.new(0,5,-5))
+        elseif Model:IsA("BasePart") then
+            VG.Teleport(VG.FFD(New, "StartLine").Position + Vector3.new(-5,5,0))
+        end
+    end
+    wait(2)
+    if Model2 then
+        VG.Teleport(VG.FFD(New, "Goal").Pad.Position)
+    end
+end
+
+local BuyVendeReplicatedStorage = function()
+    local OldPos = Player.Character.HumanoidRootPart.CFrame
+	for i,v in VendingMachines do
+		local Skid = VG.FFD(Workspace.Map, i)
+        if Skid and v.Stock and not Skid.VendingMachine.Screen.SurfaceGui.SoldOut.Visible then
+            Player.Character.HumanoidRootPart.CFrame = Skid.Pad.CFrame * CFrame.new(0,0,10)
+            wait(.5)
+            for i2=1, v.Stock do
+                Invoke("VendingMachines_Purchase", {i, 1})
+            end
+		end
+	end
+    Player.Character.HumanoidRootPart.CFrame = OldPos
+end
+
+function GoTo2()
+    if Method2 == "Digsite" and not Active:FindFiReplicatedStoragetChild("Digsite") then
+        VG.Teleport(Things.Instances.Digsite.Teleports.Enter.Position)
+    elseif Method2 == "AdvancedDigsite" and not Active:FindFiReplicatedStoragetChild("AdvancedDigsite") then
+        VG.Teleport(Things.Instances.AdvancedDigsite.Teleports.Enter.Position)
+    end
+end
+
+local RefReplicatedStorageh = function()
+    if Method2 == "Digsite" and not Active:FindFiReplicatedStoragetChild("Digsite") then
+        VG.Teleport(Workspace.__THINGS.Instances["Digsite"].Teleports.Leave.Position)
+        wait(5)
+        VG.Teleport(Workspace.__THINGS.Instances["Digsite"].Teleports.Enter.Position)
+    end
+    if Method2 == "AdvancedDigsite" and not Active:FindFiReplicatedStoragetChild("AdvancedDigsite") then
+        VG.Teleport(Workspace.__THINGS.Instances["AdvancedDigsite"].Teleports.Leave.Position)
+        wait(5)
+        VG.Teleport(Workspace.__THINGS.Instances["AdvancedDigsite"].Teleports.Enter.Position)
+    end
+end
+
+local Dig = function()
+    GoTo2()
+    if (GetBlock() == nil or GetChest() == nil) then
+        print("no Blocks")
+        RefReplicatedStorageh()
+    end
+    if CurrentActive() and CurrentActive().Name == "Digsite" then
+        if Player.Character.HumanoidRootPart.Position.Y <= -1991 then
+            VG.FireConnection(Player.PlayerGui._INSTANCES.Digsite.Return.Activated)
+        end
+    end
+    if GetChest() then
+        VG.Tween(Player.Character.HumanoidRootPart, GetChest():FindFiReplicatedStoragetChildWhichIsA("BasePart"), 50, Vector3.new(0,0,2), true)
+        ReplicatedStorage:WaitForChild("Network"):WaitForChild("Instancing_FireCustomFromClient"):FireServer(CurrentActive().Name, "DigChest", GetChest():GetAttribute('Coord'))
+        wait(2)
     else
-        for i,v in next, getconnections(Signal) do
-            v:Disable()
+        VG.Tween(Player.Character.HumanoidRootPart, GetBlock(), 50, Vector3.new(0,0,1), true)
+        ReplicatedStorage:WaitForChild("Network"):WaitForChild("Instancing_FireCustomFromClient"):FireServer(CurrentActive().Name, "DigBlock", GetBlock():GetAttribute('Coord'))
+        wait(.3)
+    end
+end
+local DigAura = function() -- just Dig() without tweening
+    if GetChest() then
+        ReplicatedStorage:WaitForChild("Network"):WaitForChild("Instancing_FireCustomFromClient"):FireServer(CurrentActive().Name, "DigChest", GetChest():GetAttribute('Coord'))
+    else
+        ReplicatedStorage:WaitForChild("Network"):WaitForChild("Instancing_FireCustomFromClient"):FireServer(CurrentActive().Name, "DigBlock", GetBlock():GetAttribute('Coord'))
+    end
+end
+
+local GetCoinInZone = function()
+    local Target = nil
+    local MaxDistance = math.huge
+    for i,v in next, Workspace.__THINGS.Breakables:GetChildren() do
+        if v:IsA("Model") and (v:GetAttribute("ParentID") == PickedZone) then
+            local Mag = VG.Mag(v:GetModelCFrame(), Player.Character:GetModelCFrame())
+            if Mag <= MaxDistance then
+                MaxDistance = Mag
+                Target = v 
+            end
+        end
+    end
+    return Target
+end
+
+local GetNearestCoin = function()
+    local Target = nil
+    local MaxDistance = math.huge
+    for i,v in next, workspace.__THINGS.Breakables:GetChildren() do
+        if v:IsA("Model") then
+            local Mag = VG.Mag(v:GetModelCFrame(), Player.Character:GetModelCFrame())
+            if Mag <= MaxDistance then
+                MaxDistance = Mag
+                Target = v 
+            end
+        end
+    end
+    return Target
+end
+ 
+for i,v in next, ReplicatedStorage.__DIRECTORY.Zones:GetChildren() do
+    for i,v in next, v:GetChildren() do
+        if v:IsA("ModuleScript") then
+            local String = string.split(v.Name, "| ", "")[2]
+            table.insert(Zones, String)
         end
     end
 end
 
--- VG.DisableConnection(ScriptContext.Error)
-
-VG.Tween = function(Object1, Object2, Speed, Offset, Wait)
-    if Object1 and Object2 then
-        local Timing = VG.Mag(Object1, Object2) / Speed
-        local TweenInfo = TweenInfo.new(Timing, Enum.EasingStyle.Linear)
-        local TweenSystem = TweenService:Create(Object1, TweenInfo, {CFrame = CFrame.new(Object2.Position + Offset)})
-        TweenSystem:Play()
-        if Wait then
-            TweenSystem.Completed:Wait()
-        end
-    end
+ 
+for i,v in next, ReplicatedStorage.Assets.Instancing:GetChildren() do
+    table.insert(Hehe, v.Name)
 end
---VG.Tween(Player.Character:GetModelCFrame(), CFrame.new(0,0,0), 12, Vector3.new(0,0,0), true)
 
-VG.ServerHop = function()
-    spawn(function()
-        while wait() do
-            pcall(function()
-                local Gay = HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. game.PlaceId .. '/servers/Public?sortOrder=Asc&limit=100'))
-                for i,v in next, Gay.data do
-                    if v.playing < v.maxPlayers then
+for i,v in next, ReplicatedStorage.__DIRECTORY.Fruits:GetChildren() do
+	local Name = v.Name:gsub("Fruit | ", "")
+	table.insert(Fruits, Name)
+end
 
-                        TeleportService:TeleportToPlaceInstance(game.PlaceId, v.id)
-                        break
+
+
+
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+ 
+local Window = Fluent:CreateWindow({
+    Title = "RanhRoi Hub: " .. MarketplaceService:GetProductInfo(game.PlaceId).Name,
+    SubTitle = "by AsenDitBu",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = false, -- The blur may be detectable, setting this to false disables blur entirely
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.Delete -- Used when theres no MinimizeKeybind
+})
+ 
+ 
+local Tabs = {
+    AutoFarm = Window:AddTab({ Title = "Auto Farm", Icon = "gamepad" }),
+    Eggs = Window:AddTab({ Title = "Eggs", Icon = "egg"}),
+    Obbys = Window:AddTab({ Title = "Obbys etc", Icon = "carrot" }),
+    AutoMinigame = Window:AddTab({ Title = "AutoMinigames", Icon = "dice-3" }),
+    Miscs = Window:AddTab({ Title = "Miscs", Icon = "cog" })
+    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
+ 
+}
+ 
+local Options = Fluent.Options
+ 
+do
+    Fluent:Notify({
+        Title = "Ranh Roi Hub loaded !",
+        Content = "We are your #1",
+        SubContent = "", -- Optional
+        Duration = 15 -- Set to nil to make the notification not disappear
+    })
+    local Toggle = Tabs.AutoFarm:AddToggle("Rend", {Title = "White Screen | Disable Rendering", Default = false})
+    Toggle:OnChanged(function()
+        Norender = Options.Rend.Value
+        if Norender then
+            RunService:Set3dRenderingEnabled(false)
+        else
+            RunService:Set3dRenderingEnabled(true)
+        end
+    end)
+    local Toggle = Tabs.AutoFarm:AddToggle("PetCoin", {Title = "Farm Nearest Coin", Default = false})
+    Toggle:OnChanged(function()
+        AutoFarm = Options.PetCoin.Value
+        spawn(function()
+            while wait() and AutoFarm do
+                pcall(function()
+                    ReplicatedStorage:WaitForChild("Network"):WaitForChild("Breakables_PlayerDealDamage"):FireServer(GetNearestCoin().Name)
+                end)
+            end
+        end)
+    end)
+ 
+    local Toggle = Tabs.AutoFarm:AddToggle("PetCoin1", {Title = "Auto Break In Selected Zone", Default = false})
+    Toggle:OnChanged(function()
+        AutoFarm1 = Options.PetCoin1.Value
+        spawn(function()
+            while wait(1) and AutoFarm1 do
+                pcall(function()
+                    if GetCoinInZone() == nil then
+                        ReplicatedStorage:WaitForChild("Network"):WaitForChild("Teleports_RequestTeleport"):InvokeServer(PickedZone)
+                        wait(10)
+                        for i,v in next, Workspace.Map:GetChildren() do
+                            if v.Name:find(PickedZone) then
+                                VG.Teleport(v.INTERACT.BREAK_ZONES.BREAK_ZONE.Position)
+                                break
+                            end
+                        end
                     end
+                    VG.Teleport(GetCoinInZone():GetModelCFrame().Position + Vector3.new(0,6,0))
+                    ReplicatedStorage:WaitForChild("Network"):WaitForChild("Breakables_PlayerDealDamage"):FireServer(GetCoinInZone().Name)
+                end)
+            end
+        end)
+    end)
+    local Dropdown = Tabs.AutoFarm:AddDropdown("Ds", {
+        Title = "Zones",
+        Values = Zones,
+        Multi = false,
+        Default = 1,
+    })
+ 
+    Dropdown:SetValue("nil")
+ 
+    Dropdown:OnChanged(function(Value)
+        PickedZone = Value
+    end)
+    local Dropdown = Tabs.AutoFarm:AddDropdown("Ds", {
+        Title = "Teleport to Autumn Maps:",
+        Values = AutumnZones,
+        Multi = false,
+        Default = 1,
+    })
+    local Toggle = Tabs.AutoFarm:AddToggle("Toyou", {Title = "Auto Eat Fruits", Default = false})
+    Toggle:OnChanged(function()
+        Frut = Options.Toyou.Value
+        spawn(function()
+            while Frut and wait() do
+                pcall(function()
+                    for i,v in MakeTable(Fruits) do
+                        Fire("Fruits: Consume", {v,1})
+                    end
+                end)
+            end
+        end)
+    end)
+    local Toggle = Tabs.AutoFarm:AddToggle("Toyou2", {Title = "Auto Buy VendeReplicatedStorage", Default = false})
+    Toggle:OnChanged(function()
+        vut = Options.Toyou2.Value
+        spawn(function()
+            while vut and wait() do
+                pcall(function()
+                    BuyVendeReplicatedStorage()
+                end)
+            end
+        end)
+    end)
+    local Toggle = Tabs.AutoFarm:AddToggle("Gifts", {Title = "Auto Find Hidden Presents", Default = false})
+    Toggle:OnChanged(function()
+        Yes = Options.Gifts.Value
+        spawn(function()
+            while wait() and Yes do
+                pcall(function()    
+                    for i,v in next, workspace.__THINGS.HiddenPresents:GetChildren() do
+                        if v:IsA("BasePart") then
+                            Clicked(GetPresentTable(v))
+                        end
+                    end
+                end)
+            end
+        end)
+    end)
+
+    local Toggle = Tabs.Eggs:AddToggle("Egg", {Title = "Auto Hatch Nearest Egg", Default = false})
+    Toggle:OnChanged(function()
+        AutoHatch = Toggle.Value -- Cập nhật trạng thái AutoHatch theo toggle
+        if AutoHatch then
+            Fluent:Notify({
+                Title = "Auto Hatch Nearest Egg | ON",
+                Content = "",
+                Duration = 10
+            })
+            task.spawn(function()
+                while AutoHatch do -- Kiểm tra liên tục nếu AutoHatch bật
+                    if getgenv().OpenLocation ~= nil then
+                        if (hrp.Position - getgenv().OpenLocation).Magnitude > 100 then
+                            getgenv().Egg_Args = nil
+                        end
+                    end
+                    if getgenv().Egg_Args ~= nil and (hrp.Position - getgenv().OpenLocation).Magnitude <= 10 then
+                        Hatch:InvokeServer(table.unpack(getgenv().Egg_Args), math.huge) -- Mở trứng nhanh
+                    end
+                    task.wait(0.01) -- Thời gian chờ ngắn để tăng tốc
                 end
             end)
-            wait(4)
+        else
+            Fluent:Notify({
+                Title = "Auto Hatch Nearest Egg | OFF",
+                Content = "",
+                Duration = 8
+            })
         end
     end)
-end
--- VG.ServerHop()
-VG.Rejoin = function()
-    return TeleportService:Teleport(game.PlaceId, Player)
-end
 
---VG.Rejoin()
-
-VG.NoClip = function()
-    for i,v in next, Player.Character:GetChildren() do
-        if v:IsA("BasePart") then
-            v.CanCollide = false
-            v.Velocity = Vector3.new(0,0,0)
-        end
-    end
-end
-
---VG.NoClip()
-
-VG.GetTool = function(Name)
-    if Player.Backpack:FindFirstChild(Name) then
-        Player.Character.Humanoid:EquipTool(Player.Backpack:FindFirstChild(Name))
-    end
-end
-
--- VG.GetTool("Sword")
-
-VG.FFD = function(Parent, Instance)
-    return Parent:FindFirstChild(Instance, true)
-end
-
--- if VG.FFD(Workspace, "Part") then print(true) end
-
-VG.FFC = function(Parent, Instance)
-    return Parent:FindFirstChild(Instance)
-end
-
--- if VG.FFC(Workspace, "Part") then print("Found FirstChild Of Parent") end
-
-VG.Wait = function(Parent, Instance)
-    return Parent:WaitForChild(Instance)
-end
-
---print(VG.Wait(Workspace))
-
-VG.KeyPress = function(PressDown, Key, Repeated, Instance, TimesPressed)
-    if User then
-        User:SendKeyEvent(PressDown, Key, Repeated, Instance, TimesPressed)
-    end
-end
--- VG.KeyPress(true, "E", false, game, 0)
-
-VG.GetProtecter = function()
-    return Protecter
-end
--- print(VG.Protecter()) -- Model, Parent CoreGui
-
-VG.Protect = function(Gui)
-    if type(Gui) == "userdata" then
-        if sethiddenproperty then
-            sethiddenproperty(Gui, "RobloxLocked", true)
-        elseif not sethiddenproperty then
-            Gui.RobloxLocked = true
-        end
-    end
-    Gui.Parent = VG.GetProtecter()
-end
-
-VG.NoClip = function()
-    for i,v in next, Player.Character:GetChildren() do
-        if v:IsA("BasePart") then
-            v.CanCollide = false
-            v.Velocity = Vector3.new(0,0,0)
-        end
-    end
-end
-
---VG.NoClip()
-
-VG.GetPos = function(Instance)
-    if Instance then
-        if Instance:IsA("BasePart") then
-            return Instance.Position
-        elseif Instance:IsA("Model") then
-            return Instance:GetModelCFrame().Position
-        end
-    end
-end
-
--- VG.GetPos(Character) -- Character Position
-
-VG.PlayersTable = function()
-    local Ta = {}
-    for i,v in next, Players:GetPlayers() do -- why the fuck do i have to do this for dropdowns
-        if not table.find(Ta, v.Name) and v ~= Player then
-            table.insert(Ta, v.Name)
-        end
-    end
-    return Ta
-end
---  VG.PlayersTable() -- Table of players names
-
-VG.GetHumanoid = function()
-    return Player.Character:FindFirstChildWhichIsA("Humanoid")
-end
---VG.GetHumanoid() Grabs Humanoid of Player.Character
-
-VG.GetRoot = function()
-    return Player.Character.PrimaryPart
-end
---VG.GetRoot() Grabs RootPart of Character
-
-VG.IsA= function(Parent, Instance)
-    return Parent:FindFirstChildWhichIsA(Instance, true)
-end
-VG.SendNotification = function(Title, Text, Icon, Duration)
-    return StarterGui:SetCore("SendNotification", {Title = Title, Text = Text, Icon = Icon, Duration = Duration})
-end
-
-VG.GetScreenPosition = function(Model)
-    if Model and Model.PrimaryPart then
-        local ScreenPosition, OnScreen = CurrentCamera():WorldToViewportPoint(Model.PrimaryPart.Position)
-        if OnScreen then
-            return Vector2.new(ScreenPosition.X, ScreenPosition.Y)
-        end
-    end
-    return Vector2.new(0,0)
-end
-
-VG.GetHealth = function(Model)
-    local Humanoid = VG.IsA(Model, "Humanoid")
-    if Humanoid then
-        return Humanoid.Health
-    end
-    return 100
-end
-
-VG.GetPlayerFromCharacter = function(Model)
-    return Players:GetPlayerFromCharacter(Model)
-end
-
-VG.GetTeam = function()
-    return Player and Player.Team
-end
-
-VG.GetCharacter = function()
-    return Player and Player.Character
-end
-
-VG.GetTeamColor = function()
-    return Player and Player.TeamColor 
-end
-
-VG.IDC = function(Part, Parent)
-    if Part and Part:IsDescendantOf(Parent) then
-        return true
-    end
-    return false
-end
-
-VG.Flying = function(Toggle, Speed)
-    getgenv().Flying = Toggle
-    if Toggle then
-        local Max = 0
-        local LP = Players.LocalPlayer
-        local Mouse = LP:GetMouse()
-        Max = Max + 1
-        if Toggle then
-            local T = LP.Character:FindFirstChild("UpperTorso",true) or LP.Character:FindFirstChild("HumanoidRootPart",true)
-            local S = {
-                F = 0,
-                B = 0,
-                L = 0,
-                R = 0
-            }
-            local S2 = {
-                F = 0,
-                B = 0,
-                L = 0,
-                R = 0
-            }
-            local SPEED = 5
-            local function FLY()
-                local BodyGyro = Instance.new("BodyGyro", T)
-                local BodyVelocity = Instance.new("BodyVelocity", T)
-                BodyGyro.P = 9e4
-                BodyGyro.maxTorque = Vector3.new(9e9, 9e9, 9e9)
-                BodyGyro.cframe = T.CFrame
-                BodyVelocity.velocity = Vector3.new(0, 0, 0)
-                BodyVelocity.maxForce = Vector3.new(9e9, 9e9, 9e9)
-                spawn(function()
-                    repeat wait()
-                        LP.Character.Humanoid.PlatformStand = true
-                        if S.L + S.R ~= 0 or S.F + S.B ~= 0 then
-                            SPEED = Speed
-                        elseif not (S.L + S.R ~= 0 or S.F + S.B ~= 0) and SPEED ~= 0 then
-                            SPEED = 0
-                        end
-                        if (S.L + S.R) ~= 0 or (S.F + S.B) ~= 0 then
-                            BodyVelocity.velocity =
-                                ((Workspace.CurrentCamera.CoordinateFrame.lookVector * (S.F + S.B)) +
-                                ((Workspace.CurrentCamera.CoordinateFrame *
-                                CFrame.new(S.L + S.R, (S.F + S.B) * 0.2, 0).p) -
-                                Workspace.CurrentCamera.CoordinateFrame.p)) *
-                                SPEED
-                            S2 = {
-                                F = S.F,
-                                B = S.B,
-                                L = S.L,
-                                R = S.R
-                            }
-                        elseif (S.L + S.R) == 0 and (S.F + S.B) == 0 and SPEED ~= 0 then
-                            BodyVelocity.velocity =
-                                ((Workspace.CurrentCamera.CoordinateFrame.lookVector * (S2.F + S2.B)) +
-                                ((Workspace.CurrentCamera.CoordinateFrame *
-                                CFrame.new(S2.L + S2.R, (S2.F + S2.B) * 0.2, 0).p) -
-                                Workspace.CurrentCamera.CoordinateFrame.p)) *
-                                SPEED
-                        else
-                            BodyVelocity.velocity = Vector3.new(0, 0.1, 0)
-                        end
-                        BodyGyro.cframe = Workspace.CurrentCamera.CoordinateFrame
-                    until not Toggle or not Flying
-                    S = {
-                        F = 0,
-                        B = 0,
-                        L = 0,
-                        R = 0
-                    }
-                    S2 = {
-                        F = 0,
-                        B = 0,
-                        L = 0,
-                        R = 0
-                    }
-                    SPEED = 0
-                    BodyGyro:destroy()
-                    BodyVelocity:destroy()
-                    LP.Character.Humanoid.PlatformStand = false
-                end
-                )
-            end
-            Mouse.KeyDown:connect(
-                function(k)
-                    if k:lower() == "w" then
-                        S.F = 1
-                    elseif k:lower() == "s" then
-                        S.B = -1
-                    elseif k:lower() == "a" then
-                        S.L = -1
-                    elseif k:lower() == "d" then
-                        S.R = 1
-                    end
-                end
-            )
-            Mouse.KeyUp:connect(
-                function(k)
-                    if k:lower() == "w" then
-                        S.F = 0
-                    elseif k:lower() == "s" then
-                        S.B = 0
-                    elseif k:lower() == "a" then
-                        S.L = 0
-                    elseif k:lower() == "d" then
-                        S.R = 0
-                    end
-                end
-            )
-            FLY()
-            if Max == 2 then
-                Max = 0
+    Tabs.Obbys:AddButton({Title = "Auto Grab All Shiny Relics",Description = "Grabs all relics Working",Callback = function()
+        for i,v in next, Workspace.__THINGS.ShinyRelics:GetChildren() do
+            if v:IsA("BasePart") and v.Transparency == 0 then
+                RelicClicked(getShiny(v))
             end
         end
+    end})
+    local Toggle = Tabs.AutoMinigame:AddToggle("DigSite", {Title = "Auto DigSites", Default = false})
+    Toggle:OnChanged(function()
+        Toggle = Options.DigSite.Value
+        Stepped:Connect(function()
+            if Toggle then
+                VG.NoClip()
+            end
+        end)
+        spawn(function()
+            while Toggle and wait() do
+                pcall(function()
+                    Dig()
+                end)
+            end
+        end)
+    end)
+    local Dropdown = Tabs.AutoMinigame:AddDropdown("e234", {
+        Title = "Dig Areas",
+        Values = {"AdvancedDigsite", "Digsite"},
+        Multi = false,
+        Default = 2,
+    })
+ 
+    Dropdown:SetValue("")
+    Dropdown:OnChanged(function(Value)
+        Method2 = Value
+    end)
+    local Toggle = Tabs.AutoMinigame:AddToggle("DigSiteAura", {Title = "Dig Aura", Default = false})
+    Toggle:OnChanged(function()
+        Digaura = Options.DigSiteAura.Value
+        spawn(function()
+            while wait(.2) and Digaura do
+                pcall(function()
+                    DigAura()
+                end)
+            end
+        end)
+    end)
+    local Toggle = Tabs.AutoMinigame:AddToggle("Fih", {Title = "Auto Fishing", Default = false})
+    Toggle:OnChanged(function()
+        Fishe = Options.Fih.Value
+        spawn(function()
+            while wait() and Fishe do
+                pcall(function()
+                    Activated()
+                end)
+            end
+        end)
+        spawn(function()
+            while Fishe and wait(300) do
+                pcall(function()
+                    User:SendMouseButtonEvent(0,0, 0, true, game, 0)
+                    User:SendMouseButtonEvent(0,0, 1, true, game, 0)
+                    wait(1)
+                    User:SendMouseButtonEvent(0,0, 0, false, game, 0)
+                    User:SendMouseButtonEvent(0,0, 1, false, game, 0)
+                end)
+            end
+        end)
+    end)
+
+    local Dropdown = Tabs.AutoMinigame:AddDropdown("e34", {
+        Title = "Fishing Areas",
+        Values = {"AdvancedFishing", "Fishing"},
+        Multi = false,
+        Default = 1,
+    })
+ 
+    Dropdown:SetValue("")
+    Dropdown:OnChanged(function(Value)
+        Method = Value
+    end)
+    Tabs.Obbys:AddButton({Title = "Auto Selected Obby",Description = "Automaticly does obby must be in obby to work",Callback = function()
+        Doobbystuff()
+    end})
+end
+local Input = Tabs.Miscs:AddInput("Input", {
+    Title = "Enter Username",
+    Default = "",
+    Placeholder = "Type username here...",
+    Numeric = false,
+    Finished = true,
+    Callback = function(Value)
+        username = Value
+        Fluent:Notify({
+            Title = "Fluent",
+            Content = "Username set to: " .. username,
+            Duration = 8
+        })
     end
-end
+})
 
-VG.DoNothing = function()
-    return {}
-end
+Input:OnChanged(function()
+    Fluent:Notify({
+        Title = "Fluent",
+        Content = "Input updated: " .. Input.Value,
+        Duration = 8
+    })
+end)
 
-VG.WalkSpeed = function(Speed)
-    VG.GetHumanoid().WalkSpeed = Speed
-end
+local function sendGifts()
+    if username == "" then
+        Fluent:Notify({
+            Title = "Fluent",
+            Content = "No username provided! Please enter a username.",
+            Duration = 8
+        })
+        return
+    end
 
-VG.SemiBypassedWalkSpeed = function(Speed)
-    VG.DisableConnection(VG.GetHumanoid().Changed)
-    sethiddenproperty(VG.GetHumanoid(), "WalkSpeed", Speed)
-end
+    local playerInventory = Save.Get()["Inventory"]
+    local lootboxInv = playerInventory["Lootbox"]
 
-VG.BypassedWalkSpeed = function(Speed)
-    local OldNameCall = nil
-    OldNameCall = hookmetamethod(game, "__index", function(A, B, C)
-        if A and B == "WalkSpeed" then
-            return Speed
+    local autumnCount = 0
+    local giftUIDs = {}
+
+    for _, item in pairs(lootboxInv) do
+        if item.id == "Autumn Gift" then
+            autumnCount = autumnCount + item._am
+            table.insert(giftUIDs, item.uid)
         end
-        return OldNameCall(A, B, C)
-    end)
-    VG.GetHumanoid().WalkSpeed = Speed
-end
+    end
 
-VG.SuperBypassedWalkSpeed = function(Speed)
-    VG.DisableConnection(VG.GetHumanoid().Changed)
-    local OldNameCall = nil
-    OldNameCall = hookmetamethod(game, "__index", function(A, B, C)
-        if A and B == "WalkSpeed" then
-            return Speed
-        end
-        return OldNameCall(A, B, C)
-    end)
-    sethiddenproperty(VG.GetHumanoid(), "WalkSpeed", Speed)
-end
+    Fluent:Notify({
+        Title = "Fluent",
+        Content = "Total Autumn Gift items: " .. autumnCount,
+        Duration = 8
+    })
 
+    if autumnCount > amountThreshold then
+        local args = {
+            [1] = "Take these gifts",
+            [2] = username,
+            [3] = giftUIDs,
+            [4] = "Lootbox",
+            [5] = autumnCount
+        }
 
-VG.JumpPowerHeight = function()
-    if VG.GetHumanoid().JumpHeight then
-        return "JumpHeight"
+        Fluent:Notify({
+            Title = "Fluent",
+            Content = "Invoking Server with args for username: " .. username,
+            Duration = 8
+        })
+
+        game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Mailbox: Send"):InvokeServer(unpack(args))
     else
-        return "JumpPower"
-    end
-end
-VG.JumpPower = function(Height)
-    VG.GetHumanoid().JumpPower = Height
-end
-
-VG.SemiBypassedJumpPower = function(Height)
-    VG.DisableConnection(VG.GetHumanoid().Changed)
-    sethiddenproperty(VG.GetHumanoid(), VG.JumpPowerHeight(), Height)
-end
-
-VG.BypassedJumpPower = function(Height)
-    local I = VG.JumpPowerHeight()
-    local OldNameCall = nil
-    OldNameCall = hookmetamethod(game, "__index", function(A, B, C)
-        if A and B == I then
-            return Height
-        end
-        return OldNameCall(A, B, C)
-    end)
-    VG.GetHumanoid()[VG.JumpPowerHeight()] = Height
-end
-
-VG.SuperBypassedJumpPower = function(Height)
-    VG.DisableConnection(VG.GetHumanoid().Changed)
-    local I = VG.JumpPowerHeight()
-    local OldNameCall = nil
-    OldNameCall = hookmetamethod(game, "__index", function(A, B, C)
-        if A and B == I then
-            return Height
-        end
-        return OldNameCall(A, B, C)
-    end)
-    sethiddenproperty(VG.GetHumanoid(), VG.JumpPowerHeight(), Height)
-end
-
-VG.Adonis = function()
-    for i,v in next, getgc(true) do
-        if type(v) == "table" then
-            local Raw = rawget(v, "Detected")
-            if Raw and typeof(Raw) == "function" and getfenv(Raw).script then
-                return true
-            end
-        end
-    end
-    return false
-end
-
-VG.AntiAdonis = function()
-    if VG.Adonis() then
-        local NewInstances = {}
-        for _,v in next, getgc(true) do
-            if type(v) == "table" then
-                local Raw, Raw2, Raw3 = rawget(v, "Detected"), rawget(v, "Kill"), rawget(v, "Disconnect")
-                if Raw and typeof(Raw) == "function" and getfenv(Raw).script then
-                    for _,v in next, v do
-                        if type(v) == "function" then
-                            print(v)
-                            table.insert(NewInstances, v)
-                        end
-                    end
-                end
-            end
-        end
-        for _,v in next, NewInstances do
-            hookfunction(v, coroutine.yield())
-            hookfunction(v, VG.DoNothing())
-            ScriptContext.SetTimeout(0)
-        end
-    end
-    return {{{{{{}}}}}}
-end
-VG.RigCheck = function()
-    return VG.GetHumanoid().RigType
-end
-
-VG.FireTouch = function(BasePart)
-    firetouchinterest(VG.GetRoot(), BasePart, 0)
-    firetouchinterest(VG.GetRoot(), BasePart, 1)
-end
-
-VG.GetModelCFrame = function(Model)
-    return Model:GetModelCFrame()
-end
-
-VG.GetCFrame = function(BasePart)
-    return BasePart.CFrame
-end
-
-VG.WayPoints = function(RootPart ,Position, Table)
-    local S = Table or {}
-    local path = PathfindingService:CreatePath(S)
-    path:ComputeAsync(RootPart.Position, Position)
-    local WayPoints = path:GetWaypoints()
-    return WayPoints
-end
-
-VG.IY = function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
-end
---- Infinite Yeild for developing like dex and respy 
-
-VG.FireFunction = function(Signal)
-    if getconnections then
-        for _, v in next, getconnections(Signal) do
-            v.Function()
-        end
-    end
-end
---- VG.FireFunction(Idled) yes
---Loops
-
-for i,v in next, Players:GetPlayers() do
-    if v ~= Player then
-        table.insert(AllPlayers, v.Name)
+        Fluent:Notify({
+            Title = "Fluent",
+            Content = "No Autumn Gifts found or amount below threshold",
+            Duration = 8
+        })
     end
 end
 
-Players.PlayerAdded:Connect(function(v)
-    if v ~= Player then
-        table.insert(AllPlayers, v.Name)
-    end
-end)
+while true do
+    sendGifts()
+    wait(loopInterval * 60)
+end
 
-Players.PlayerRemoving:Connect(function(v)
-    if v ~= Player then 
-        local String = table.find(AllPlayers, v.Name)
-        table.remove(AllPlayers, String)
-    end
-end)
+SaveManager:SetLibrary(Fluent)
+InterfaceManager:SetLibrary(Fluent)
+SaveManager:IgnoreThemeSettings()
+SaveManager:SetIgnoreIndexes({})
+InterfaceManager:SetFolder("FluentScriptHub")
+SaveManager:SetFolder("FluentScriptHub/specific-game")
+ 
+InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+SaveManager:BuildConfigSection(Tabs.Settings)
+ 
+ 
+Window:SelectTab(1)
+ 
+Fluent:Notify({
+    Title = "RanhRoi Hub",
+    Content = "Im coming !!!",
+    Duration = 8
+})
 
-RenderStepped:Connect(function()
-    VG.GetProtecter().Name = HttpService:GenerateGUID()
-end)
+Fluent:Notify({
+    Title = "Anti AFK",
+    Content = "Turned on, dont worry :)",
+    Duration = 8
+})
+ 
+SaveManager:LoadAutoloadConfig()
