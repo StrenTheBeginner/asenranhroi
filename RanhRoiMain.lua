@@ -13,7 +13,6 @@ local Active = Things.__INSTANCE_CONTAINER:WaitForChild("Active")
 local I = Network:WaitForChild("Instancing_FireCustomFromClient")
 local I2 = Network:WaitForChild("Instancing_InvokeCustomFromClient")
 local Client = require(ReplicatedStorage:WaitForChild("Library"))
-local Save = require(game:GetService("ReplicatedStorage").Library.Client.Save)
 
 for i,v in next, getgc(true) do
     if type(v) == "function" then
@@ -520,87 +519,6 @@ do
     Tabs.Obbys:AddButton({Title = "Auto Selected Obby",Description = "Automaticly does obby must be in obby to work",Callback = function()
         Doobbystuff()
     end})
-end
-
-local amountThreshold = 1
-local loopInterval = 5
-local username = ""
-local Input = Tabs.AutoFarm:AddInput("Input", {
-    Title = "Enter Username",
-    Default = "",
-    Placeholder = "Type username here...",
-    Numeric = false,
-    Finished = true,
-    Callback = function(Value)
-        username = Value
-        Fluent:Notify({
-            Title = "Fluent",
-            Content = "Username set to: " .. username,
-            Duration = 8
-        })
-    end
-})
-
-Input:OnChanged(function()
-    Fluent:Notify({
-        Title = "Fluent",
-        Content = "Input updated: " .. Input.Value,
-        Duration = 8
-    })
-end)
-
-local function sendGifts()
-    if username == "" then
-        Fluent:Notify({
-            Title = "Fluent",
-            Content = "No username provided! Please enter a username.",
-            Duration = 8
-        })
-        return
-    end
-
-    local playerInventory = Save.Get()["Inventory"]
-    local lootboxInv = playerInventory["Lootbox"]
-
-    local autumnCount = 0
-    local giftUIDs = {}
-
-    for _, item in pairs(lootboxInv) do
-        if item.id == "Autumn Gift" then
-            autumnCount = autumnCount + item._am
-            table.insert(giftUIDs, item.uid)
-        end
-    end
-
-    Fluent:Notify({
-        Title = "Fluent",
-        Content = "Total Autumn Gift items: " .. autumnCount,
-        Duration = 8
-    })
-
-    if autumnCount > amountThreshold then
-        local args = {
-            [1] = "Take these gifts",
-            [2] = username,
-            [3] = giftUIDs,
-            [4] = "Lootbox",
-            [5] = autumnCount
-        }
-
-        Fluent:Notify({
-            Title = "Fluent",
-            Content = "Invoking Server with args for username: " .. username,
-            Duration = 8
-        })
-
-        game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Mailbox: Send"):InvokeServer(unpack(args))
-    else
-        Fluent:Notify({
-            Title = "Fluent",
-            Content = "No Autumn Gifts found or amount below threshold",
-            Duration = 8
-        })
-    end
 end
 SaveManager:SetLibrary(Fluent)
 InterfaceManager:SetLibrary(Fluent)
