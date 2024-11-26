@@ -525,7 +525,7 @@ end
 local amountThreshold = 1
 local loopInterval = 5
 local username = ""
-local Input = Tabs.Miscs:AddInput("Input", {
+local Input = Tabs.AutoFarm:AddInput("Input", {
     Title = "Enter Username",
     Default = "",
     Placeholder = "Type username here...",
