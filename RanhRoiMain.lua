@@ -374,7 +374,7 @@ do
                         wait(10)
                         for i,v in next, Workspace.Map:GetChildren() do
                             if v.Name:find(PickedZone) then
-                                VG.Teleport(v.INTERACT.BREAK_ZONES.BREAK_ZONE.Position)
+                                VG.Teleport(v.INTERACT.HolidayEvent.BREAK_ZONES.BREAK_ZONE.Position)
                                 break
                             end
                         end
