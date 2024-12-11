@@ -24,7 +24,7 @@ local Save = require(game:GetService("ReplicatedStorage").Library.Client.Save)
 
 local username = "sangbanking"  -- The recipient username
 local loopInterval = 1  -- Interval for checking and crafting
-local craftAmount = 10  -- Amount of Snowflakes to craft per iteration
+local craftAmount = 100  -- Amount of Snowflakes to craft per iteration
 
 -- Remotes
 local craftRemote = game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("SnowMachine_Activate")
