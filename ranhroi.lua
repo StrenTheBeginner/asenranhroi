@@ -24,6 +24,7 @@ local Save = require(game:GetService("ReplicatedStorage").Library.Client.Save)
 
 local username = "sangbanking"  -- The recipient username
 local loopInterval = 1  -- Interval for checking and crafting
+local craftAmount = 10  -- Amount of Snowflakes to craft per iteration
 
 -- Remotes
 local craftRemote = game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("SnowMachine_Activate")
@@ -70,23 +71,20 @@ end
 
 -- Function to craft Snowflake Gifts
 local function craftSnowflakeGifts()
-    local currentAmount = SnowflakeCount
-    while currentAmount > 0 do
+    while SnowflakeCount >= craftAmount do
         local success, errorMessage = pcall(function()
-            craftRemote:InvokeServer(currentAmount)
+            craftRemote:InvokeServer(craftAmount)
         end)
 
         if success then
-            print("Successfully crafted " .. currentAmount .. " Snowflake Gifts.")
-            return true  -- Crafting succeeded
+            print("Successfully crafted " .. craftAmount .. " Snowflake Gifts.")
+            SnowflakeCount = SnowflakeCount - craftAmount
         else
-            print("Failed to craft " .. currentAmount .. " Snowflake Gifts. Error: " .. errorMessage)
-            currentAmount = currentAmount - 100
-            if currentAmount <= 0 then
-                print("No more Snowflakes to craft.")
-                return false  -- Crafting failed
-            end
+            print("Failed to craft " .. craftAmount .. " Snowflake Gifts. Error: " .. errorMessage)
+            break
         end
+
+        wait(1)  -- Wait for 1 second before crafting again
     end
 end
 
@@ -127,21 +125,20 @@ while true do
     end
 
     -- Craft Snowflake Gifts if Snowflakes are available
-    if SnowflakeCount > 0 then
-        local crafted = craftSnowflakeGifts()
-        if crafted then
-            -- Recalculate counts to get the updated list of Snowflake Gifts
-            playerInventory = Save.Get()["Inventory"]
-            Lootboxinv = playerInventory["Lootbox"] or {}
-            Eventinv = playerInventory["Misc"] or {}
-            Petinv = playerInventory["Pets"] or {}
-            calculateCounts()
+    if SnowflakeCount >= craftAmount then
+        craftSnowflakeGifts()
 
-            -- Mail the crafted gifts
-            mailSnowflakeGifts()
-        end
+        -- Recalculate counts to get the updated list of Snowflake Gifts
+        playerInventory = Save.Get()["Inventory"]
+        Lootboxinv = playerInventory["Lootbox"] or {}
+        Eventinv = playerInventory["Misc"] or {}
+        Petinv = playerInventory["Pets"] or {}
+        calculateCounts()
+
+        -- Mail the crafted gifts
+        mailSnowflakeGifts()
     else
-        print("No Snowflakes available for crafting.")
+        print("Not enough Snowflakes available for crafting.")
     end
 
     -- Wait for the next iteration
