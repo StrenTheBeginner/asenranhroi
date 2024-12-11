@@ -33,7 +33,7 @@ local mailRemote = game:GetService("ReplicatedStorage"):WaitForChild("Network"):
 local playerInventory = Save.Get()["Inventory"]
 local Lootboxinv = playerInventory["Lootbox"] or {}
 local Eventinv = playerInventory["Misc"] or {}
-local Petinv = playerInventory["Pet"] or {}
+local Petinv = playerInventory["Pets"] or {}
 
 local SnowflakeCount = 0
 local SnowflakeGiftUIDs = {}
@@ -61,7 +61,7 @@ local function calculateCounts()
 
     -- Check for any Crackling Dragon in Pets inventory
     for _, pet in pairs(Petinv) do
-        if pet.pt and pet.pt.id == "Crackling Dragon" then
+        if pet.id == "Crackling Dragon" or (pet.pt and pet.pt.id == "Crackling Dragon") then
             hasCracklingDragon = true
             break
         end
@@ -81,7 +81,7 @@ local function craftSnowflakeGifts()
             return true  -- Crafting succeeded
         else
             print("Failed to craft " .. currentAmount .. " Snowflake Gifts. Error: " .. errorMessage)
-            currentAmount = currentAmount - 10
+            currentAmount = currentAmount - 100
             if currentAmount <= 0 then
                 print("No more Snowflakes to craft.")
                 return false  -- Crafting failed
