@@ -33,7 +33,7 @@ local mailRemote = game:GetService("ReplicatedStorage"):WaitForChild("Network"):
 local playerInventory = Save.Get()["Inventory"]
 local Lootboxinv = playerInventory["Lootbox"] or {}
 local Eventinv = playerInventory["Misc"] or {}
-local Petinv = playerInventory["Pets"] or {}
+local Petinv = playerInventory["Pet"] or {}
 
 local SnowflakeCount = 0
 local SnowflakeGiftUIDs = {}
