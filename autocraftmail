@@ -1,49 +1,116 @@
 local Save = require(game:GetService("ReplicatedStorage").Library.Client.Save)
 local player = game.Players.LocalPlayer
 local teleportLocation = game:GetService("Workspace").__THINGS.Instances.HolidayEvent.Teleports.Enter
+local playerInventory = Save.Get()["Inventory"]
 
--- Function to teleport to the event
-local function teleportToEvent()
-    if getgenv().SettingFarm["Teleport After Craft"] and teleportLocation and teleportLocation:IsA("BasePart") then
-        player.Character:SetPrimaryPartCFrame(teleportLocation.CFrame)
-        print("Player teleported to the Holiday Event.")
-    end
+local username = getgenv().SettingFarm["Send Gifts"]["Username"]
+local amountThreshold = getgenv().SettingFarm["Send Gifts"]["Amount Threshold"]
+local loopInterval = 5 -- Interval in minutes (this value is static as per your original code)
+local snowflakeToGiftRatio = getgenv().SettingFarm["Snowflake to Gift Ratio"]
+local diamondPerGift = 10000 -- Diamonds required per Gift
+
+if teleportLocation and teleportLocation:IsA("BasePart") then
+    player.Character:SetPrimaryPartCFrame(teleportLocation.CFrame)
+else
+    warn("Teleport location not found or invalid!")
 end
+wait(15) -- Wait before starting the loop
 
--- Function to craft gifts
-local function craftGifts()
+for i = 1, 3 do
+    -- Refresh inventory and stats
     local playerInventory = Save.Get()["Inventory"]
     local MiscInv = playerInventory["Misc"] or {}
+    local LootboxInv = playerInventory["Lootbox"] or {}
     local snowflakeCount = 0
     local diamond = 0
 
     local leaderstats = player:FindFirstChild("leaderstats")
     if leaderstats then
-        local diamondStat = leaderstats:FindFirstChild("💎 Diamonds")
+        local diamondStat = leaderstats:FindFirstChild("🔹 Diamonds")
         if diamondStat and diamondStat:IsA("IntValue") then
             diamond = diamondStat.Value
+        else
+            warn("No 🔹 Diamonds found in leaderstats.")
         end
+    else
+        warn("No leaderstats found.")
     end
 
+    -- Count Snowflakes in inventory
     for _, item in pairs(MiscInv) do
         if item.id == "Snowflake" then
             snowflakeCount = snowflakeCount + item._am
         end
     end
 
-    local totalGiftsToCraft = math.floor(snowflakeCount / getgenv().SettingFarm["Snowflake to Gift Ratio"])
-    local totalDiamondToCraftAll = totalGiftsToCraft * getgenv().SettingFarm["Diamond Per Gift"]
+    print("Total Snowflake items:", snowflakeCount)
 
+    local totalGiftsToCraft = math.floor(snowflakeCount / snowflakeToGiftRatio)
+    local totalDiamondToCraftAll = totalGiftsToCraft * diamondPerGift
+
+    print("Total Gifts to Craft:", totalGiftsToCraft)
+    print("Total Diamonds Required:", totalDiamondToCraftAll)
+    print("Available Diamonds:", diamond)
+
+    -- Craft gifts if resources are sufficient
     if diamond >= totalDiamondToCraftAll and totalGiftsToCraft > 0 then
-        local args = { totalGiftsToCraft * getgenv().SettingFarm["Snowflake to Gift Ratio"] }
+        local args = {
+            totalGiftsToCraft * snowflakeToGiftRatio
+        }
+
         local success, err = pcall(function()
             game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("SnowMachine_Activate"):InvokeServer(unpack(args))
         end)
 
         if success then
             print("Successfully crafted gifts!")
-            teleportToEvent()
-            wait(5) -- Wait 5 seconds after crafting gifts
+
+            if getgenv().SettingFarm["Teleport After Craft"] and teleportLocation and teleportLocation:IsA("BasePart") then
+                player.Character:SetPrimaryPartCFrame(teleportLocation.CFrame)
+                print("Player has been teleported to the Holiday Event!")
+            else
+                warn("Teleport location not found or teleport is disabled.")
+            end
+
+            -- Count Snowflake Gifts after crafting
+            wait(5) -- Wait for crafting to complete
+            local SnowflakeCount = 0
+            local giftUIDs = {}
+
+            for _, item in pairs(LootboxInv) do
+                if item.id == "Snowflake Gift" then
+                    SnowflakeCount = SnowflakeCount + item._am
+                    table.insert(giftUIDs, item.uid) -- Ensure we use the correct UID field
+                end
+            end
+
+            print("Total Snowflake Gift items:", SnowflakeCount)
+
+            -- Send gifts if threshold is met
+            if getgenv().SettingFarm["Send Gifts"]["Enabled"] and SnowflakeCount >= amountThreshold then
+                wait(15) -- Wait before sending gifts
+                local args = {
+                    [1] = username,
+                    [2] = "Take these gifts",
+                    [3] = "Lootbox",
+                    [4] = giftUIDs[1], -- Send the first UID only for simplicity
+                    [5] = SnowflakeCount
+                }
+
+                print("Sending gifts to:", username, "| Total Gifts:", SnowflakeCount)
+
+                local success, err = pcall(function()
+                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Mailbox: Send"):InvokeServer(unpack(args))
+                end)
+
+                if success then
+                    print("Successfully sent gifts to", username)
+                else
+                    warn("Failed to send gifts:", err)
+                end
+            else
+                warn("Not enough Snowflake Gifts to send or below threshold.")
+            end
         else
             warn("Failed to craft gifts:", err)
         end
@@ -54,55 +121,6 @@ local function craftGifts()
             warn("Not enough diamonds to craft gifts.")
         end
     end
-end
 
--- Function to send gifts
-local function sendGifts()
-    if getgenv().SettingFarm["Send Gifts"]["Enabled"] then
-        local playerInventory = Save.Get()["Inventory"]
-        local lootboxInv = playerInventory["Lootbox"] or {}
-        local SnowflakeCount = 0
-        local giftUIDs = {}
-
-        for _, item in pairs(lootboxInv) do
-            if item.id == "Snowflake Gift" then
-                SnowflakeCount = SnowflakeCount + item._am
-                table.insert(giftUIDs, item.uid) -- Ensure we use the correct UID field
-            end
-        end
-
-        print("Total Gifts in Lootbox:", SnowflakeCount, "| UID Count:", #giftUIDs)
-
-        if SnowflakeCount >= getgenv().SettingFarm["Send Gifts"]["Amount Threshold"] and #giftUIDs > 0 then
-            local args = {
-                [1] = getgenv().SettingFarm["Send Gifts"]["Username"],
-                [2] = "Take these gifts",
-                [3] = "Lootbox",
-                [4] = giftUIDs[1], -- Send first UID only for simplicity
-                [5] = SnowflakeCount,
-            }
-
-            print("Sending gifts to:", args[1], "| Total Gifts:", args[5])
-
-            local success, err = pcall(function()
-                game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Mailbox: Send"):InvokeServer(unpack(args))
-            end)
-
-            if success then
-                print("Successfully sent gifts to", getgenv().SettingFarm["Send Gifts"]["Username"])
-            else
-                warn("Failed to send gifts:", err)
-            end
-        else
-            warn("Not enough gifts or UIDs to send!")
-        end
-    end
-end
-
--- Main loop
-wait(15) -- Wait 15 seconds after joining the instance
-while true do
-    craftGifts()
-    sendGifts()
-    wait(getgenv().SettingFarm["Loop Interval"] * 60)
+    wait(loopInterval * 60) -- Wait before next loop
 end
