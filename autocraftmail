@@ -26,11 +26,11 @@ for i = 1, 3 do
 
     local leaderstats = player:FindFirstChild("leaderstats")
     if leaderstats then
-        local diamondStat = leaderstats:FindFirstChild("🔹 Diamonds")
+        local diamondStat = leaderstats:FindFirstChild("💎 Diamonds")
         if diamondStat and diamondStat:IsA("IntValue") then
             diamond = diamondStat.Value
         else
-            warn("No 🔹 Diamonds found in leaderstats.")
+            warn("No 💎 Diamonds found in leaderstats.")
         end
     else
         warn("No leaderstats found.")
