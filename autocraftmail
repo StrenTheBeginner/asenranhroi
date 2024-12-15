@@ -1,42 +1,41 @@
 local Save = require(game:GetService("ReplicatedStorage").Library.Client.Save)
 local player = game.Players.LocalPlayer
 local teleportLocation = game:GetService("Workspace").__THINGS.Instances.HolidayEvent.Teleports.Enter
-local playerInventory = Save.Get()["Inventory"]
-
-local username = getgenv().SettingFarm["Send Gifts"]["Username"]
-local amountThreshold = getgenv().SettingFarm["Send Gifts"]["Amount Threshold"]
-local loopInterval = 5 -- Interval in minutes
-local snowflakeToGiftRatio = 10 -- Ratio of Snowflakes to craft a Gift
-local diamondPerGift = 10000 -- Diamonds required per Gift
 
 if teleportLocation and teleportLocation:IsA("BasePart") then
     player.Character:SetPrimaryPartCFrame(teleportLocation.CFrame)
 else
     warn("Teleport location not found or invalid!")
 end
-wait(10) -- Wait before starting the loop
+    wait(15) -- adjust the time u want to, recommend 30s if u set low core and ram --
+
+local loopInterval = 5
+local snowflakeToGiftRatio = 10
+local diamondPerGift = 10000
 
 while true do
-    -- Refresh inventory and stats
     local playerInventory = Save.Get()["Inventory"]
     local MiscInv = playerInventory["Misc"] or {}
-    local LootboxInv = playerInventory["Lootbox"] or {}
     local snowflakeCount = 0
     local diamond = 0
 
-    local leaderstats = player:FindFirstChild("leaderstats")
-    if leaderstats then
-        local diamondStat = leaderstats:FindFirstChild("💎 Diamonds")
-        if diamondStat and diamondStat:IsA("IntValue") then
-            diamond = diamondStat.Value
+    local player = game.Players.LocalPlayer
+    if player then
+        local leaderstats = player:FindFirstChild("leaderstats")
+        if leaderstats then
+            local diamondStat = leaderstats:FindFirstChild("💎 Diamonds")
+            if diamondStat and diamondStat:IsA("IntValue") then
+                diamond = diamondStat.Value
+            else
+                warn("No 💎 Diamonds found in leaderstats.")
+            end
         else
-            warn("No 💎 Diamonds found in leaderstats.")
+            warn("No leaderstats found.")
         end
     else
-        warn("No leaderstats found.")
+        warn("Local player not found.")
     end
 
-    -- Count Snowflakes in inventory
     for _, item in pairs(MiscInv) do
         if item.id == "Snowflake" then
             snowflakeCount = snowflakeCount + item._am
@@ -52,8 +51,8 @@ while true do
     print("Total Diamonds Required:", totalDiamondToCraftAll)
     print("Available Diamonds:", diamond)
 
-    -- Craft gifts if resources are sufficient
-    if diamond >= totalDiamondToCraftAll and totalGiftsToCraft > 0 then
+    if diamond >= totalDiamondToCraftAll and totalGiftsToCraft > 0 then --send more diamond to alts if u think it still has more snowflakes--
+
         local args = {
             totalGiftsToCraft * snowflakeToGiftRatio
         }
@@ -65,66 +64,11 @@ while true do
         if success then
             print("Successfully crafted gifts!")
 
-            -- Teleport after crafting if enabled
-            if getgenv().SettingFarm["Teleport After Craft"] then
-                if teleportLocation and teleportLocation:IsA("BasePart") then
-                    player.Character:SetPrimaryPartCFrame(teleportLocation.CFrame)
-                    print("Player has been teleported to the Holiday Event!")
-
-                    -- Spam the remote for 30 seconds after teleport
-                    local startTime = tick()
-                    while tick() - startTime < 30 do
-                        local success, err = pcall(function()
-                            game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("SnowMachine_Activate"):InvokeServer(unpack(args))
-                        end)
-                        if not success then
-                            warn("Failed to spam remote:", err)
-                        end
-                        wait(0.1) -- Delay between remote calls to prevent overloading the server
-                    end
-                else
-                    warn("Teleport location not found.")
-                end
-            end
-
-            -- Count Snowflake Gifts after crafting
-            wait(5) -- Wait for crafting to complete
-            local SnowflakeCount = 0
-            local giftUIDs = {}
-
-            for _, item in pairs(LootboxInv) do
-                if item.id == "Snowflake Gift" then
-                    SnowflakeCount = SnowflakeCount + item._am
-                    table.insert(giftUIDs, item.uid) -- Ensure we use the correct UID field
-                end
-            end
-
-            print("Total Snowflake Gift items:", SnowflakeCount)
-
-            -- Send gifts if threshold is met and enabled
-            if getgenv().SettingFarm["Send Gifts"]["Enabled"] and SnowflakeCount > amountThreshold then
-                wait(15) -- Wait before sending gifts
-                local args = {
-                    [1] = username,
-                    [2] = "Take these gifts",
-                    [3] = "Lootbox",
-                    [4] = giftUIDs[1], -- Send the first UID only for simplicity
-                    [5] = SnowflakeCount
-                }
-
-                print("Sending gifts to:", username, "| Total Gifts:", SnowflakeCount)
-
-                local success, err = pcall(function()
-                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Mailbox: Send"):InvokeServer(unpack(args))
-                end)
-
-                if success then
-                    print("Successfully sent gifts to", username)
-                else
-                    warn("Failed to send gifts:", err)
-                end
+            if teleportLocation and teleportLocation:IsA("BasePart") then
+                player.Character:SetPrimaryPartCFrame(teleportLocation.CFrame)
+                print("Player has been teleported to the Holiday Event!")
             else
-                warn("Not enough Snowflake Gifts to send or below threshold.")
+                warn("Teleport location not found.")
             end
 
         else
@@ -138,7 +82,7 @@ while true do
         end
     end
 
-    wait(loopInterval * 60) -- Wait before next loop
+    wait(loopInterval * 60)
 end
 
 --Cre to Nesa the alien sigma boy <:--
