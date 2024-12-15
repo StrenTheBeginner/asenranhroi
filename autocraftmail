@@ -1,0 +1,108 @@
+local Save = require(game:GetService("ReplicatedStorage").Library.Client.Save)
+local player = game.Players.LocalPlayer
+local teleportLocation = game:GetService("Workspace").__THINGS.Instances.HolidayEvent.Teleports.Enter
+
+-- Function to teleport to the event
+local function teleportToEvent()
+    if getgenv().SettingFarm["Teleport After Craft"] and teleportLocation and teleportLocation:IsA("BasePart") then
+        player.Character:SetPrimaryPartCFrame(teleportLocation.CFrame)
+        print("Player teleported to the Holiday Event.")
+    end
+end
+
+-- Function to craft gifts
+local function craftGifts()
+    local playerInventory = Save.Get()["Inventory"]
+    local MiscInv = playerInventory["Misc"] or {}
+    local snowflakeCount = 0
+    local diamond = 0
+
+    local leaderstats = player:FindFirstChild("leaderstats")
+    if leaderstats then
+        local diamondStat = leaderstats:FindFirstChild("💎 Diamonds")
+        if diamondStat and diamondStat:IsA("IntValue") then
+            diamond = diamondStat.Value
+        end
+    end
+
+    for _, item in pairs(MiscInv) do
+        if item.id == "Snowflake" then
+            snowflakeCount = snowflakeCount + item._am
+        end
+    end
+
+    local totalGiftsToCraft = math.floor(snowflakeCount / getgenv().SettingFarm["Snowflake to Gift Ratio"])
+    local totalDiamondToCraftAll = totalGiftsToCraft * getgenv().SettingFarm["Diamond Per Gift"]
+
+    if diamond >= totalDiamondToCraftAll and totalGiftsToCraft > 0 then
+        local args = { totalGiftsToCraft * getgenv().SettingFarm["Snowflake to Gift Ratio"] }
+        local success, err = pcall(function()
+            game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("SnowMachine_Activate"):InvokeServer(unpack(args))
+        end)
+
+        if success then
+            print("Successfully crafted gifts!")
+            teleportToEvent()
+            wait(5) -- Wait 5 seconds after crafting gifts
+        else
+            warn("Failed to craft gifts:", err)
+        end
+    else
+        if totalGiftsToCraft == 0 then
+            warn("Not enough snowflakes to craft any gifts.")
+        else
+            warn("Not enough diamonds to craft gifts.")
+        end
+    end
+end
+
+-- Function to send gifts
+local function sendGifts()
+    if getgenv().SettingFarm["Send Gifts"]["Enabled"] then
+        local playerInventory = Save.Get()["Inventory"]
+        local lootboxInv = playerInventory["Lootbox"] or {}
+        local SnowflakeCount = 0
+        local giftUIDs = {}
+
+        for _, item in pairs(lootboxInv) do
+            if item.id == "Snowflake Gift" then
+                SnowflakeCount = SnowflakeCount + item._am
+                table.insert(giftUIDs, item.uid) -- Ensure we use the correct UID field
+            end
+        end
+
+        print("Total Gifts in Lootbox:", SnowflakeCount, "| UID Count:", #giftUIDs)
+
+        if SnowflakeCount >= getgenv().SettingFarm["Send Gifts"]["Amount Threshold"] and #giftUIDs > 0 then
+            local args = {
+                [1] = getgenv().SettingFarm["Send Gifts"]["Username"],
+                [2] = "Take these gifts",
+                [3] = "Lootbox",
+                [4] = giftUIDs[1], -- Send first UID only for simplicity
+                [5] = SnowflakeCount,
+            }
+
+            print("Sending gifts to:", args[1], "| Total Gifts:", args[5])
+
+            local success, err = pcall(function()
+                game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Mailbox: Send"):InvokeServer(unpack(args))
+            end)
+
+            if success then
+                print("Successfully sent gifts to", getgenv().SettingFarm["Send Gifts"]["Username"])
+            else
+                warn("Failed to send gifts:", err)
+            end
+        else
+            warn("Not enough gifts or UIDs to send!")
+        end
+    end
+end
+
+-- Main loop
+wait(15) -- Wait 15 seconds after joining the instance
+while true do
+    craftGifts()
+    sendGifts()
+    wait(getgenv().SettingFarm["Loop Interval"] * 60)
+end
