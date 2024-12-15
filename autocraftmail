@@ -14,7 +14,7 @@ if teleportLocation and teleportLocation:IsA("BasePart") then
 else
     warn("Teleport location not found or invalid!")
 end
-wait(15) -- Wait before starting the loop
+wait(10) -- Wait before starting the loop
 
 while true do
     -- Refresh inventory and stats
@@ -70,6 +70,18 @@ while true do
                 if teleportLocation and teleportLocation:IsA("BasePart") then
                     player.Character:SetPrimaryPartCFrame(teleportLocation.CFrame)
                     print("Player has been teleported to the Holiday Event!")
+
+                    -- Spam the remote for 30 seconds after teleport
+                    local startTime = tick()
+                    while tick() - startTime < 30 do
+                        local success, err = pcall(function()
+                            game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("SnowMachine_Activate"):InvokeServer(unpack(args))
+                        end)
+                        if not success then
+                            warn("Failed to spam remote:", err)
+                        end
+                        wait(0.1) -- Delay between remote calls to prevent overloading the server
+                    end
                 else
                     warn("Teleport location not found.")
                 end
