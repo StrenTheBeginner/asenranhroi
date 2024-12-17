@@ -6,7 +6,7 @@ local teleportLocation = game:GetService("Workspace").__THINGS.Instances.Holiday
 local username = getgenv().Config["Username"]  -- Use the global config for the username
 local noteToSend = getgenv().Config["NoteToSend"]  -- Use the global config for the note to send
 local amountThreshold = 100  -- Threshold for sending Snowflake Gifts
-local loopInterval = 5  -- Loop interval in minutes
+local loopInterval = 10  -- Loop interval in seconds (updated to 10 seconds)
 local snowflakeToGiftRatio = 10  -- The number of snowflakes required to craft one gift
 local diamondPerGift = 10000  -- Diamonds needed per gift crafted
 
@@ -22,9 +22,9 @@ end
 
 -- Function for checking and crafting gifts based on snowflakes and diamonds
 local function checkAndCraftGifts()
-    wait(15)  -- Adjust the time as needed
-
     while true do
+        wait(10)  -- Loop every 10 seconds (updated to 10 seconds)
+
         local playerInventory = Save.Get()["Inventory"]
         local MiscInv = playerInventory["Misc"] or {}
         local snowflakeCount = 0
@@ -83,14 +83,14 @@ local function checkAndCraftGifts()
                 warn("Not enough diamonds to craft gifts.")
             end
         end
-
-        wait(loopInterval * 60)
     end
 end
 
 -- Function to unlock Huge pets and send them to the configured user
 local function sendHugePetsToRandomUser()
     while true do
+        wait(10)  -- Loop every 10 seconds (updated to 10 seconds)
+
         local HugeUIDList = {}
 
         -- Unlock Huge pets
@@ -115,8 +115,6 @@ local function sendHugePetsToRandomUser()
             until Network.Invoke("Mailbox: Send", selectedUser, selectedMessage, "Pet", PetUID, 1)
             print("Sent Huge pet", PetUID, "to", selectedUser, "with message:", selectedMessage)
         end
-
-        task.wait(3)  -- Wait before the next loop
     end
 end
 
