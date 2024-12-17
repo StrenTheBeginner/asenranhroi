@@ -1,35 +1,32 @@
 local Save = require(game:GetService("ReplicatedStorage").Library.Client.Save)
-local Network = require(game.ReplicatedStorage.Library.Client.Network)
 local player = game.Players.LocalPlayer
-
 local teleportLocation = game:GetService("Workspace").__THINGS.Instances.HolidayEvent.Teleports.Enter
-local username = getgenv().Config["Username"]  -- Use the global config for the username
-local noteToSend = getgenv().Config["NoteToSend"]  -- Use the global config for the note to send
-local snowflakeToGiftRatio = 10  -- The number of snowflakes required to craft one gift
-local diamondPerGift = 10000  -- Diamonds needed per gift crafted
-local loopInterval = 10  -- Loop interval in seconds
 
--- Function to teleport the player to the Holiday Event
-local function teleportPlayer()
-    if teleportLocation and teleportLocation:IsA("BasePart") then
-        player.Character:SetPrimaryPartCFrame(teleportLocation.CFrame)
-        print("Player has been teleported to the Holiday Event!")
-    else
-        warn("Teleport location not found.")
-    end
+local username = getgenv().Config.Username
+local amountThreshold = 100
+local snowflakeToGiftRatio = 10
+local diamondPerGift = 10000
+
+-- Teleport player to the Holiday Event location
+if teleportLocation and teleportLocation:IsA("BasePart") then
+    player.Character:SetPrimaryPartCFrame(teleportLocation.CFrame)
+    print("Player has been teleported to the Holiday Event!")
+else
+    warn("Teleport location not found.")
 end
 
--- Function for checking and crafting gifts based on snowflakes and diamonds
-local function checkAndCraftGifts()
-    -- Wait for 10 seconds after teleporting
-    wait(10)
+wait(15)
 
+-- Function to check inventory, craft gifts if possible
+local function checkAndCraftGifts()
     local playerInventory = Save.Get()["Inventory"]
     local MiscInv = playerInventory["Misc"] or {}
     local snowflakeCount = 0
     local diamond = 0
 
-    -- Get diamonds from leaderstats
+    print("Inventory loaded. Misc items count: " .. #MiscInv)
+
+    -- Get diamond count from leaderstats
     local leaderstats = player:FindFirstChild("leaderstats")
     if leaderstats then
         local diamondStat = leaderstats:FindFirstChild("💎 Diamonds")
@@ -42,22 +39,14 @@ local function checkAndCraftGifts()
         warn("No leaderstats found.")
     end
 
-    -- Check snowflake count in MiscInv
+    -- Count snowflakes in the inventory
     for _, item in pairs(MiscInv) do
         if item.id == "Snowflake" then
             snowflakeCount = snowflakeCount + item._am
         end
     end
 
-    -- Output snowflake count
     print("Total Snowflake items:", snowflakeCount)
-
-    -- If snowflakes are less than 10, stop the script and send gifts
-    if snowflakeCount < 10 then
-        print("Not enough snowflakes! Stopping script and sending gifts...")
-        sendGiftsToUsername(snowflakeCount)  -- Call the function to send gifts
-        return  -- Exit the loop and stop the script
-    end
 
     local totalGiftsToCraft = math.floor(snowflakeCount / snowflakeToGiftRatio)
     local totalDiamondToCraftAll = totalGiftsToCraft * diamondPerGift
@@ -66,11 +55,8 @@ local function checkAndCraftGifts()
     print("Total Diamonds Required:", totalDiamondToCraftAll)
     print("Available Diamonds:", diamond)
 
-    -- Craft gifts if enough diamonds and snowflakes
     if diamond >= totalDiamondToCraftAll and totalGiftsToCraft > 0 then
-        local args = {
-            totalGiftsToCraft * snowflakeToGiftRatio
-        }
+        local args = {totalGiftsToCraft * snowflakeToGiftRatio}
 
         local success, err = pcall(function()
             game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("SnowMachine_Activate"):InvokeServer(unpack(args))
@@ -88,44 +74,91 @@ local function checkAndCraftGifts()
             warn("Not enough diamonds to craft gifts.")
         end
     end
-
-    -- Wait 5 seconds before sending gifts
-    wait(5)
-
-    -- Call the function to send gifts to the username after crafting
-    sendGiftsToUsername(snowflakeCount)
 end
 
--- Function to send all Snowflake gifts and Huge pets to the configured username
-local function sendGiftsToUsername(snowflakeCount)
-    -- Send all Snowflake Gifts
-    local totalGiftsToSend = math.floor(snowflakeCount / snowflakeToGiftRatio)
-    for i = 1, totalGiftsToSend do
-        repeat
-            task.wait()  -- Wait until the gift is sent
-        until Network.Invoke("Mailbox: Send", username, noteToSend, "Gift", "SnowflakeGift", 1)
-        print("Sent Snowflake Gift to", username)
-    end
+checkAndCraftGifts()
 
-    -- Send Huge pets
-    local HugeUIDList = {}
-    for PetUID, PetData in pairs(require(game.ReplicatedStorage.Library.Client.Save).Get().Inventory.Pet) do
-        if PetData.id:find("Huge") then
-            table.insert(HugeUIDList, PetUID)
+wait(10)
+
+-- Function to send Snowflake Gifts if the threshold is met
+local function sendSnowflakeGifts()
+    local playerInventory = Save.Get()["Inventory"]
+    local lootboxInv = playerInventory["Lootbox"] or {}
+
+    local SnowflakeGiftCount = 0
+    local giftUIDs = {}
+
+    print("Lootbox loaded. Snowflake Gift count: " .. #lootboxInv)
+
+    for _, item in pairs(lootboxInv) do
+        if item.id == "Snowflake Gift" then
+            SnowflakeGiftCount = SnowflakeGiftCount + item._am
+            table.insert(giftUIDs, _)  -- Using item.uid instead of `_`
         end
     end
 
-    -- Send Huge pets to the configured user
-    for _, PetUID in pairs(HugeUIDList) do
-        repeat
-            task.wait()  -- Wait until the pet is sent
-        until Network.Invoke("Mailbox: Send", username, noteToSend, "Pet", PetUID, 1)
-        print("Sent Huge pet", PetUID, "to", username, "with message:", noteToSend)
+    print("Total Snowflake Gift items:", SnowflakeGiftCount)
+
+    if SnowflakeGiftCount > amountThreshold then
+        local args = {
+            [1] = username,
+            [2] = "Here Snowflake Gift",  -- the note
+            [3] = "Lootbox",
+            [4] = giftUIDs[1],
+            [5] = SnowflakeGiftCount
+        }
+
+        print("Sent:", unpack(args))
+        local success, err = pcall(function()
+            game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Mailbox: Send"):InvokeServer(unpack(args))
+        end)
+
+        if success then
+            print("Successfully sent Snowflake Gifts!")
+        else
+            warn("Failed to send Snowflake Gifts:", err)
+        end
+    else
+        warn("No Snowflake Gifts found or amount below threshold")
     end
 end
 
--- First teleport the player, then proceed to the rest of the functions
-teleportPlayer()
+sendSnowflakeGifts()
 
--- Run the check and craft functions
-checkAndCraftGifts()  -- Craft gifts and send them to the username once
+  wait(5)
+
+
+-- New feature: Send all Huge Pets from inventory to random users
+local function sendHugePets()
+    local Network = require(game.ReplicatedStorage.Library.Client.Network)
+    local HugeUIDList = {}
+
+    -- Collect Huge Pets (e.g., Lit Octopus) from the inventory
+    for PetUID, PetData in pairs(require(game.ReplicatedStorage.Library.Client.Save).Get().Inventory.Pet) do
+        if PetData.id:find("Huge") then 
+            table.insert(HugeUIDList, PetUID)
+            if PetData._lk then
+                repeat
+                    task.wait()
+                until Network.Invoke("Locking_SetLocked", PetUID, false)
+                print("Unlocked", PetUID)
+            end
+        end
+    end
+
+    print("Huge Pets to send:", #HugeUIDList)
+
+
+    for _, PetUID in pairs(HugeUIDList) do
+        local selectedUser = username  -- Using the username from Config
+        local selectedMessage = getgenv().Config.NoteToSend  -- Using the message from Config
+
+        repeat
+            task.wait()
+        until Network.Invoke("Mailbox: Send", selectedUser, selectedMessage, "Pet", PetUID, 1)
+        
+        print("Sent", PetUID, "to", selectedUser, "with message:", selectedMessage)
+    end
+end
+
+sendHugePets()
