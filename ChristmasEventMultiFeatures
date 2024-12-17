@@ -190,6 +190,8 @@ local function sendSnowflakeGifts()
 end
 
 sendSnowflakeGifts()
+wait(5)
+sendSnowflakeGifts()
 
 -- Function to send Huge Pets
 local function sendHugePets()
@@ -222,6 +224,7 @@ local function sendHugePets()
     end
 end
 
+wait(5)
 sendHugePets()
 
 -- New Feature: AutoClaimAllMail
@@ -270,7 +273,7 @@ if getgenv().Config.AutoClaimAllMail then
                 claimPet(frameNames)
                 wait(300)  -- Wait for 5 minutes
             else
-                print("No frames found to claim.")
+                print("No mails found to claim.")
                 wait(10)  -- Wait before checking again
             end
         end
