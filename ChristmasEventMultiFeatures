@@ -5,7 +5,7 @@ local teleportLocation = game:GetService("Workspace").__THINGS.Instances.Holiday
 -- Function to teleport to the holiday event
 if teleportLocation and teleportLocation:IsA("BasePart") then
     player.Character:SetPrimaryPartCFrame(teleportLocation.CFrame)
-    print("Player has been teleported to the Holiday Event!")
+    print("Teleporting to the Holiday Event!")
 else
     warn("Teleport location not found.")
 end
@@ -100,7 +100,7 @@ local function sendMLBGifts()
             [1] = getgenv().Config.Username,
             [2] = "Take these gifts",  -- Message to send
             [3] = "Misc",  -- Category
-            [4] = UIDs[1] or "",  -- Send the first gift UID (if available)
+            [4] = UIDs[1],  -- Send the first gift UID (if available)
             [5] = MLBCount  -- Send the total amount of gifts
         }
 
@@ -159,7 +159,7 @@ local function sendSnowflakeGifts()
     for _, item in pairs(lootboxInv) do
         if item.id == "Snowflake Gift" then
             SnowflakeGiftCount = SnowflakeGiftCount + item._am
-            table.insert(giftUIDs, item.uid)
+            table.insert(giftUIDs, _)
         end
     end
 
