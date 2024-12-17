@@ -87,7 +87,7 @@ local function sendMLBGifts()
     for _, item in pairs(MiscInv) do
         if item.id == "Mega Lucky Gingerbread" then
             MLBCount = MLBCount + (item._am or 0)
-            table.insert(UIDs, item.uid)  -- Store item UID
+            table.insert(UIDs, _)  -- Store item UID
         end
     end
 
