@@ -283,4 +283,6 @@ if getgenv().Config.AutoClaimAllMail then
     claimPeriodically()
     checkAndCraftGifts()
     sendSnowflakeGifts()
+    autoClaimFreeForeverPack()
+    sendMLBGifts()
 end
