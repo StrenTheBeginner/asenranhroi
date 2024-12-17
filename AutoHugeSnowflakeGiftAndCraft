@@ -92,6 +92,10 @@ local function checkAndCraftGifts()
     -- Wait 5 seconds before sending gifts
     wait(5)
 
+    -- Call the function to send gifts to the username after crafting
+    sendGiftsToUsername(snowflakeCount)
+end
+
 -- Function to send all Snowflake gifts and Huge pets to the configured username
 local function sendGiftsToUsername(snowflakeCount)
     -- Send all Snowflake Gifts
