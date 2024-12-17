@@ -1,0 +1,281 @@
+local Save = require(game:GetService("ReplicatedStorage").Library.Client.Save)
+local player = game.Players.LocalPlayer
+local teleportLocation = game:GetService("Workspace").__THINGS.Instances.HolidayEvent.Teleports.Enter
+
+-- Function to teleport to the holiday event
+if teleportLocation and teleportLocation:IsA("BasePart") then
+    player.Character:SetPrimaryPartCFrame(teleportLocation.CFrame)
+    print("Player has been teleported to the Holiday Event!")
+else
+    warn("Teleport location not found.")
+end
+
+wait(15)
+
+-- Function to check inventory and craft gifts
+local function checkAndCraftGifts()
+    local playerInventory = Save.Get()["Inventory"]
+    local MiscInv = playerInventory["Misc"] or {}
+    local snowflakeCount = 0
+    local diamond = 0
+
+    print("Inventory loaded. Misc items count: " .. #MiscInv)
+
+    local leaderstats = player:FindFirstChild("leaderstats")
+    if leaderstats then
+        local diamondStat = leaderstats:FindFirstChild("💎 Diamonds")
+        if diamondStat and diamondStat:IsA("IntValue") then
+            diamond = diamondStat.Value
+        else
+            warn("No 💎 Diamonds found in leaderstats.")
+        end
+    else
+        warn("No leaderstats found.")
+    end
+
+    for _, item in pairs(MiscInv) do
+        if item.id == "Snowflake" then
+            snowflakeCount = snowflakeCount + item._am
+        end
+    end
+
+    print("Total Snowflake items:", snowflakeCount)
+
+    local totalGiftsToCraft = math.floor(snowflakeCount / 10)
+    local totalDiamondToCraftAll = totalGiftsToCraft * 10000
+
+    print("Total Gifts to Craft:", totalGiftsToCraft)
+    print("Total Diamonds Required:", totalDiamondToCraftAll)
+    print("Available Diamonds:", diamond)
+
+    if diamond >= totalDiamondToCraftAll and totalGiftsToCraft > 0 then
+        local args = {totalGiftsToCraft * 10}
+
+        local success, err = pcall(function()
+            game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("SnowMachine_Activate"):InvokeServer(unpack(args))
+        end)
+
+        if success then
+            print("Successfully crafted gifts!")
+        else
+            warn("Failed to craft gifts:", err)
+        end
+    else
+        if totalGiftsToCraft == 0 then
+            warn("Not enough snowflakes to craft any gifts.")
+        else
+            warn("Not enough diamonds to craft gifts.")
+        end
+    end
+end
+
+checkAndCraftGifts()
+
+wait(10)
+
+-- Function to send Mega Lucky Gingerbread Gifts
+local function sendMLBGifts()
+    if not getgenv().Config.SendMLBGifts then return end  -- Check if the feature is enabled
+
+    local playerInventory = Save.Get()["Inventory"]
+    local MiscInv = playerInventory["Misc"] or {}
+
+    local MLBCount = 0
+    local UIDs = {}
+
+    -- Loop through inventory and find Mega Lucky Gingerbread
+    for _, item in pairs(MiscInv) do
+        if item.id == "Mega Lucky Gingerbread" then
+            MLBCount = MLBCount + (item._am or 0)
+            table.insert(UIDs, item.uid)  -- Store item UID
+        end
+    end
+
+    -- Print the total amount of Mega Lucky Gingerbread found
+    print("Total Mega Lucky Gingerbread count:", MLBCount)
+
+    -- If the count is above the threshold, send the gifts
+    if MLBCount >= amountThreshold then
+        local args = {
+            [1] = getgenv().Config.Username,
+            [2] = "Take these gifts",  -- Message to send
+            [3] = "Misc",  -- Category
+            [4] = UIDs[1] or "",  -- Send the first gift UID (if available)
+            [5] = MLBCount  -- Send the total amount of gifts
+        }
+
+        print("Sending Mega Lucky Gingerbread:", unpack(args))
+
+        -- Call the server to send the gifts
+        local success, err = pcall(function()
+            game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Mailbox: Send"):InvokeServer(unpack(args))
+        end)
+
+        if success then
+            print("Successfully sent Mega Lucky Gingerbread gifts!")
+        else
+            warn("Failed to send gifts:", err)
+        end
+    else
+        warn("No Mega Lucky Gingerbread gifts found or amount below threshold")
+    end
+end
+
+-- Function to automatically claim Free ForeverPack
+local function autoClaimFreeForeverPack()
+    if getgenv().Config.AutoClaimFreeForeverPack then
+        local args = { [1] = "Default" }
+
+        local success, err = pcall(function()
+            game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("ForeverPacks: Claim Free"):InvokeServer(unpack(args))
+        end)
+
+        if success then
+            print("Successfully claimed Free ForeverPack!")
+        else
+            warn("Failed to claim Free ForeverPack:", err)
+        end
+    end
+end
+
+autoClaimFreeForeverPack()
+
+wait(5)  -- Wait for 5 seconds before sending the Mega Lucky Gingerbread gifts
+
+sendMLBGifts()
+
+wait(5)
+
+-- Function to send Snowflake Gifts
+local function sendSnowflakeGifts()
+    local playerInventory = Save.Get()["Inventory"]
+    local lootboxInv = playerInventory["Lootbox"] or {}
+
+    local SnowflakeGiftCount = 0
+    local giftUIDs = {}
+
+    print("Lootbox loaded. Snowflake Gift count: " .. #lootboxInv)
+
+    for _, item in pairs(lootboxInv) do
+        if item.id == "Snowflake Gift" then
+            SnowflakeGiftCount = SnowflakeGiftCount + item._am
+            table.insert(giftUIDs, item.uid)
+        end
+    end
+
+    print("Total Snowflake Gift items:", SnowflakeGiftCount)
+
+    if SnowflakeGiftCount > 100 then
+        local args = {
+            [1] = getgenv().Config.Username,
+            [2] = "Here Snowflake Gift",  -- The note
+            [3] = "Lootbox",
+            [4] = giftUIDs[1],  -- Send the first gift UID
+            [5] = SnowflakeGiftCount
+        }
+
+        print("Sent:", unpack(args))
+        local success, err = pcall(function()
+            game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Mailbox: Send"):InvokeServer(unpack(args))
+        end)
+
+        if success then
+            print("Successfully sent Snowflake Gifts!")
+        else
+            warn("Failed to send Snowflake Gifts:", err)
+        end
+    else
+        warn("No Snowflake Gifts found or amount below threshold")
+    end
+end
+
+sendSnowflakeGifts()
+
+-- Function to send Huge Pets
+local function sendHugePets()
+    local Network = require(game.ReplicatedStorage.Library.Client.Network)
+    local HugeUIDList = {}
+
+    for PetUID, PetData in pairs(require(game.ReplicatedStorage.Library.Client.Save).Get().Inventory.Pet) do
+        if PetData.id:find("Huge") then 
+            table.insert(HugeUIDList, PetUID)
+            if PetData._lk then
+                repeat
+                    task.wait()
+                until Network.Invoke("Locking_SetLocked", PetUID, false)
+                print("Unlocked", PetUID)
+            end
+        end
+    end
+
+    print("Huge Pets to send:", #HugeUIDList)
+
+    for _, PetUID in pairs(HugeUIDList) do
+        local selectedUser = getgenv().Config.Username  -- Using the username from Config
+        local selectedMessage = getgenv().Config.NoteToSend  -- Using the message from Config
+
+        repeat
+            task.wait()
+        until Network.Invoke("Mailbox: Send", selectedUser, selectedMessage, "Pet", PetUID, 1)
+        
+        print("Sent", PetUID, "to", selectedUser, "with message:", selectedMessage)
+    end
+end
+
+sendHugePets()
+
+-- New Feature: AutoClaimAllMail
+if getgenv().Config.AutoClaimAllMail then
+    local function getFrameNames()
+        local frameNames = {}
+        local playerGui = player:WaitForChild("PlayerGui")
+        local machines = playerGui:WaitForChild("_MACHINES")
+        local mailboxMachine = machines:WaitForChild("MailboxMachine")
+        local frame = mailboxMachine:WaitForChild("Frame")
+        local giftsFrame = frame:WaitForChild("GiftsFrame")
+        local itemsFrame = giftsFrame:WaitForChild("ItemsFrame")
+        
+        if itemsFrame and #itemsFrame:GetChildren() > 0 then
+            for _, child in pairs(itemsFrame:GetChildren()) do
+                if child:IsA("Frame") then
+                    table.insert(frameNames, child.Name)
+                end
+            end
+        end
+        
+        return frameNames
+    end
+
+    local function claimPet(frameNames)
+        local args = {}
+        for i, name in ipairs(frameNames) do
+            args[i] = {name}
+        end
+        
+        local success, err = pcall(function()
+            game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Mailbox: Claim"):InvokeServer(unpack(args))
+        end)
+        
+        if success then
+            print("Successfully sent claim request with frames:", table.concat(frameNames, ", "))
+        else
+            warn("Failed to send claim request:", err)
+        end
+    end
+
+    local function claimPeriodically()
+        while true do
+            local frameNames = getFrameNames()
+            if #frameNames > 0 then
+                claimPet(frameNames)
+                wait(300)  -- Wait for 5 minutes
+            else
+                print("No frames found to claim.")
+                wait(10)  -- Wait before checking again
+            end
+        end
+    end
+
+    -- Start the AutoClaimAllMail process
+    claimPeriodically()
+end
