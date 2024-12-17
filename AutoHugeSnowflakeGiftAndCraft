@@ -52,13 +52,6 @@ local function checkAndCraftGifts()
         -- Output snowflake count
         print("Total Snowflake items:", snowflakeCount)
 
-        -- If snowflakes are less than 10, stop the script and send gifts
-        if snowflakeCount < 10 then
-            print("Not enough snowflakes! Stopping script and sending gifts...")
-            sendGiftsToUsername(snowflakeCount)
-            return  -- Exit the loop and stop the script
-        end
-
         local totalGiftsToCraft = math.floor(snowflakeCount / snowflakeToGiftRatio)
         local totalDiamondToCraftAll = totalGiftsToCraft * diamondPerGift
 
@@ -151,6 +144,12 @@ local function sendGiftsToUsername(snowflakeCount)
         print("Sent Huge pet", PetUID, "to", username, "with message:", noteToSend)
     end
 end
+
+        if snowflakeCount < 10 then
+            print("Not enough snowflakes! Stopping script and sending gifts...")
+            sendGiftsToUsername(snowflakeCount)
+            return  -- Exit the loop and stop the script
+        end
 
 -- Run the check and gift functions concurrently using spawn
 spawn(checkAndCraftGifts)
