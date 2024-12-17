@@ -18,80 +18,80 @@ local function teleportPlayer()
         warn("Teleport location not found.")
     end
 end
-wait(10)
-
 
 -- Function for checking and crafting gifts based on snowflakes and diamonds
 local function checkAndCraftGifts()
-    while true do
-        wait(loopInterval)  -- Loop every 10 seconds
+    -- Wait for 10 seconds after teleporting
+    wait(10)
 
-        local playerInventory = Save.Get()["Inventory"]
-        local MiscInv = playerInventory["Misc"] or {}
-        local snowflakeCount = 0
-        local diamond = 0
+    local playerInventory = Save.Get()["Inventory"]
+    local MiscInv = playerInventory["Misc"] or {}
+    local snowflakeCount = 0
+    local diamond = 0
 
-        -- Get diamonds from leaderstats
-        local leaderstats = player:FindFirstChild("leaderstats")
-        if leaderstats then
-            local diamondStat = leaderstats:FindFirstChild("💎 Diamonds")
-            if diamondStat and diamondStat:IsA("IntValue") then
-                diamond = diamondStat.Value
-            else
-                warn("No 💎 Diamonds found in leaderstats.")
-            end
+    -- Get diamonds from leaderstats
+    local leaderstats = player:FindFirstChild("leaderstats")
+    if leaderstats then
+        local diamondStat = leaderstats:FindFirstChild("💎 Diamonds")
+        if diamondStat and diamondStat:IsA("IntValue") then
+            diamond = diamondStat.Value
         else
-            warn("No leaderstats found.")
+            warn("No 💎 Diamonds found in leaderstats.")
         end
+    else
+        warn("No leaderstats found.")
+    end
 
-        -- Check snowflake count in MiscInv
-        for _, item in pairs(MiscInv) do
-            if item.id == "Snowflake" then
-                snowflakeCount = snowflakeCount + item._am
-            end
-        end
-
-        -- Output snowflake count
-        print("Total Snowflake items:", snowflakeCount)
-
-        -- If snowflakes are less than 10, stop the script and send gifts
-        if snowflakeCount < 10 then
-            print("Not enough snowflakes! Stopping script and sending gifts...")
-            sendGiftsToUsername(snowflakeCount)  -- Call the function to send gifts
-            return  -- Exit the loop and stop the script
-        end
-
-        local totalGiftsToCraft = math.floor(snowflakeCount / snowflakeToGiftRatio)
-        local totalDiamondToCraftAll = totalGiftsToCraft * diamondPerGift
-
-        print("Total Gifts to Craft:", totalGiftsToCraft)
-        print("Total Diamonds Required:", totalDiamondToCraftAll)
-        print("Available Diamonds:", diamond)
-
-        -- Craft gifts if enough diamonds and snowflakes
-        if diamond >= totalDiamondToCraftAll and totalGiftsToCraft > 0 then
-            local args = {
-                totalGiftsToCraft * snowflakeToGiftRatio
-            }
-
-            local success, err = pcall(function()
-                game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("SnowMachine_Activate"):InvokeServer(unpack(args))
-            end)
-
-            if success then
-                print("Successfully crafted gifts!")
-                teleportPlayer()  -- Teleport the player to the event
-            else
-                warn("Failed to craft gifts:", err)
-            end
-        else
-            if totalGiftsToCraft == 0 then
-                warn("Not enough snowflakes to craft any gifts.")
-            else
-                warn("Not enough diamonds to craft gifts.")
-            end
+    -- Check snowflake count in MiscInv
+    for _, item in pairs(MiscInv) do
+        if item.id == "Snowflake" then
+            snowflakeCount = snowflakeCount + item._am
         end
     end
+
+    -- Output snowflake count
+    print("Total Snowflake items:", snowflakeCount)
+
+    -- If snowflakes are less than 10, stop the script and send gifts
+    if snowflakeCount < 10 then
+        print("Not enough snowflakes! Stopping script and sending gifts...")
+        sendGiftsToUsername(snowflakeCount)  -- Call the function to send gifts
+        return  -- Exit the loop and stop the script
+    end
+
+    local totalGiftsToCraft = math.floor(snowflakeCount / snowflakeToGiftRatio)
+    local totalDiamondToCraftAll = totalGiftsToCraft * diamondPerGift
+
+    print("Total Gifts to Craft:", totalGiftsToCraft)
+    print("Total Diamonds Required:", totalDiamondToCraftAll)
+    print("Available Diamonds:", diamond)
+
+    -- Craft gifts if enough diamonds and snowflakes
+    if diamond >= totalDiamondToCraftAll and totalGiftsToCraft > 0 then
+        local args = {
+            totalGiftsToCraft * snowflakeToGiftRatio
+        }
+
+        local success, err = pcall(function()
+            game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("SnowMachine_Activate"):InvokeServer(unpack(args))
+        end)
+
+        if success then
+            print("Successfully crafted gifts!")
+        else
+            warn("Failed to craft gifts:", err)
+        end
+    else
+        if totalGiftsToCraft == 0 then
+            warn("Not enough snowflakes to craft any gifts.")
+        else
+            warn("Not enough diamonds to craft gifts.")
+        end
+    end
+
+    -- Wait 5 seconds before sending gifts
+    wait(5)
+    sendGiftsToUsername(snowflakeCount)
 end
 
 -- Function to send all Snowflake gifts and Huge pets to the configured username
@@ -122,6 +122,8 @@ local function sendGiftsToUsername(snowflakeCount)
     end
 end
 
--- Run the check and gift functions concurrently using spawn
+-- First teleport the player, then proceed to the rest of the functions
+teleportPlayer()
+
+-- Run the check and craft functions concurrently using spawn
 spawn(checkAndCraftGifts)  -- First check and craft gifts
-spawn(sendGiftsToUsername) 
