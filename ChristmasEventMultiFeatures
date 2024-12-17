@@ -281,5 +281,6 @@ if getgenv().Config.AutoClaimAllMail then
 
     -- Start the AutoClaimAllMail process
     claimPeriodically()
+    checkAndCraftGifts()
     sendSnowflakeGifts()
 end
