@@ -1,0 +1,37 @@
+local function purchase_upgrade(upgrade)
+    if not upgrade then
+        warn("Nâng cấp không hợp lệ!")
+        return
+    end
+
+    local args = {
+        [1] = upgrade
+    }
+
+    local success, err = pcall(function()
+        game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("EventUpgrades: Purchase"):InvokeServer(unpack(args))
+    end)
+
+    if success then
+        print("Successfully Upgraded:", upgrade)
+    else
+        warn("Lỗi khi nâng cấp:", err)
+    end
+end
+
+local function random_upgrade()
+    local upgrades = getgenv().Config.Upgrades 
+    if #upgrades == 0 then
+        warn("No Upgrades were in the list")
+        return
+    end
+
+    local upgrade = upgrades[math.random(1, #upgrades)]  
+    print("Upgrading:", upgrade) 
+    purchase_upgrade(upgrade)
+end
+
+while true do
+    random_upgrade()
+    wait(10)            
+end
