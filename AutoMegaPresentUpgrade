@@ -1,6 +1,6 @@
 local function purchase_upgrade(upgrade)
     if not upgrade then
-        warn("Nâng cấp không hợp lệ!")
+        warn("Upgrade already maxed or not wrong name")
         return
     end
 
@@ -15,7 +15,7 @@ local function purchase_upgrade(upgrade)
     if success then
         print("Successfully Upgraded:", upgrade)
     else
-        warn("Lỗi khi nâng cấp:", err)
+        warn("Error Upgrading:", err)
     end
 end
 
