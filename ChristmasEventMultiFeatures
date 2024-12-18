@@ -2,7 +2,6 @@ local Save = require(game:GetService("ReplicatedStorage").Library.Client.Save)
 local player = game.Players.LocalPlayer
 local teleportLocation = game:GetService("Workspace").__THINGS.Instances.HolidayEvent.Teleports.Enter
 
--- Function to teleport to the holiday event
 if teleportLocation and teleportLocation:IsA("BasePart") then
     player.Character:SetPrimaryPartCFrame(teleportLocation.CFrame)
     print("Teleporting to the Holiday Event!")
@@ -10,9 +9,8 @@ else
     warn("Teleport location not found.")
 end
 
-wait(15)
+wait(25)
 
--- Function to check inventory and craft gifts
 local function checkAndCraftGifts()
     local playerInventory = Save.Get()["Inventory"]
     local MiscInv = playerInventory["Misc"] or {}
@@ -71,9 +69,8 @@ end
 
 checkAndCraftGifts()
 
-wait(10)
+wait(25)
 
--- Function to send Mega Lucky Gingerbread Gifts
 local function sendMLBGifts()
     if not getgenv().Config.SendMLBGifts then return end  -- Check if the feature is enabled
 
@@ -83,7 +80,6 @@ local function sendMLBGifts()
     local MLBCount = 0
     local UIDs = {}
 
-    -- Loop through inventory and find Mega Lucky Gingerbread
     for _, item in pairs(MiscInv) do
         if item.id == "Mega Lucky Gingerbread" then
             MLBCount = MLBCount + (item._am or 0)
@@ -91,10 +87,8 @@ local function sendMLBGifts()
         end
     end
 
-    -- Print the total amount of Mega Lucky Gingerbread found
     print("Total Mega Lucky Gingerbread count:", MLBCount)
 
-    -- If the count is above the threshold, send the gifts
     if MLBCount >= amountThreshold then
         local args = {
             [1] = getgenv().Config.Username,
@@ -106,7 +100,6 @@ local function sendMLBGifts()
 
         print("Sending Mega Lucky Gingerbread:", unpack(args))
 
-        -- Call the server to send the gifts
         local success, err = pcall(function()
             game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Mailbox: Send"):InvokeServer(unpack(args))
         end)
@@ -121,7 +114,6 @@ local function sendMLBGifts()
     end
 end
 
--- Function to automatically claim Free ForeverPack
 local function autoClaimFreeForeverPack()
     if getgenv().Config.AutoClaimFreeForeverPack then
         local args = { [1] = "Default" }
@@ -140,13 +132,12 @@ end
 
 autoClaimFreeForeverPack()
 
-wait(5)  -- Wait for 5 seconds before sending the Mega Lucky Gingerbread gifts
+wait(15) 
 
 sendMLBGifts()
 
 wait(5)
 
--- Function to send Snowflake Gifts
 local function sendSnowflakeGifts()
     local playerInventory = Save.Get()["Inventory"]
     local lootboxInv = playerInventory["Lootbox"] or {}
@@ -224,7 +215,7 @@ local function sendHugePets()
     end
 end
 
-wait(5)
+wait(15)
 sendHugePets()
 
 -- New Feature: AutoClaimAllMail
