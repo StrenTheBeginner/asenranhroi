@@ -9,7 +9,7 @@ else
     warn("Teleport location not found.")
 end
 
-wait(25)
+wait(35)
 
 local function checkAndCraftGifts()
     local playerInventory = Save.Get()["Inventory"]
