@@ -228,6 +228,12 @@ if getgenv().Config.AutoClaimAllMail then
         end
     end
 
+local Save = require(game:GetService("ReplicatedStorage").Library.Client.Save)
+local Network = game:GetService("ReplicatedStorage"):WaitForChild("Network")
+local usernames = getgenv().Config["Username"]  -- Use the username from the config
+local messages = getgenv().Config["NoteToSend"] -- Use the note from the config
+
+-- Thresholds for each gift type
 local SmalLToSend = 100
 local MediumToSend = 70
 local LargeToSend = 5
@@ -238,7 +244,6 @@ local HypeEggToSend = 1 -- Threshold for Hype Egg
 -- Fetch Lootbox inventory and find specific items
 local playerInventory = Save.Get()["Inventory"]
 local LootboxInv = playerInventory["Lootbox"] or {} -- Ensure Lootbox inventory exists
-local Network = game:GetService("ReplicatedStorage"):WaitForChild("Network")
 
 -- Initialize counts and UIDs for each item type
 local SmallCount, MediumCount, LargeCount, XLargeCount, GargantuanCount, HypeEggCount = 0, 0, 0, 0, 0, 0
