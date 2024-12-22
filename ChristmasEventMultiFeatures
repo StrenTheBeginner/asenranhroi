@@ -2,12 +2,7 @@ local Save = require(game:GetService("ReplicatedStorage").Library.Client.Save)
 local player = game.Players.LocalPlayer
 local teleportLocation = game:GetService("Workspace").__THINGS.Instances.HolidayEvent.Teleports.Enter
 
-local args = {
-    [1] = "HolidayEvent"
-}
-
-game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Instancing_PlayerEnterInstance"):InvokeServer(unpack(args))
-
+game:GetService("Workspace").__THINGS.Instances.HolidayEvent.Teleports.Enter
 
 wait(35)
 
