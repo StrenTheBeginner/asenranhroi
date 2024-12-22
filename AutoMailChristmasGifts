@@ -1,0 +1,65 @@
+local Save = require(game:GetService("ReplicatedStorage").Library.Client.Save)
+local Network = game:GetService("ReplicatedStorage"):WaitForChild("Network")
+local usernames = "sangbanking"
+local messages = "Happy Holidays!"
+local SmalLToSend = 100
+local MediumToSend = 70
+local LargeToSend = 5
+local XLargeToSend = 1
+local GargantuanToSend = 1
+local HypeEggToSend = 1
+
+local function sendGifts()
+    local playerInventory = Save.Get()["Inventory"]
+    local LootboxInv = playerInventory["Lootbox"] or {}
+
+    local SmallCount, MediumCount, LargeCount, XLargeCount, GargantuanCount, HypeEggCount = 0, 0, 0, 0, 0, 0
+    local SmallUIDs, MediumUIDs, LargeUIDs, XLargeUIDs, GargantuanUIDs, HypeEggUIDs = {}, {}, {}, {}, {}, {}
+
+    for _, item in pairs(LootboxInv) do
+        if item.id:find("2024 Small") then
+            SmallCount = SmallCount + item._am
+            table.insert(SmallUIDs, _)
+        elseif item.id:find("2024 Medium") then
+            MediumCount = MediumCount + item._am
+            table.insert(MediumUIDs, _)
+        elseif item.id:find("2024 Large") then
+            LargeCount = LargeCount + item._am
+            table.insert(LargeUIDs, _)
+        elseif item.id == "2024 X-Large Christmas Present" then
+            XLargeCount = XLargeCount + item._am
+            table.insert(XLargeUIDs, _)
+        elseif item.id:find("2024 Gargantuan") then
+            GargantuanCount = GargantuanCount + item._am
+            table.insert(GargantuanUIDs, _)
+        elseif item.id:find("Hype Egg") then
+            HypeEggCount = HypeEggCount + item._am
+            table.insert(HypeEggUIDs, _)
+        end
+    end
+
+    local function sendMail(count, threshold, UIDs, itemType)
+        if count > threshold then
+            local args = {
+                [1] = usernames,
+                [2] = messages,
+                [3] = "Lootbox",
+                [4] = UIDs[1],
+                [5] = count
+            }
+            Network:WaitForChild("Mailbox: Send"):InvokeServer(unpack(args))
+        end
+    end
+
+    sendMail(SmallCount, SmalLToSend, SmallUIDs, "2024 Small")
+    sendMail(MediumCount, MediumToSend, MediumUIDs, "2024 Medium")
+    sendMail(LargeCount, LargeToSend, LargeUIDs, "2024 Large")
+    sendMail(XLargeCount, XLargeToSend, XLargeUIDs, "2024 X-Large")
+    sendMail(GargantuanCount, GargantuanToSend, GargantuanUIDs, "2024 Gargantuan")
+    sendMail(HypeEggCount, HypeEggToSend, HypeEggUIDs, "Hype Egg")
+end
+
+while true do
+    sendGifts()
+    wait(30)
+end
