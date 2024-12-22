@@ -1,6 +1,19 @@
 local Save = require(game:GetService("ReplicatedStorage").Library.Client.Save)
 local player = game.Players.LocalPlayer
 
+
+local function teleportToHolidayEvent()
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+    local teleportPart = game:GetService("Workspace").__THINGS.Instances.HolidayEvent.Teleports.Enter
+
+    humanoidRootPart.CFrame = teleportPart.CFrame
+    print("Player has been teleported to the Holiday Event!")
+end
+
+-- Call the teleport function
+teleportToHolidayEvent()
 wait(5)
 
 local function checkAndCraftGifts()
