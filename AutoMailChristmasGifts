@@ -1,3 +1,4 @@
+getgenv().Config = getgenv().Config or {}
 local Save = require(game:GetService("ReplicatedStorage").Library.Client.Save)
 local Network = game:GetService("ReplicatedStorage"):WaitForChild("Network")
 local usernames = getgenv().Config.Username
