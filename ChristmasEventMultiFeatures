@@ -270,10 +270,108 @@ if getgenv().Config.AutoClaimAllMail then
         end
     end
 
+if getgenv().Config.SendAll2024Gifts then
+local Save = require(game:GetService("ReplicatedStorage").Library.Client.Save)
+local Network = game:GetService("ReplicatedStorage"):WaitForChild("Network")
+
+-- Thresholds for each gift type
+local SmalLToSend = 100
+local MediumToSend = 70
+local LargeToSend = 5
+local XLargeToSend = 1
+local GargantuanToSend = 1
+local HypeEggToSend = 1 -- Threshold for Hype Egg
+
+-- Fetch Lootbox inventory and find specific items
+local playerInventory = Save.Get()["Inventory"]
+local LootboxInv = playerInventory["Lootbox"] or {} -- Ensure Lootbox inventory exists
+
+-- Initialize counts and UIDs for each item type
+local SmallCount, MediumCount, LargeCount, XLargeCount, GargantuanCount, HypeEggCount = 0, 0, 0, 0, 0, 0
+local SmallUIDs, MediumUIDs, LargeUIDs, XLargeUIDs, GargantuanUIDs, HypeEggUIDs = {}, {}, {}, {}, {}, {}
+
+-- Single loop to count each type of gift
+for _, item in pairs(LootboxInv) do
+    if item.id:find("2024 Small") then
+        SmallCount = SmallCount + item._am -- Assuming _am is the correct field for amount
+        table.insert(SmallUIDs, _) -- Insert the loop index (_) as the UID
+    elseif item.id:find("2024 Medium") then
+        MediumCount = MediumCount + item._am
+        table.insert(MediumUIDs, _) 
+    elseif item.id:find("2024 Large") then
+        LargeCount = LargeCount + item._am
+        table.insert(LargeUIDs, _) 
+    elseif item.id == "2024 X-Large Christmas Present" then
+        XLargeCount = XLargeCount + item._am
+        table.insert(XLargeUIDs, _) 
+    elseif item.id:find("2024 Gargantuan") then
+        GargantuanCount = GargantuanCount + item._am
+        table.insert(GargantuanUIDs, _) 
+    elseif item.id:find("Hype Egg") then
+        HypeEggCount = HypeEggCount + item._am
+        table.insert(HypeEggUIDs, _) -- Insert the loop index (_) as the UID
+    end
+end
+
+-- Print counts for debugging purposes
+print("Small Gift Count:", SmallCount)
+print("Medium Gift Count:", MediumCount)
+print("Large Gift Count:", LargeCount)
+print("X-Large Gift Count:", XLargeCount)
+print("Gargantuan Gift Count:", GargantuanCount)
+print("Hype Egg Count:", HypeEggCount)
+
+-- Helper function to send mail
+local function sendMail(count, threshold, UIDs, itemType)
+    if count > threshold then
+        local args = {
+            [1] = getgenv().Config.Username,
+            [2] = "Happy Holidays!",
+            [3] = "Lootbox",
+            [4] = UIDs[1], -- Use the first loop index as UID
+            [5] = count
+        }
+        
+        -- Sending the message
+        Network:WaitForChild("Mailbox: Send"):InvokeServer(unpack(args))
+        
+        -- Print success message after sending mail
+        print("Mail sent successfully to " .. usernames .. " with " .. count .. " " .. itemType .. " items!")
+    else
+        -- Print if the threshold wasn't met
+        print("Item count for " .. itemType .. " did not exceed the threshold.")
+    end
+end
+
+-- Function to send all 2024 gifts if SendAll2024Gifts is true
+local function SendAll2024Gifts(sendAll)
+    if sendAll then
+        wait(5)
+        sendMail(SmallCount, SmalLToSend, SmallUIDs, "2024 Small")
+        wait(5)
+        sendMail(MediumCount, MediumToSend, MediumUIDs, "2024 Medium")
+        wait(5)
+        sendMail(LargeCount, LargeToSend, LargeUIDs, "2024 Large")
+        wait(5)
+        sendMail(XLargeCount, XLargeToSend, XLargeUIDs, "2024 X-Large")
+        wait(5)
+        sendMail(GargantuanCount, GargantuanToSend, GargantuanUIDs, "2024 Gargantuan")
+        wait(5)
+        sendMail(HypeEggCount, HypeEggToSend, HypeEggUIDs, "Hype Egg")
+    else
+        print("SendAll2024Gifts is set to false, no gifts will be sent.")
+    end
+end
+
+-- Example: You can call SendAll2024Gifts(true) to send all 2024 gifts
+SendAll2024Gifts(true)
+
+
     -- Start the AutoClaimAllMail process
     claimPeriodically()
     checkAndCraftGifts()
     sendSnowflakeGifts()
     autoClaimFreeForeverPack()
     sendMLBGifts()
+    SendAll2024Gifts(sendAll)
 end
