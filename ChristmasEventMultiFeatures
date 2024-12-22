@@ -238,6 +238,7 @@ local HypeEggToSend = 1 -- Threshold for Hype Egg
 -- Fetch Lootbox inventory and find specific items
 local playerInventory = Save.Get()["Inventory"]
 local LootboxInv = playerInventory["Lootbox"] or {} -- Ensure Lootbox inventory exists
+local Network = game:GetService("ReplicatedStorage"):WaitForChild("Network")
 
 -- Initialize counts and UIDs for each item type
 local SmallCount, MediumCount, LargeCount, XLargeCount, GargantuanCount, HypeEggCount = 0, 0, 0, 0, 0, 0
