@@ -1,0 +1,69 @@
+
+local Save = require(game:GetService("ReplicatedStorage").Library.Client.Save)
+local Network = game:GetService("ReplicatedStorage"):WaitForChild("Network")
+
+local function main()
+    local playerInventory = Save.Get()["Inventory"]
+    local LootboxInv = playerInventory["Lootbox"] or {}
+
+    local SmallCount, MediumCount, LargeCount, XLargeCount, GargantuanCount = 0, 0, 0, 0, 0
+    local SmallUIDs, MediumUIDs, LargeUIDs, XLargeUIDs, GargantuanUIDs = {}, {}, {}, {}, {}
+
+    for _, item in pairs(LootboxInv) do
+        if item.id:find("2024 Small") then
+            SmallCount = SmallCount + item._am
+            table.insert(SmallUIDs, _)
+        elseif item.id:find("2024 Medium") then
+            MediumCount = MediumCount + item._am
+            table.insert(MediumUIDs, _)
+        elseif item.id:find("2024 Large") then
+            LargeCount = LargeCount + item._am
+            table.insert(LargeUIDs, _)
+        elseif item.id == "2024 X-Large Christmas Present" then
+            XLargeCount = XLargeCount + item._am
+            table.insert(XLargeUIDs, _)
+        elseif item.id:find("2024 Gargantuan") then
+            GargantuanCount = GargantuanCount + item._am
+            table.insert(GargantuanUIDs, _)
+        end
+    end
+
+    print("Small Gift Count:", SmallCount)
+    print("Medium Gift Count:", MediumCount)
+    print("Large Gift Count:", LargeCount)
+    print("X-Large Gift Count:", XLargeCount)
+    print("Gargantuan Gift Count:", GargantuanCount)
+
+    local function sendMail(count, threshold, UIDs, itemType)
+        if count > threshold then
+            local args = {
+                [1] = Config.usernames,
+                [2] = Config.messages,
+                [3] = "Lootbox",
+                [4] = UIDs[1],
+                [5] = count
+            }
+
+            Network:WaitForChild("Mailbox: Send"):InvokeServer(unpack(args))
+            print("Mail sent successfully to " .. Config.usernames .. " with " .. count .. " " .. itemType .. " items!")
+        else
+            print("Item count for " .. itemType .. " did not exceed the threshold.")
+        end
+    end
+
+    wait(5)
+    sendMail(SmallCount, Config.SmalLToSend, SmallUIDs, "2024 Small")
+    wait(5)
+    sendMail(MediumCount, Config.MediumToSend, MediumUIDs, "2024 Medium")
+    wait(5)
+    sendMail(LargeCount, Config.LargeToSend, LargeUIDs, "2024 Large")
+    wait(5)
+    sendMail(XLargeCount, Config.XLargeToSend, XLargeUIDs, "2024 X-Large")
+    wait(5)
+    sendMail(GargantuanCount, Config.GargantuanToSend, GargantuanUIDs, "2024 Gargantuan")
+end
+
+while true do
+    main()
+    wait(Config.LoopInterval)
+end
