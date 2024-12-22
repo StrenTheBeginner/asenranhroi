@@ -14,7 +14,7 @@ end
 
 -- Call the teleport function
 teleportToHolidayEvent()
-wait(5)
+wait(35)
 
 local function checkAndCraftGifts()
     local playerInventory = Save.Get()["Inventory"]
