@@ -71,49 +71,6 @@ checkAndCraftGifts()
 
 wait(25)
 
-local function sendMLBGifts()
-    if not getgenv().Config.SendMLBGifts then return end  -- Check if the feature is enabled
-
-    local playerInventory = Save.Get()["Inventory"]
-    local MiscInv = playerInventory["Misc"] or {}
-
-    local MLBCount = 0
-    local UIDs = {}
-
-    for _, item in pairs(MiscInv) do
-        if item.id == "Mega Lucky Gingerbread" then
-            MLBCount = MLBCount + (item._am or 0)
-            table.insert(UIDs, _)  -- Store item UID
-        end
-    end
-
-    print("Total Mega Lucky Gingerbread count:", MLBCount)
-
-    if MLBCount >= amountThreshold then
-        local args = {
-            [1] = getgenv().Config.Username,
-            [2] = "Take these gifts",  -- Message to send
-            [3] = "Misc",  -- Category
-            [4] = UIDs[1],  -- Send the first gift UID (if available)
-            [5] = MLBCount  -- Send the total amount of gifts
-        }
-
-        print("Sending Mega Lucky Gingerbread:", unpack(args))
-
-        local success, err = pcall(function()
-            game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Mailbox: Send"):InvokeServer(unpack(args))
-        end)
-
-        if success then
-            print("Successfully sent Mega Lucky Gingerbread gifts!")
-        else
-            warn("Failed to send gifts:", err)
-        end
-    else
-        warn("No Mega Lucky Gingerbread gifts found or amount below threshold")
-    end
-end
-
 local function autoClaimFreeForeverPack()
     if getgenv().Config.AutoClaimFreeForeverPack then
         local args = { [1] = "Default" }
@@ -133,10 +90,6 @@ end
 autoClaimFreeForeverPack()
 
 wait(15) 
-
-sendMLBGifts()
-
-wait(5)
 
 local function sendSnowflakeGifts()
     local playerInventory = Save.Get()["Inventory"]
@@ -346,17 +299,17 @@ end
 -- Function to send all 2024 gifts if SendAll2024Gifts is true
 local function SendAll2024Gifts(sendAll)
     if sendAll then
-        wait(5)
+        wait(7)
         sendMail(SmallCount, SmalLToSend, SmallUIDs, "2024 Small")
-        wait(5)
+        wait(7)
         sendMail(MediumCount, MediumToSend, MediumUIDs, "2024 Medium")
-        wait(5)
+        wait(7)
         sendMail(LargeCount, LargeToSend, LargeUIDs, "2024 Large")
-        wait(5)
+        wait(7)
         sendMail(XLargeCount, XLargeToSend, XLargeUIDs, "2024 X-Large")
-        wait(5)
+        wait(7)
         sendMail(GargantuanCount, GargantuanToSend, GargantuanUIDs, "2024 Gargantuan")
-        wait(5)
+        wait(7)
         sendMail(HypeEggCount, HypeEggToSend, HypeEggUIDs, "Hype Egg")
     else
         print("SendAll2024Gifts is set to false, no gifts will be sent.")
@@ -372,6 +325,5 @@ SendAll2024Gifts(true)
     checkAndCraftGifts()
     sendSnowflakeGifts()
     autoClaimFreeForeverPack()
-    sendMLBGifts()
     SendAll2024Gifts(sendAll)
 end
