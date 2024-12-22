@@ -1,6 +1,5 @@
 local Save = require(game:GetService("ReplicatedStorage").Library.Client.Save)
 local player = game.Players.LocalPlayer
-local teleportLocation = game:GetService("Workspace").__THINGS.Instances.HolidayEvent.Teleports.Enter
 
 local function teleportToHolidayEvent()
     local player = game.Players.LocalPlayer
