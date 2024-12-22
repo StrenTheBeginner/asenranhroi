@@ -1,17 +1,33 @@
+getgenv().Config = getgenv().Config or {}
 local Save = require(game:GetService("ReplicatedStorage").Library.Client.Save)
 local Network = game:GetService("ReplicatedStorage"):WaitForChild("Network")
 local usernames = getgenv().Config.Username
 local messages = getgenv().Config.NoteToSend
 local SmalLToSend = getgenv().Config.SmallGiftsToSend
 local MediumToSend = getgenv().Config.MediumGiftsToSend
-local LargeToSend = getgenv().Config.LargeGiftsToSend
-local XLargeToSend = getgenv().Config.XLargeGiftsToSend
-local GargantuanToSend = getgenv().Config.GargantuanGiftsToSend
+local LargeGiftsToSend = getgenv().Config.LargeGiftsToSend
+local XLargeGiftsToSend = getgenv().Config.XLargeGiftsToSend
+local GargantuanGiftsToSend = getgenv().Config.GargantuanGiftsToSend
 local HypeEggToSend = getgenv().Config.HypeEggToSend
 
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local workspaceService = game:GetService("Workspace")
 local redeemGiftRemote = replicatedStorage:WaitForChild("Network"):WaitForChild("Redeem Free Gift")
+
+local function teleportToOrbsAccurate()
+    local orbs = workspaceService:FindFirstChild("__THINGS"):FindFirstChild("Orbs")
+    if orbs then
+        for _, orb in ipairs(orbs:GetChildren()) do
+            if orb:IsA("BasePart") then
+                local humanoidRootPart = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+                if humanoidRootPart then
+                    humanoidRootPart.CFrame = orb.CFrame
+                    wait(0.5)
+                end
+            end
+        end
+    end
+end
 
 local function teleportToOrbs()
     local orbs = workspaceService:FindFirstChild("__THINGS"):FindFirstChild("Orbs")
@@ -24,8 +40,6 @@ local function teleportToOrbs()
         end
     end
 end
-
-wait(15)
 
 local function claimGifts()
     for id = 1, 12 do
@@ -75,11 +89,11 @@ local function sendGifts()
     local function sendMail(count, threshold, UIDs, itemType)
         if count > threshold then
             local args = {
-                [1] = usernames,
-                [2] = messages,
-                [3] = "Lootbox",
-                [4] = UIDs[1],
-                [5] = count
+                usernames,
+                messages,
+                "Lootbox",
+                UIDs[1],
+                count
             }
             Network:WaitForChild("Mailbox: Send"):InvokeServer(unpack(args))
         end
@@ -87,24 +101,30 @@ local function sendGifts()
 
     sendMail(SmallCount, SmalLToSend, SmallUIDs, "2024 Small")
     sendMail(MediumCount, MediumToSend, MediumUIDs, "2024 Medium")
-    sendMail(LargeCount, LargeToSend, LargeUIDs, "2024 Large")
-    sendMail(XLargeCount, XLargeToSend, XLargeUIDs, "2024 X-Large")
-    sendMail(GargantuanCount, GargantuanToSend, GargantuanUIDs, "2024 Gargantuan")
+    sendMail(LargeCount, LargeGiftsToSend, LargeUIDs, "2024 Large")
+    sendMail(XLargeCount, XLargeGiftsToSend, XLargeUIDs, "2024 X-Large")
+    sendMail(GargantuanCount, GargantuanGiftsToSend, GargantuanUIDs, "2024 Gargantuan")
     sendMail(HypeEggCount, HypeEggToSend, HypeEggUIDs, "Hype Egg")
 end
 
-while true do
-    teleportToOrbs()
-    wait(1)
-    local orbs = workspaceService:FindFirstChild("__THINGS"):FindFirstChild("Orbs")
-    if not orbs or #orbs:GetChildren() == 0 then
-        wait(5)
-    else
-        if getgenv().Config.ClaimDailyGifts then
-            claimGifts()
-        end
-        sendGifts()
-        wait(15)
-    end
-end
+local holidayTeleported = false
 
+while true do
+    if not holidayTeleported then
+        teleportToHolidayEvent()
+        holidayTeleported = true
+    end
+
+    teleportToOrbsAccurate()
+    claimGifts()
+
+    local sendGiftTimer = 15
+    while sendGiftTimer > 0 do
+        teleportToOrbsAccurate()
+        claimGifts()
+        wait(1)
+        sendGiftTimer = sendGiftTimer - 1
+    end
+
+    sendGifts()
+end
