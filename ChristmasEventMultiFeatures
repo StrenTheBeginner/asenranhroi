@@ -2,12 +2,12 @@ local Save = require(game:GetService("ReplicatedStorage").Library.Client.Save)
 local player = game.Players.LocalPlayer
 local teleportLocation = game:GetService("Workspace").__THINGS.Instances.HolidayEvent.Teleports.Enter
 
-if teleportLocation and teleportLocation:IsA("BasePart") then
-    player.Character:SetPrimaryPartCFrame(teleportLocation.CFrame)
-    print("Teleporting to the Holiday Event!")
-else
-    warn("Teleport location not found.")
-end
+local args = {
+    [1] = "HolidayEvent"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Instancing_PlayerEnterInstance"):InvokeServer(unpack(args))
+
 
 wait(35)
 
