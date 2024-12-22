@@ -229,11 +229,6 @@ if getgenv().Config.AutoClaimAllMail then
         end
     end
 
-if getgenv().Config.SendAll2024Gifts then
-local Save = require(game:GetService("ReplicatedStorage").Library.Client.Save)
-local Network = game:GetService("ReplicatedStorage"):WaitForChild("Network")
-
--- Thresholds for each gift type
 local SmalLToSend = 100
 local MediumToSend = 70
 local LargeToSend = 5
@@ -284,8 +279,8 @@ print("Hype Egg Count:", HypeEggCount)
 local function sendMail(count, threshold, UIDs, itemType)
     if count > threshold then
         local args = {
-            [1] = getgenv().Config.Username,
-            [2] = "Happy Holidays!",
+            [1] = usernames,
+            [2] = messages,
             [3] = "Lootbox",
             [4] = UIDs[1], -- Use the first loop index as UID
             [5] = count
@@ -303,27 +298,27 @@ local function sendMail(count, threshold, UIDs, itemType)
 end
 
 -- Function to send all 2024 gifts if SendAll2024Gifts is true
-local function SendAll2024Gifts(sendAll)
-    if sendAll then
-        wait(7)
+local function SendAll2024Gifts()
+    if getgenv().Config.SendAll2024Gifts then
+        wait(5)
         sendMail(SmallCount, SmalLToSend, SmallUIDs, "2024 Small")
-        wait(7)
+        wait(5)
         sendMail(MediumCount, MediumToSend, MediumUIDs, "2024 Medium")
-        wait(7)
+        wait(5)
         sendMail(LargeCount, LargeToSend, LargeUIDs, "2024 Large")
-        wait(7)
+        wait(5)
         sendMail(XLargeCount, XLargeToSend, XLargeUIDs, "2024 X-Large")
-        wait(7)
+        wait(5)
         sendMail(GargantuanCount, GargantuanToSend, GargantuanUIDs, "2024 Gargantuan")
-        wait(7)
+        wait(5)
         sendMail(HypeEggCount, HypeEggToSend, HypeEggUIDs, "Hype Egg")
     else
         print("SendAll2024Gifts is set to false, no gifts will be sent.")
     end
 end
 
--- Example: You can call SendAll2024Gifts(true) to send all 2024 gifts
-SendAll2024Gifts(true)
+-- Example: You can call SendAll2024Gifts() to send all 2024 gifts based on the config
+SendAll2024Gifts()
 
 
     -- Start the AutoClaimAllMail process
