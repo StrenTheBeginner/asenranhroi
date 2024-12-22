@@ -2,23 +2,44 @@ local Save = require(game:GetService("ReplicatedStorage").Library.Client.Save)
 local Network = game:GetService("ReplicatedStorage"):WaitForChild("Network")
 local usernames = getgenv().Config.Username
 local messages = getgenv().Config.NoteToSend
-local SmalLToSend = 100
-local MediumToSend = 70
-local LargeToSend = 5
-local XLargeToSend = 1
-local GargantuanToSend = 1
-local HypeEggToSend = 1
+local SmalLToSend = getgenv().Config.SmallGiftsToSend
+local MediumToSend = getgenv().Config.MediumGiftsToSend
+local LargeToSend = getgenv().Config.LargeGiftsToSend
+local XLargeToSend = getgenv().Config.XLargeGiftsToSend
+local GargantuanToSend = getgenv().Config.GargantuanGiftsToSend
+local HypeEggToSend = getgenv().Config.HypeEggToSend
+
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local workspaceService = game:GetService("Workspace")
+local redeemGiftRemote = replicatedStorage:WaitForChild("Network"):WaitForChild("Redeem Free Gift")
+
+local function teleportToOrbs()
+    local orbs = workspaceService:FindFirstChild("__THINGS"):FindFirstChild("Orbs")
+    if orbs then
+        for _, orb in ipairs(orbs:GetChildren()) do
+            if orb:IsA("BasePart") then
+                game.Players.LocalPlayer.Character:MoveTo(orb.Position)
+                wait(0.5)
+            end
+        end
+    end
+end
+
+local function claimGifts()
+    for id = 1, 12 do
+        local args = {id}
+        redeemGiftRemote:InvokeServer(unpack(args))
+        wait(2)
+    end
+end
 
 local function teleportToHolidayEvent()
-    local character = player.Character or player.CharacterAdded:Wait()
+    local character = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
     local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-
-    local teleportPart = game:GetService("Workspace").__THINGS.Instances.HolidayEvent.Teleports.Enter
-
+    local teleportPart = workspaceService.__THINGS.Instances.HolidayEvent.Teleports.Enter
     humanoidRootPart.CFrame = teleportPart.CFrame
     print("Player has been teleported to the Holiday Event!")
 end
-
 
 local function sendGifts()
     local playerInventory = Save.Get()["Inventory"]
@@ -71,6 +92,17 @@ local function sendGifts()
 end
 
 while true do
-    sendGifts()
-    wait(30)
+    teleportToOrbs()
+    wait(1)
+    local orbs = workspaceService:FindFirstChild("__THINGS"):FindFirstChild("Orbs")
+    if not orbs or #orbs:GetChildren() == 0 then
+        wait(5)
+    else
+        if getgenv().Config.ClaimDailyGifts then
+            claimGifts()
+        end
+        sendGifts()
+        wait(15)
+    end
 end
+
