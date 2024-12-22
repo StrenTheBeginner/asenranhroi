@@ -9,6 +9,17 @@ local XLargeToSend = 1
 local GargantuanToSend = 1
 local HypeEggToSend = 1
 
+local function teleportToHolidayEvent()
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+    local teleportPart = game:GetService("Workspace").__THINGS.Instances.HolidayEvent.Teleports.Enter
+
+    humanoidRootPart.CFrame = teleportPart.CFrame
+    print("Player has been teleported to the Holiday Event!")
+end
+
+
 local function sendGifts()
     local playerInventory = Save.Get()["Inventory"]
     local LootboxInv = playerInventory["Lootbox"] or {}
