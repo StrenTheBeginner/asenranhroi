@@ -25,6 +25,8 @@ local function teleportToOrbs()
     end
 end
 
+wait(15)
+
 local function claimGifts()
     for id = 1, 12 do
         local args = {id}
