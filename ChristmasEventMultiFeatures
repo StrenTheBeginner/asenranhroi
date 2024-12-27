@@ -1,5 +1,6 @@
 local Save = require(game:GetService("ReplicatedStorage").Library.Client.Save)
 local player = game.Players.LocalPlayer
+local usernames = getgenv().Config.Username
 
 
 local function teleportToHolidayEvent()
@@ -116,7 +117,7 @@ local function sendSnowflakeGifts()
 
     if SnowflakeGiftCount > 100 then
         local args = {
-            [1] = getgenv().Config.Username,
+            [1] = usernames,
             [2] = "Here Snowflake Gift",  -- The note
             [3] = "Lootbox",
             [4] = giftUIDs[1],  -- Send the first gift UID
