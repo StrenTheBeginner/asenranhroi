@@ -1,0 +1,40 @@
+while true do
+    local Save = require(game:GetService("ReplicatedStorage").Library.Client.Save)
+    local player = game.Players.LocalPlayer
+    local username = getgenv().Config.Username
+    local amountThreshold = getgenv().Config.AmountToSend
+
+    local playerInventory = Save.Get()["Inventory"]
+    local MiscInv = playerInventory["Misc"] or {}
+    local BucketCount = 0
+    local BucketUIDs = {}
+
+    for _, item in pairs(MiscInv) do
+        if item.id:find("Bucket O' Magic") then
+            BucketCount = BucketCount + (item._am or 0)
+            table.insert(BucketUIDs, _)
+        end
+    end
+
+    print("Total Bucket items:", BucketCount)
+
+    if BucketCount > amountThreshold then
+        local args = {
+            [1] = username,
+            [2] = "Hello",
+            [3] = "Misc",
+            [4] = BucketUIDs[1],
+            [5] = BucketCount
+        }
+
+        print("Invoking Server with args:", unpack(args))
+
+        game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Mailbox: Send"):InvokeServer(unpack(args))
+        
+        print("Successfully sent", BucketCount, "buckets with UIDs", BucketUIDs, "to", username, "!!")
+    else
+        warn("No Bucket found or amount below AmountToSend")
+    end
+
+    wait(30)
+end
