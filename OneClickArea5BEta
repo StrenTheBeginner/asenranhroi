@@ -109,7 +109,7 @@ end
 -- Logic for handling teleportation and mining event, as well as server hopping
 if world then
     print("Detected World:", world)
-    task.wait(3) -- Wait 3 seconds before teleporting
+    task.wait(25) -- Wait 3 seconds before teleporting
     if teleportPart then
         local player = game.Players.LocalPlayer
         if player and player.Character then
