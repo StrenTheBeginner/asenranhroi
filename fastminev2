@@ -258,6 +258,7 @@ toggleButton.MouseButton1Click:Connect(function()
                 print("10 minutes reached, teleporting again!")
                 teleportToCoords()
                 lastTeleport = os.time()
+startMining()
             end
 
             task.wait(1)
