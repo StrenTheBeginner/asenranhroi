@@ -104,7 +104,7 @@ local currentZ = 7
 local finished = false
 
 
-local MIN_Y = -300
+local MIN_Y = -200
 local MIN_X, MAX_X = -8, 7
 local MAX_Z, MIN_Z = 7, -8
 
