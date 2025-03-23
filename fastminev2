@@ -172,7 +172,7 @@ local function teleportPlayer(cframe)
 end
 
 local function teleportToMerchantBooth()
-    local boothCFrame = CFrame.new(12000, 10, -4000)
+    local boothCFrame = CFrame.new(15326.8496, 13.6831055, -13274.3135)
     teleportPlayer(boothCFrame)
 end
 
