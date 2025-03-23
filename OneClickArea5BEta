@@ -2,7 +2,6 @@ local player = game.Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Network = ReplicatedStorage:WaitForChild("Network")
-local MiningTeleport = Network:WaitForChild("Mining Teleport")
 local InstancingEvent = Network:WaitForChild("Instancing_PlayerEnterInstance")
 local FireCustomEvent = Network:WaitForChild("Instancing_FireCustomFromClient")
 local TeleportService = game:GetService("TeleportService")
