@@ -145,9 +145,9 @@ if world then
 end
 
 teleportToZone5()
-task.wait(4)
+task.wait(7)
 teleportToMining()
-task.wait(10)
+task.wait(3)
 
 -- Start mining process
 isMining = true
