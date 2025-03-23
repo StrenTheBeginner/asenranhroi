@@ -79,7 +79,7 @@ local currentY = 0
 local currentX = -8
 local currentZ = 7
 local finished = false  -- Becomes true if we ever finish the entire region
-local MIN_Y = -100
+local MIN_Y = -200
 local MIN_X, MAX_X = -8, 7
 local MAX_Z, MIN_Z = 7, -8
 
