@@ -232,7 +232,7 @@ toggleButton.MouseButton1Click:Connect(function()
         end)
 
         teleportToCoords()
-        task.wait(5)
+        task.wait(3)
         coroutine.wrap(startMining)()
         coroutine.wrap(updateTimestamp)()
 
@@ -254,8 +254,8 @@ toggleButton.MouseButton1Click:Connect(function()
             end
 
             local sinceLastTeleport = os.time() - lastTeleport
-            if sinceLastTeleport >= 900 then
-                print("30 minutes reached, teleporting again!")
+            if sinceLastTeleport >= 600 then
+                print("10 minutes reached, teleporting again!")
                 teleportToCoords()
                 lastTeleport = os.time()
             end
