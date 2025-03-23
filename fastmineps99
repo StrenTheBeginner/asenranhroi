@@ -1,0 +1,157 @@
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "MiningToggleGUI"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = playerGui
+
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MiningFrame"
+mainFrame.Size = UDim2.new(0, 300, 0, 170)
+mainFrame.Position = UDim2.new(0, 20, 0, 20)
+mainFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+mainFrame.Parent = screenGui
+
+local closeButton = Instance.new("TextButton")
+closeButton.Name = "CloseButton"
+closeButton.Size = UDim2.new(0, 20, 0, 20)
+closeButton.Position = UDim2.new(1, -25, 0, 5)
+closeButton.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
+closeButton.Text = "X"
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.Font = Enum.Font.SourceSansBold
+closeButton.TextSize = 18
+closeButton.Parent = mainFrame
+
+-- Title label
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Name = "TitleLabel"
+titleLabel.Size = UDim2.new(0, 280, 0, 30)
+titleLabel.Position = UDim2.new(0, 10, 0, 5)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "Fast Mine | Report Bug in Discord"
+titleLabel.TextSize = 20
+titleLabel.FontFace = Font.new("rbxasset://fonts/families/FredokaOne.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.Parent = mainFrame
+
+local toggleButton = Instance.new("TextButton")
+toggleButton.Name = "ToggleButton"
+toggleButton.Size = UDim2.new(0, 280, 0, 50)
+toggleButton.Position = UDim2.new(0, 10, 0, 40)
+toggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- Red by default (OFF)
+toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleButton.Text = "Mining OFF"
+toggleButton.TextSize = 24
+toggleButton.FontFace = Font.new("rbxasset://fonts/families/FredokaOne.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+toggleButton.Parent = mainFrame
+
+local linkLabel = Instance.new("TextLabel")
+linkLabel.Name = "DiscordLink"
+linkLabel.Size = UDim2.new(0, 280, 0, 30)
+linkLabel.Position = UDim2.new(0, 10, 0, 100)
+linkLabel.BackgroundTransparency = 1
+linkLabel.Text = "https://discord.gg/NbP9hmrqtC"
+linkLabel.TextScaled = true
+linkLabel.FontFace = Font.new("rbxasset://fonts/families/FredokaOne.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+linkLabel.Parent = mainFrame
+
+coroutine.wrap(function()
+    local hue = 0
+    while true do
+        hue = hue + 1
+        if hue > 360 then
+            hue = 0
+        end
+        linkLabel.TextColor3 = Color3.fromHSV(hue / 360, 1, 1)
+        task.wait(0.02)
+    end
+end)()
+
+--------------------------------------------------------------------------------
+-- Mining logic
+--------------------------------------------------------------------------------
+
+local isMining = false
+local stopMining = false
+local currentY = 0
+local currentX = -8
+local currentZ = 7
+local finished = false  -- Becomes true if we ever finish the entire region
+local MIN_Y = -100
+local MIN_X, MAX_X = -8, 7
+local MAX_Z, MIN_Z = 7, -8
+
+local function incrementCoords()
+    currentZ = currentZ - 1
+    if currentZ < MIN_Z then
+        currentZ = MAX_Z
+        currentX = currentX + 1
+        if currentX > MAX_X then
+            currentX = MIN_X
+            currentY = currentY - 1
+            if currentY < MIN_Y then
+                finished = true
+            end
+        end
+    end
+end
+
+local function startMining()
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    local Network = ReplicatedStorage:WaitForChild("Network")
+    local targetEvent = Network:WaitForChild("BlockWorlds_Target")
+    local breakEvent = Network:WaitForChild("BlockWorlds_Break")
+
+    local WAIT_TIME = 0
+
+    finished = false
+    while not stopMining and not finished do
+        local coords = Vector3int16.new(currentX, currentY, currentZ)
+        
+        targetEvent:FireServer(coords)
+        task.wait(WAIT_TIME)
+
+        breakEvent:FireServer(coords)
+        task.wait(WAIT_TIME)
+
+        incrementCoords()
+    end
+
+    isMining = false
+    stopMining = false
+    toggleButton.Text = "Mining OFF"
+    toggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Red
+end
+
+--------------------------------------------------------------------------------
+-- Button logic
+--------------------------------------------------------------------------------
+
+toggleButton.MouseButton1Click:Connect(function()
+    if isMining then
+        -- Turn OFF
+        isMining = false
+        stopMining = true
+        toggleButton.Text = "Mining OFF"
+        toggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- Red
+    else
+        -- Turn ON
+        isMining = true
+        stopMining = false
+        toggleButton.Text = "Mining ON"
+        toggleButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)  -- Green
+        coroutine.wrap(startMining)()
+    end
+end)
+
+closeButton.MouseButton1Click:Connect(function()
+    if isMining then
+        isMining = false
+        stopMining = true
+        toggleButton.Text = "Mining OFF"
+        toggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Red
+    end
+    mainFrame.Visible = false
+end)
