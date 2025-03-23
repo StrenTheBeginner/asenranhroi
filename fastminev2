@@ -104,7 +104,7 @@ local currentZ = 7
 local finished = false
 
 
-local MIN_Y = -100
+local MIN_Y = -300
 local MIN_X, MAX_X = -8, 7
 local MAX_Z, MIN_Z = 7, -8
 
@@ -254,7 +254,7 @@ toggleButton.MouseButton1Click:Connect(function()
             end
 
             local sinceLastTeleport = os.time() - lastTeleport
-            if sinceLastTeleport >= 1800 then
+            if sinceLastTeleport >= 900 then
                 print("30 minutes reached, teleporting again!")
                 teleportToCoords()
                 lastTeleport = os.time()
