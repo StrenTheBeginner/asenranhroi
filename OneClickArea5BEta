@@ -2,7 +2,6 @@ local player = game.Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Network = ReplicatedStorage:WaitForChild("Network")
 local InstancingEvent = Network:WaitForChild("Instancing_PlayerEnterInstance")
-local FireCustomEvent = Network:WaitForChild("Instancing_FireCustomFromClient")
 local TeleportService = game:GetService("TeleportService")
 local HttpService = game:GetService("HttpService")
 
@@ -113,34 +112,6 @@ if world then
         player.Character:SetPrimaryPartCFrame(teleportCFrame)
         task.wait(4)
         InstancingEvent:InvokeServer("MiningEvent")
-        
-        -- Check for pickaxe and handle the event
-        local path = workspace:FindFirstChild("__THINGS")
-        if path then
-            path = path:FindFirstChild("__INSTANCE_CONTAINER")
-            if path then
-                path = path:FindFirstChild("Active")
-                if path then
-                    path = path:FindFirstChild("MiningEvent")
-                    if path then
-                        path = path:FindFirstChild("INTERACT")
-                        if path then
-                            local woodenPickaxe = path:FindFirstChild("WoodenPickaxe")
-                            if woodenPickaxe then
-                                print("WoodenPickaxe exists!")
-                                local args = {"MiningEvent", "ClaimPickaxe"}
-                                FireCustomEvent:FireServer(unpack(args))
-                            else
-                                print("WoodenPickaxe was already claimed!")
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    end
-end
-
 
 teleportToZone5()
 task.wait(7)
