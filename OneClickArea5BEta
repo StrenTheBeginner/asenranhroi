@@ -1,5 +1,4 @@
 local player = game.Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Network = ReplicatedStorage:WaitForChild("Network")
 local InstancingEvent = Network:WaitForChild("Instancing_PlayerEnterInstance")
@@ -93,48 +92,46 @@ end
 local currentPlaceId = game.PlaceId
 print("Current Place ID:", currentPlaceId)
 
-local world, teleportPart
+local world, teleportCFrame
 if currentPlaceId == 8737899170 then
     world = 1
-    teleportPart = game.Workspace.Map["1 | Spawn"].PARTS.Model.Mining.Enter
-elseif currentPlaceId == 16498369169 then
+    teleportCFrame = CFrame.new(179.702148, 19.0086937, -139.804199, -2.56299973e-05, -0.998239934, 0.0593036786, 0.99999994, -2.56299973e-05, 7.59959221e-07, 7.59959221e-07, 0.0593036786, 0.998239994)
+elif currentPlaceId == 16498369169 then
     world = 2
-    teleportPart = game.Workspace.Map2["100 | Tech Spawn"].PARTS_LOD.Model.Mining.Enter
-elseif currentPlaceId == 17503543197 then
+    teleportCFrame = CFrame.new(-9984.90137, 18.9828796, -293.768799, -1.25169754e-05, -0.999974966, 0.00708046556, 1, -1.25169754e-05, 4.42378223e-08, 4.42378223e-08, 0.00708046556, 0.999974906)
+elif currentPlaceId == 17503543197 then
     world = 3
-    teleportPart = game.Workspace.Map3["200 | Void Spawn"].PARTS_LOD:GetChildren()[3].Mining.Enter
+    teleportCFrame = CFrame.new(-10263.2471, 5.67860603, -7330.23242, -5.34057617e-05, -0.962711513, -0.270530194, 1, -5.34057617e-05, -7.36117363e-06, -7.36117363e-06, -0.270530194, 0.962711513)
 end
 
 -- Logic for handling teleportation and mining event, as well as server hopping
 if world then
     print("Detected World:", world)
-    task.wait(10) -- Wait 3 seconds before teleporting
-    if teleportPart then
-        local player = game.Players.LocalPlayer
-        if player and player.Character then
-            player.Character:SetPrimaryPartCFrame(teleportPart.CFrame)
-            task.wait(4)
-            InstancingEvent:InvokeServer("MiningEvent")
-            
-            -- Check for pickaxe and handle the event
-            local path = workspace:FindFirstChild("__THINGS")
+    task.wait(10) -- Wait 10 seconds before teleporting
+    local player = game.Players.LocalPlayer
+    if player and player.Character and teleportCFrame then
+        player.Character:SetPrimaryPartCFrame(teleportCFrame)
+        task.wait(4)
+        InstancingEvent:InvokeServer("MiningEvent")
+        
+        -- Check for pickaxe and handle the event
+        local path = workspace:FindFirstChild("__THINGS")
+        if path then
+            path = path:FindFirstChild("__INSTANCE_CONTAINER")
             if path then
-                path = path:FindFirstChild("__INSTANCE_CONTAINER")
+                path = path:FindFirstChild("Active")
                 if path then
-                    path = path:FindFirstChild("Active")
+                    path = path:FindFirstChild("MiningEvent")
                     if path then
-                        path = path:FindFirstChild("MiningEvent")
+                        path = path:FindFirstChild("INTERACT")
                         if path then
-                            path = path:FindFirstChild("INTERACT")
-                            if path then
-                                local woodenPickaxe = path:FindFirstChild("WoodenPickaxe")
-                                if woodenPickaxe then
-                                    print("WoodenPickaxe exists!")
-                                    local args = {"MiningEvent", "ClaimPickaxe"}
-                                    FireCustomEvent:FireServer(unpack(args))
-                                else
-                                    print("WoodenPickaxe was already claimed!")
-                                end
+                            local woodenPickaxe = path:FindFirstChild("WoodenPickaxe")
+                            if woodenPickaxe then
+                                print("WoodenPickaxe exists!")
+                                local args = {"MiningEvent", "ClaimPickaxe"}
+                                FireCustomEvent:FireServer(unpack(args))
+                            else
+                                print("WoodenPickaxe was already claimed!")
                             end
                         end
                     end
@@ -143,6 +140,7 @@ if world then
         end
     end
 end
+
 
 teleportToZone5()
 task.wait(7)
@@ -153,4 +151,3 @@ task.wait(3)
 isMining = true
 coroutine.wrap(startMining)()
 coroutine.wrap(serverHop)()
-
