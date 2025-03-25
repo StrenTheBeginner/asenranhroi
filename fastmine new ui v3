@@ -1,0 +1,255 @@
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local UserInputService = game:GetService("UserInputService")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- Fluent UI Implementation
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+
+local Window = Fluent:CreateWindow({
+    Title = "Fast Mine " .. Fluent.Version,
+    SubTitle = "by ProjectLunar",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = true,
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.LeftControl
+})
+
+-- Main Tab
+local Tabs = {
+    Main = Window:AddTab({ Title = "Main", Icon = "" }),
+    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
+}
+
+-- Mining Variables
+local isMining = false
+local isStartOver = false
+local stopMining = false
+local currentY, currentX, currentZ = 0, -8, 7
+local MIN_Y = -200
+local MIN_X, MAX_X = -8, 7
+local MAX_Z, MIN_Z = 7, -8
+
+local zones = {
+    {name = "Zone 1: Mining Town", zone = "__Zone_1", cframe = CFrame.new(17165.5098, 10.7518921, -8117.19189)},
+    {name = "Zone 2: Ancient Cave", zone = "__Zone_2", cframe = CFrame.new(16410.5098, 47.2852783, -1955.0459)},
+    {name = "Zone 3: Frozen Echo", zone = "__Zone_3", cframe = CFrame.new(17350.7422, 5.75543213, -18357.1953)},
+    {name = "Zone 4: Deep Abyss", zone = "__Zone_4", cframe = CFrame.new(15302.7432, 0.758911133, -13338.9453)},
+    {name = "Zone 5: Abstract Void", zone = "__Zone_5", cframe = CFrame.new(11967.5088, 5.770939827, -3995.94141)}
+}
+
+-- Mining Functions
+local function resetCoords()
+    currentY, currentX, currentZ = 0, -8, 7
+end
+
+local function incrementCoords()
+    currentZ = currentZ - 1
+    if currentZ < MIN_Z then
+        currentZ = MAX_Z
+        currentX = currentX + 1
+        if currentX > MAX_X then
+            currentX = MIN_X
+            currentY = currentY - 1
+        end
+    end
+end
+
+local function startMining()
+    local Network = ReplicatedStorage:WaitForChild("Network")
+    local targetEvent = Network:WaitForChild("BlockWorlds_Target")
+    local breakEvent = Network:WaitForChild("BlockWorlds_Break")
+
+    while not stopMining do
+        local coords = Vector3int16.new(currentX, currentY, currentZ)
+        targetEvent:FireServer(coords)
+        task.wait(0)
+        breakEvent:FireServer(coords)
+        task.wait(0)
+        incrementCoords()
+    end
+
+    isMining = false
+    Tabs.Main:GetSection("Mining"):SetOptions({
+        MineZone5 = {
+            Value = false
+        }
+    })
+end
+
+-- UI Elements
+local selectedZone = nil
+
+-- Main Tab
+local MiningSection = Tabs.Main:AddSection("Mining", {
+    Left = true,
+    Right = false
+})
+
+MiningSection:AddButton({
+    Title = "Select Zone To Farm",
+    Description = "DONT USE, I DIDNT COMPLETE THIS",
+    Callback = function()
+        local options = {}
+        for _, zone in ipairs(zones) do
+            table.insert(options, zone.name)
+        end
+        
+        Window:Dialog({
+            Title = "Select Zone",
+            Content = "Choose a zone to farm:",
+            Buttons = {
+                {
+                    Title = "Cancel",
+                    Callback = function()
+                        print("Cancelled")
+                    end
+                },
+                {
+                    Title = "Confirm",
+                    Callback = function()
+                        if selectedZone then
+                            -- Stop any active mining
+                            stopMining = true
+                            isMining = false
+                            isStartOver = false
+                            
+                            -- Teleport to selected zone
+                            local zoneData
+                            for _, zone in ipairs(zones) do
+                                if zone.name == selectedZone then
+                                    zoneData = zone
+                                    break
+                                end
+                            end
+                            
+                            if zoneData then
+                                local args = {[1] = zoneData.zone}
+                                ReplicatedStorage:WaitForChild("Network"):WaitForChild("Teleports_RequestInstanceTeleport"):InvokeServer(unpack(args))
+                                
+                                -- Wait 5 seconds then teleport to CFrame
+                                task.wait(5)
+                                if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                                    player.Character.HumanoidRootPart.CFrame = zoneData.cframe
+                                    
+                                    -- Wait 2 seconds then start mining
+                                    task.wait(2)
+                                    isMining = true
+                                    stopMining = false
+                                    resetCoords()
+                                    coroutine.wrap(startMining)()
+                                end
+                            end
+                        end
+                    end
+                }
+            },
+            Options = options,
+            Selected = selectedZone
+        })
+    end
+})
+
+MiningSection:AddToggle("MineZone5", {
+    Title = "Mine Zone 5",
+    Description = "Automatically mine in Zone 5",
+    Default = false,
+    Callback = function(Value)
+        if Value then
+            -- Teleport to Zone 5 first
+            local zone5 = zones[5]
+            local args = {[1] = zone5.zone}
+            ReplicatedStorage:WaitForChild("Network"):WaitForChild("Teleports_RequestInstanceTeleport"):InvokeServer(unpack(args))
+            
+            -- Wait 7 seconds then teleport to CFrame and start mining
+            task.wait(7)
+            if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                player.Character.HumanoidRootPart.CFrame = zone5.cframe
+                
+                -- Start mining
+                isMining = true
+                stopMining = false
+                resetCoords()
+                coroutine.wrap(startMining)()
+            end
+        else
+            isMining = false
+            stopMining = true
+        end
+    end
+})
+
+MiningSection:AddToggle("StartOver", {
+    Title = "Start Over",
+    Description = "Reset mining coordinates and start over",
+    Default = false,
+    Callback = function(Value)
+        if Value then
+            isStartOver = true
+            stopMining = true
+            task.wait(0.5)
+            resetCoords()
+            stopMining = false
+            coroutine.wrap(startMining)()
+        else
+            isStartOver = false
+            stopMining = true
+        end
+    end
+})
+
+-- Settings Tab
+local SettingsSection = Tabs.Settings:AddSection("Settings")
+
+SettingsSection:AddButton({
+    Title = "Discord",
+    Description = "Join our Discord server for support",
+    Callback = function()
+        setclipboard("https://discord.gg/NbP9hmrqtC")
+        Window:Dialog({
+            Title = "Discord",
+            Content = "Discord link copied to clipboard!",
+            Buttons = {
+                {
+                    Title = "OK",
+                    Callback = function()
+                        print("OK pressed")
+                    end
+                }
+            }
+        })
+    end
+})
+
+SettingsSection:AddButton({
+    Title = "Destroy UI",
+    Description = "Remove the UI from your screen",
+    Callback = function()
+        Window:Destroy()
+    end
+})
+
+-- Initialize the UI
+Fluent:Notify({
+    Title = "Fast Mine",
+    Content = "Script loaded successfully!",
+    Duration = 5
+})
+
+Window:SelectTab(1)
+
+SaveManager:SetLibrary(Fluent)
+InterfaceManager:SetLibrary(Fluent)
+
+SaveManager:IgnoreThemeSettings()
+SaveManager:SetIgnoreIndexes({})
+
+InterfaceManager:SetFolder("FluentScriptHub")
+InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+
+SaveManager:LoadAutoloadConfig()
