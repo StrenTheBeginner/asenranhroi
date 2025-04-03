@@ -1,0 +1,135 @@
+        GemImages = {
+        ["Rainbow Gem"] = "https://biggamesapi.io/image/rainbow_gem.png",
+        ["Emerald Gem"] = "https://biggamesapi.io/image/emerald_gem.png",
+        ["Amethyst Gem"] = "https://biggamesapi.io/image/amethyst_gem.png",
+        ["Onyx Gem"] = "https://biggamesapi.io/image/onyx_gem.png",
+        ["Topaz Gem"] = "https://biggamesapi.io/image/topaz_gem.png",
+        ["Quartz Gem"] = "https://biggamesapi.io/image/quartz_gem.png"
+    }
+}
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
+local Library = ReplicatedStorage.Library
+local SaveMod = require(Library.Client.Save)
+local function IsPlayerConnected()
+    local player = Players.LocalPlayer
+    return player and player:IsDescendantOf(game)
+end
+
+local function SendToWebhook(gemData)
+    local descriptionLines = {"**Current Gems:**", "```"}
+    local gems = {
+        {"Rainbow Gem", gemData.rainbow or 0},
+        {"Emerald Gem", gemData.emerald or 0},
+        {"Amethyst Gem", gemData.amethyst or 0},
+        {"Onyx Gem", gemData.onyx or 0},
+        {"Topaz Gem", gemData.topaz or 0},
+        {"Quartz Gem", gemData.quartz or 0}
+    }
+    
+    for _, gem in ipairs(gems) do
+        descriptionLines[#descriptionLines + 1] = string.format("%-12s = %d", gem[1], gem[2])
+    end
+    
+    descriptionLines[#descriptionLines + 1] = "```"
+    
+    local playerName = Players.LocalPlayer and Players.LocalPlayer.Name or "Unknown Player"
+    descriptionLines[#descriptionLines + 1] = string.format("\n**Gem Update for ||%s||**", playerName)
+    
+    local embedColor = IsPlayerConnected() and 0x00FF00 or 0xFF0000
+    
+    local mainEmbed = {
+        title = "💎 **Gem Inventory Update**",
+        description = table.concat(descriptionLines, "\n"),
+        color = embedColor,
+        timestamp = DateTime.now():ToIsoDate(),
+        footer = {
+            text = string.format("Next update in %d minutes", getgenv().Config.Webhook.UpdateIntervalMinutes)
+        }
+    }
+    
+    mainEmbed.thumbnail = {
+        url = getgenv().Config.GemImages["Rainbow Gem"]
+    }
+
+    local success, err = pcall(function()
+        local response = request({
+            Url = getgenv().Config.Webhook.URL,
+            Method = "POST",
+            Headers = {
+                ["Content-Type"] = "application/json"
+            },
+            Body = HttpService:JSONEncode({
+                content = getgenv().Config.Webhook.PingID and string.format("<@%s>", getgenv().Config.Webhook.PingID) or nil,
+                embeds = {mainEmbed}
+            })
+        })
+        return response
+    end)
+    
+    if not success then
+        warn("Failed to send webhook:", err)
+    end
+end
+
+local function GetAllGemAmounts()
+    local inventory = {}
+    local success, saveData = pcall(SaveMod.Get)
+    
+    if success and saveData and saveData.Inventory and saveData.Inventory.Misc then
+        inventory = saveData.Inventory.Misc
+    else
+        warn("Failed to get inventory data")
+    end
+
+    local gemData = {
+        rainbow = 0,
+        emerald = 0,
+        amethyst = 0,
+        onyx = 0,
+        topaz = 0,
+        quartz = 0
+    }
+
+    for _, itemData in pairs(inventory) do
+        if itemData and itemData.id and itemData._am then
+            if itemData.id == "Rainbow Gem" then
+                gemData.rainbow = gemData.rainbow + itemData._am
+            elseif itemData.id == "Emerald Gem" then
+                gemData.emerald = gemData.emerald + itemData._am
+            elseif itemData.id == "Amethyst Gem" then
+                gemData.amethyst = gemData.amethyst + itemData._am
+            elseif itemData.id == "Onyx Gem" then
+                gemData.onyx = gemData.onyx + itemData._am
+            elseif itemData.id == "Topaz Gem" then
+                gemData.topaz = gemData.topaz + itemData._am
+            elseif itemData.id == "Quartz Gem" then
+                gemData.quartz = gemData.quartz + itemData._am
+            end
+        end
+    end
+
+    return gemData
+end
+
+local function CheckAndNotifyGems()
+    local gemData = GetAllGemAmounts()
+    
+    print("\nCurrent Gems:")
+    print(string.format("%-12s = %d", "Rainbow Gem", gemData.rainbow or 0))
+    print(string.format("%-12s = %d", "Emerald Gem", gemData.emerald or 0))
+    print(string.format("%-12s = %d", "Amethyst Gem", gemData.amethyst or 0))
+    print(string.format("%-12s = %d", "Onyx Gem", gemData.onyx or 0))
+    print(string.format("%-12s = %d", "Topaz Gem", gemData.topaz or 0))
+    print(string.format("%-12s = %d", "Quartz Gem", gemData.quartz or 0))
+    
+    SendToWebhook(gemData)
+end
+
+CheckAndNotifyGems()
+while true do
+    wait(getgenv().Config.Webhook.UpdateIntervalMinutes * 60)
+    CheckAndNotifyGems()
+end
