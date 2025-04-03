@@ -118,7 +118,6 @@ local function SendToWebhook(gemData)
     end
 end
 
-task.wait(30)
 local function CheckAndNotifyGems()
     local gemData = GetAllGemAmounts()
     
