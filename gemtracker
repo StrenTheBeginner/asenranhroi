@@ -1,13 +1,3 @@
-        GemImages = {
-        ["Rainbow Gem"] = "https://biggamesapi.io/image/rainbow_gem.png",
-        ["Emerald Gem"] = "https://biggamesapi.io/image/emerald_gem.png",
-        ["Amethyst Gem"] = "https://biggamesapi.io/image/amethyst_gem.png",
-        ["Onyx Gem"] = "https://biggamesapi.io/image/onyx_gem.png",
-        ["Topaz Gem"] = "https://biggamesapi.io/image/topaz_gem.png",
-        ["Quartz Gem"] = "https://biggamesapi.io/image/quartz_gem.png"
-    }
-}
-
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
