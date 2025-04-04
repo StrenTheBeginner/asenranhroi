@@ -1,0 +1,318 @@
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+local Library = ReplicatedStorage.Library
+local SaveMod = require(Library.Client.Save)
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local HumanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+-- Create enhanced GUI with proper scrolling console
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local Title = Instance.new("TextLabel")
+local LogsFrame = Instance.new("Frame")
+local ScrollingFrame = Instance.new("ScrollingFrame")
+local LogsContainer = Instance.new("Frame")
+local UIListLayout = Instance.new("UIListLayout")
+
+ScreenGui.Name = "AutoCraftGemGUI"
+ScreenGui.Parent = player.PlayerGui
+ScreenGui.ResetOnSpawn = false
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+Frame.Name = "MainFrame"
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Frame.BackgroundTransparency = 0.3
+Frame.BorderColor3 = Color3.fromRGB(255, 0, 255)
+Frame.BorderSizePixel = 2
+Frame.Position = UDim2.new(0.02, 0, 0.5, -150)
+Frame.Size = UDim2.new(0.25, 0, 0.3, 0)
+Frame.ClipsDescendants = true
+
+Title.Name = "Title"
+Title.Parent = Frame
+Title.BackgroundColor3 = Color3.fromRGB(255, 0, 255)
+Title.BackgroundTransparency = 0.7
+Title.Size = UDim2.new(1, -10, 0, 30)
+Title.Position = UDim2.new(0, 5, 0, 5)
+Title.Font = Enum.Font.GothamBold
+Title.Text = "Auto Craft Gem | Project Lunar 🌙"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextSize = 14
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+LogsFrame.Name = "LogsFrame"
+LogsFrame.Parent = Frame
+LogsFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+LogsFrame.BackgroundTransparency = 0.7
+LogsFrame.Position = UDim2.new(0, 5, 0, 40)
+LogsFrame.Size = UDim2.new(1, -10, 1, -50)
+LogsFrame.ClipsDescendants = true
+
+ScrollingFrame.Parent = LogsFrame
+ScrollingFrame.BackgroundTransparency = 1
+ScrollingFrame.Size = UDim2.new(1, 0, 1, 0)
+ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+ScrollingFrame.ScrollBarThickness = 5
+ScrollingFrame.ScrollBarImageColor3 = Color3.fromRGB(255, 0, 255)
+ScrollingFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+
+LogsContainer.Name = "LogsContainer"
+LogsContainer.Parent = ScrollingFrame
+LogsContainer.BackgroundTransparency = 1
+LogsContainer.Size = UDim2.new(1, 0, 0, 0)
+LogsContainer.AutomaticSize = Enum.AutomaticSize.Y
+
+UIListLayout.Parent = LogsContainer
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.Padding = UDim.new(0, 3)
+
+-- Function to add logs to GUI with timestamp
+local function AddLog(message, isError)
+    local timestamp = os.date("%H:%M:%S")
+    local LogLabel = Instance.new("TextLabel")
+    LogLabel.Name = "Log_"..tostring(os.time())
+    LogLabel.Parent = LogsContainer
+    LogLabel.BackgroundTransparency = 1
+    LogLabel.Size = UDim2.new(1, -5, 0, 20)
+    LogLabel.Font = Enum.Font.RobotoMono
+    LogLabel.Text = "["..timestamp.."] "..message
+    LogLabel.TextColor3 = isError and Color3.fromRGB(255, 100, 100) or Color3.fromRGB(220, 220, 220)
+    LogLabel.TextSize = 12
+    LogLabel.TextXAlignment = Enum.TextXAlignment.Left
+    LogLabel.TextWrapped = true
+    LogLabel.TextYAlignment = Enum.TextYAlignment.Top
+    LogLabel.AutomaticSize = Enum.AutomaticSize.Y
+    
+    -- Auto-scroll to bottom
+    task.spawn(function()
+        task.wait()
+        ScrollingFrame.CanvasPosition = Vector2.new(0, ScrollingFrame.AbsoluteCanvasSize.Y)
+    end)
+end
+
+-- Override print and warn functions
+local originalPrint = print
+local originalWarn = warn
+
+function print(...)
+    local message = table.concat({...}, " ")
+    originalPrint(message)
+    AddLog(message, false)
+end
+
+function warn(...)
+    local message = table.concat({...}, " ")
+    originalWarn(message)
+    AddLog("[WARNING] "..message, true)
+end
+
+print("Auto craft gem starting soon...")
+wait(5)
+
+local function teleportToCFrame(cframe)
+    if character and HumanoidRootPart then
+        HumanoidRootPart.CFrame = cframe
+    end
+end
+
+local function teleportToZone()
+    local args = { [1] = "__Zone_8" }
+    ReplicatedStorage.Network.Teleports_RequestInstanceTeleport:InvokeServer(unpack(args))
+end
+
+local function teleportToCraftingMachine()
+    local instanceContainer = workspace.__THINGS.__INSTANCE_CONTAINER.Active
+    if instanceContainer then
+        local machine = instanceContainer.MiningEvent.INTERACT.Machines.MiningCraftMachine.Pad
+        if machine then
+            teleportToCFrame(machine.CFrame * CFrame.new(0, 3, 0))
+        end
+    end
+end
+
+local function GetAllGemAmounts()
+    local inventory = {}
+    local success, saveData = pcall(SaveMod.Get)
+    
+    if success and saveData and saveData.Inventory and saveData.Inventory.Misc then
+        inventory = saveData.Inventory.Misc
+    else
+        warn("Failed to get inventory data")
+    end
+
+    local gemData = {
+        rainbow = 0,
+        emerald = 0,
+        amethyst = 0,
+        onyx = 0,
+        topaz = 0,
+        quartz = 0
+    }
+
+    for _, itemData in pairs(inventory) do
+        if itemData and itemData.id and itemData._am then
+            if itemData.id == "Rainbow Gem" then
+                gemData.rainbow = gemData.rainbow + itemData._am
+            elseif itemData.id == "Emerald Gem" then
+                gemData.emerald = gemData.emerald + itemData._am
+            elseif itemData.id == "Amethyst Gem" then
+                gemData.amethyst = gemData.amethyst + itemData._am
+            elseif itemData.id == "Onyx Gem" then
+                gemData.onyx = gemData.onyx + itemData._am
+            elseif itemData.id == "Topaz Gem" then
+                gemData.topaz = gemData.topaz + itemData._am
+            elseif itemData.id == "Quartz Gem" then
+                gemData.quartz = gemData.quartz + itemData._am
+            end
+        end
+    end
+
+    return gemData
+end
+
+local function craftGem(gemType, amount, currentCraft, totalCrafts)
+    local craftTypes = {
+        emerald = {number = 3, name = "Amethyst", from = "Emerald"},
+        amethyst = {number = 4, name = "Rainbow", from = "Amethyst"},
+        rainbow = {number = 5, name = "Quartz", from = "Rainbow"},
+        quartz = {number = 6, name = "Topaz", from = "Quartz"},
+        topaz = {number = 7, name = "Onyx", from = "Topaz"}
+    }
+    
+    local craftInfo = craftTypes[gemType]
+    if not craftInfo then return false end
+    
+    local args = {
+        [1] = "MiningCraftMachine",
+        [2] = craftInfo.number,
+        [3] = amount,
+        [4] = {
+            ["shiny"] = false,
+            ["pt"] = 0
+        }
+    }
+    
+    print(string.format("Crafting %s from %s (%d/%d)", craftInfo.name, craftInfo.from, currentCraft, totalCrafts))
+    
+    local success, result = pcall(function()
+        return ReplicatedStorage.Network.PetCraftingMachine_Craft:InvokeServer(unpack(args))
+    end)
+    
+    if success then
+        print(string.format("Successfully crafted %d %s gems (%d/%d)", amount, gemType, currentCraft, totalCrafts))
+        return true
+    else
+        warn(string.format("Failed to craft %s gems (%d/%d):", gemType, currentCraft, totalCrafts), result)
+        return false
+    end
+end
+
+local function autoCraftGems()
+    local gems = GetAllGemAmounts()
+
+    if gems.emerald >= 1000 then
+        local totalCrafts = math.floor(gems.emerald / 1000)
+        local craftAmount = 100
+        print(string.format("\nStarting craft Amethyst from Emeralds (%d Emeralds in Inventory) (0/%d)", gems.emerald, totalCrafts))
+        
+        for i = 1, totalCrafts do
+            if craftGem("emerald", craftAmount, i, totalCrafts) then
+                wait(3)
+            else
+                break
+            end
+        end
+        print("Finished crafting Amethyst from Emeralds")
+        return true
+        
+    elseif gems.amethyst >= 1000 then
+        local totalCrafts = math.floor(gems.amethyst / 1000)
+        local craftAmount = 100
+        print(string.format("\nStarting craft Rainbow from Amethysts (%d Amethysts in Inventory) (0/%d)", gems.amethyst, totalCrafts))
+        
+        for i = 1, totalCrafts do
+            if craftGem("amethyst", craftAmount, i, totalCrafts) then
+                wait(3)
+            else
+                break
+            end
+        end
+        print("Finished crafting Rainbow from Amethysts")
+        return true
+        
+    elseif gems.rainbow >= 1000 then
+        local totalCrafts = math.floor(gems.rainbow / 1000)
+        local craftAmount = 100
+        print(string.format("\nStarting craft Quartz from Rainbows (%d Rainbows in Inventory) (0/%d)", gems.rainbow, totalCrafts))
+        
+        for i = 1, totalCrafts do
+            if craftGem("rainbow", craftAmount, i, totalCrafts) then
+                wait(3)
+            else
+                break
+            end
+        end
+        print("Finished crafting Quartz from Rainbows")
+        return true
+        
+    elseif gems.quartz >= 1000 then
+        local totalCrafts = math.floor(gems.quartz / 1000)
+        local craftAmount = 100
+        print(string.format("\nStarting craft Topaz from Quartz (%d Quartz in Inventory) (0/%d)", gems.quartz, totalCrafts))
+        
+        for i = 1, totalCrafts do
+            if craftGem("quartz", craftAmount, i, totalCrafts) then
+                wait(3)
+            else
+                break
+            end
+        end
+        print("Finished crafting Topaz from Quartz")
+        return true
+        
+    elseif gems.topaz >= 1000 then
+        local totalCrafts = math.floor(gems.topaz / 1000)
+        local craftAmount = 100
+        print(string.format("\nStarting craft Onyx from Topaz (%d Topaz in Inventory) (0/%d)", gems.topaz, totalCrafts))
+        
+        for i = 1, totalCrafts do
+            if craftGem("topaz", craftAmount, i, totalCrafts) then
+                wait(3)
+            else
+                break
+            end
+        end
+        print("Finished crafting Onyx from Topaz")
+        return true
+    else
+        print("\nNot enough gems to craft anything")
+        return false
+    end
+end
+
+
+print("Teleporting to initial position...")
+teleportToCFrame(CFrame.new(179.702148, 19.0086937, -139.804199, -2.56299973e-05, -0.998239934, 0.0593036786, 0.99999994, -2.56299973e-05, 7.59959221e-07, 7.59959221e-07, 0.0593036786, 0.998239994))
+wait(3)
+
+print("Teleporting to mining zone...")
+teleportToZone()
+wait(3)
+
+print("Teleporting to crafting machine...")
+teleportToCraftingMachine()
+wait(1)
+
+print("\nStarting crafting process...")
+local crafting = true
+while crafting do
+    crafting = autoCraftGems()
+    if crafting then
+        print("\nChecking for more gems to craft...")
+        wait(3)
+    end
+end
+
+print("\nFinished crafting all possible gems")
