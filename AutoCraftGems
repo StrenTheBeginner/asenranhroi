@@ -295,15 +295,15 @@ end
 
 print("Teleporting to initial position...")
 teleportToCFrame(CFrame.new(179.702148, 19.0086937, -139.804199, -2.56299973e-05, -0.998239934, 0.0593036786, 0.99999994, -2.56299973e-05, 7.59959221e-07, 7.59959221e-07, 0.0593036786, 0.998239994))
-wait(3)
+wait(5)
 
 print("Teleporting to mining zone...")
 teleportToZone()
-wait(3)
+wait(4)
 
 print("Teleporting to crafting machine...")
 teleportToCraftingMachine()
-wait(1)
+wait(2)
 
 print("\nStarting crafting process...")
 local crafting = true
