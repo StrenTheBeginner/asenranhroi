@@ -3,13 +3,12 @@ local Players = game:GetService("Players")
 local Library = ReplicatedStorage.Library
 local SaveMod = require(Library.Client.Save)
 local player = Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-local HumanoidRootPart = character:WaitForChild("HumanoidRootPart")
 
 -- Create enhanced GUI with proper scrolling console
 local ScreenGui = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
 local Title = Instance.new("TextLabel")
+local CloseButton = Instance.new("TextButton")
 local LogsFrame = Instance.new("Frame")
 local ScrollingFrame = Instance.new("ScrollingFrame")
 local LogsContainer = Instance.new("Frame")
@@ -34,13 +33,28 @@ Title.Name = "Title"
 Title.Parent = Frame
 Title.BackgroundColor3 = Color3.fromRGB(255, 0, 255)
 Title.BackgroundTransparency = 0.7
-Title.Size = UDim2.new(1, -10, 0, 30)
+Title.Size = UDim2.new(1, -30, 0, 30)
 Title.Position = UDim2.new(0, 5, 0, 5)
 Title.Font = Enum.Font.GothamBold
 Title.Text = "Auto Craft Gem | Project Lunar 🌙"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.TextSize = 14
 Title.TextXAlignment = Enum.TextXAlignment.Left
+
+CloseButton.Name = "CloseButton"
+CloseButton.Parent = Frame
+CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+CloseButton.BackgroundTransparency = 0.7
+CloseButton.Position = UDim2.new(1, -25, 0, 5)
+CloseButton.Size = UDim2.new(0, 20, 0, 20)
+CloseButton.Font = Enum.Font.GothamBold
+CloseButton.Text = "X"
+CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.TextSize = 14
+CloseButton.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+    script:Destroy()
+end)
 
 LogsFrame.Name = "LogsFrame"
 LogsFrame.Parent = Frame
@@ -108,29 +122,7 @@ function warn(...)
     AddLog("[WARNING] "..message, true)
 end
 
-print("Auto craft gem starting soon...")
-wait(5)
-
-local function teleportToCFrame(cframe)
-    if character and HumanoidRootPart then
-        HumanoidRootPart.CFrame = cframe
-    end
-end
-
-local function teleportToZone()
-    local args = { [1] = "__Zone_8" }
-    ReplicatedStorage.Network.Teleports_RequestInstanceTeleport:InvokeServer(unpack(args))
-end
-
-local function teleportToCraftingMachine()
-    local instanceContainer = workspace.__THINGS.__INSTANCE_CONTAINER.Active
-    if instanceContainer then
-        local machine = instanceContainer.MiningEvent.INTERACT.Machines.MiningCraftMachine.Pad
-        if machine then
-            teleportToCFrame(machine.CFrame * CFrame.new(0, 3, 0))
-        end
-    end
-end
+print("Auto Craft starting now...")
 
 local function GetAllGemAmounts()
     local inventory = {}
@@ -178,132 +170,276 @@ local function craftGem(gemType, amount, currentCraft, totalCrafts)
         amethyst = {number = 4, name = "Rainbow", from = "Amethyst"},
         rainbow = {number = 5, name = "Quartz", from = "Rainbow"},
         quartz = {number = 6, name = "Topaz", from = "Quartz"},
-        topaz = {number = 7, name = "Onyx", from = "Topaz"}
+        topaz = {number = 7, name = "Onyx", from = "Topaz"},
+        onyx = {number = 8, name = "Huge Mining Monkey", from = "Onyx"}
     }
     
     local craftInfo = craftTypes[gemType]
     if not craftInfo then return false end
     
+    -- Calculate actual amount to send to server
+    local serverAmount = amount
+    local consumedAmount = amount * 10
+    if amount == 1 then
+        consumedAmount = 10  -- For single crafts, we still consume 10 gems
+    end
+    
+    print(string.format("Attempting to craft %d %s from %d %s (%d/%d)", 
+        amount, craftInfo.name, consumedAmount, craftInfo.from, currentCraft, totalCrafts))
+    
     local args = {
         [1] = "MiningCraftMachine",
         [2] = craftInfo.number,
-        [3] = amount,
+        [3] = serverAmount,
         [4] = {
             ["shiny"] = false,
             ["pt"] = 0
         }
     }
     
-    print(string.format("Crafting %s from %s (%d/%d)", craftInfo.name, craftInfo.from, currentCraft, totalCrafts))
-    
     local success, result = pcall(function()
         return ReplicatedStorage.Network.PetCraftingMachine_Craft:InvokeServer(unpack(args))
     end)
     
     if success then
-        print(string.format("Successfully crafted %d %s gems (%d/%d)", amount, gemType, currentCraft, totalCrafts))
-        return true
+        -- Handle both table response and boolean response
+        if type(result) == "table" then
+            if result.success then
+                print(string.format("Success! Crafted %d %s from %d %s (%d/%d)", 
+                    amount, craftInfo.name, consumedAmount, craftInfo.from, currentCraft, totalCrafts))
+                return true
+            else
+                warn(string.format("Server rejected craft for %s (code %s): %s", 
+                    gemType, 
+                    tostring(result.code or "N/A"), 
+                    tostring(result.message or "Unknown error")))
+                return false
+            end
+        elseif type(result) == "boolean" then
+            if result then
+                print(string.format("Success! Crafted %d %s from %d %s (%d/%d)", 
+                    amount, craftInfo.name, consumedAmount, craftInfo.from, currentCraft, totalCrafts))
+                return true
+            else
+                warn("Server rejected craft (simple false response)")
+                return false
+            end
+        else
+            warn("Unexpected server response type:", type(result))
+            return false
+        end
     else
-        warn(string.format("Failed to craft %s gems (%d/%d):", gemType, currentCraft, totalCrafts), result)
+        warn(string.format("Failed to call craft remote for %s: %s", gemType, tostring(result)))
         return false
     end
+end
+
+local function calculateCrafts(gemAmount)
+    local crafts = {}
+    local remaining = gemAmount
+    
+    -- Calculate crafts for 10000 batches (requires 100000 gems)
+    if remaining >= 100000 then
+        local count = math.floor(remaining / 100000)
+        if count > 0 then
+            table.insert(crafts, {amount = 10000, count = count})
+            remaining = remaining - (count * 100000)
+        end
+    end
+    
+    -- Calculate crafts for 1000 batches (requires 10000 gems)
+    if remaining >= 10000 then
+        local count = math.floor(remaining / 10000)
+        if count > 0 then
+            table.insert(crafts, {amount = 1000, count = count})
+            remaining = remaining - (count * 10000)
+        end
+    end
+    
+    -- Calculate crafts for 100 batches (requires 1000 gems)
+    if remaining >= 1000 then
+        local count = math.floor(remaining / 1000)
+        if count > 0 then
+            table.insert(crafts, {amount = 100, count = count})
+            remaining = remaining - (count * 1000)
+        end
+    end
+    
+    -- Calculate crafts for 10 batches (requires 100 gems)
+    if remaining >= 100 then
+        local count = math.floor(remaining / 100)
+        if count > 0 then
+            table.insert(crafts, {amount = 10, count = count})
+            remaining = remaining - (count * 100)
+        end
+    end
+    
+    -- Calculate crafts for single batches (requires 10 gems)
+    if remaining >= 10 then
+        table.insert(crafts, {amount = 1, count = math.floor(remaining / 10)})
+    end
+    
+    return crafts
 end
 
 local function autoCraftGems()
     local gems = GetAllGemAmounts()
-
-    if gems.emerald >= 1000 then
-        local totalCrafts = math.floor(gems.emerald / 1000)
-        local craftAmount = 100
-        print(string.format("\nStarting craft Amethyst from Emeralds (%d Emeralds in Inventory) (0/%d)", gems.emerald, totalCrafts))
+    local craftedSomething = false
+    
+    -- First check if we need to update our gem counts
+    local function refreshGems()
+        gems = GetAllGemAmounts()
+        print("Current gem counts:")
+        print(string.format("Emerald: %d | Amethyst: %d | Rainbow: %d | Quartz: %d | Topaz: %d | Onyx: %d",
+            gems.emerald, gems.amethyst, gems.rainbow, gems.quartz, gems.topaz, gems.onyx))
+    end
+    
+    refreshGems()
+    
+    -- Emerald to Amethyst
+    if gems.emerald >= 10 then
+        local crafts = calculateCrafts(gems.emerald)
+        print(string.format("\nStarting craft Amethyst from Emeralds (%d Emeralds in Inventory)", gems.emerald))
         
-        for i = 1, totalCrafts do
-            if craftGem("emerald", craftAmount, i, totalCrafts) then
-                wait(3)
-            else
-                break
+        for _, craft in ipairs(crafts) do
+            print(string.format("Processing %d crafts of %d Emeralds each (total %d Emeralds)", 
+                craft.count, craft.amount * 10, craft.count * craft.amount * 10))
+            
+            for i = 1, craft.count do
+                if craftGem("emerald", craft.amount, i, craft.count) then
+                    wait(3)
+                    refreshGems()
+                else
+                    print("Stopping crafting due to error")
+                    return true
+                end
             end
         end
         print("Finished crafting Amethyst from Emeralds")
+        craftedSomething = true
         return true
+    end
+    
+    -- Amethyst to Rainbow
+    if gems.amethyst >= 10 then
+        local crafts = calculateCrafts(gems.amethyst)
+        print(string.format("\nStarting craft Rainbow from Amethysts (%d Amethysts in Inventory)", gems.amethyst))
         
-    elseif gems.amethyst >= 1000 then
-        local totalCrafts = math.floor(gems.amethyst / 1000)
-        local craftAmount = 100
-        print(string.format("\nStarting craft Rainbow from Amethysts (%d Amethysts in Inventory) (0/%d)", gems.amethyst, totalCrafts))
-        
-        for i = 1, totalCrafts do
-            if craftGem("amethyst", craftAmount, i, totalCrafts) then
-                wait(3)
-            else
-                break
+        for _, craft in ipairs(crafts) do
+            print(string.format("Processing %d crafts of %d Amethysts each (total %d Amethysts)", 
+                craft.count, craft.amount * 10, craft.count * craft.amount * 10))
+            
+            for i = 1, craft.count do
+                if craftGem("amethyst", craft.amount, i, craft.count) then
+                    wait(3)
+                    refreshGems()
+                else
+                    print("Stopping crafting due to error")
+                    return true
+                end
             end
         end
         print("Finished crafting Rainbow from Amethysts")
+        craftedSomething = true
         return true
+    end
+    
+    -- Rainbow to Quartz
+    if gems.rainbow >= 10 then
+        local crafts = calculateCrafts(gems.rainbow)
+        print(string.format("\nStarting craft Quartz from Rainbows (%d Rainbows in Inventory)", gems.rainbow))
         
-    elseif gems.rainbow >= 1000 then
-        local totalCrafts = math.floor(gems.rainbow / 1000)
-        local craftAmount = 100
-        print(string.format("\nStarting craft Quartz from Rainbows (%d Rainbows in Inventory) (0/%d)", gems.rainbow, totalCrafts))
-        
-        for i = 1, totalCrafts do
-            if craftGem("rainbow", craftAmount, i, totalCrafts) then
-                wait(3)
-            else
-                break
+        for _, craft in ipairs(crafts) do
+            print(string.format("Processing %d crafts of %d Rainbows each (total %d Rainbows)", 
+                craft.count, craft.amount * 10, craft.count * craft.amount * 10))
+            
+            for i = 1, craft.count do
+                if craftGem("rainbow", craft.amount, i, craft.count) then
+                    wait(3)
+                    refreshGems()
+                else
+                    print("Stopping crafting due to error")
+                    return true
+                end
             end
         end
         print("Finished crafting Quartz from Rainbows")
+        craftedSomething = true
         return true
+    end
+    
+    -- Quartz to Topaz
+    if gems.quartz >= 10 then
+        local crafts = calculateCrafts(gems.quartz)
+        print(string.format("\nStarting craft Topaz from Quartz (%d Quartz in Inventory)", gems.quartz))
         
-    elseif gems.quartz >= 1000 then
-        local totalCrafts = math.floor(gems.quartz / 1000)
-        local craftAmount = 100
-        print(string.format("\nStarting craft Topaz from Quartz (%d Quartz in Inventory) (0/%d)", gems.quartz, totalCrafts))
-        
-        for i = 1, totalCrafts do
-            if craftGem("quartz", craftAmount, i, totalCrafts) then
-                wait(3)
-            else
-                break
+        for _, craft in ipairs(crafts) do
+            print(string.format("Processing %d crafts of %d Quartz each (total %d Quartz)", 
+                craft.count, craft.amount * 10, craft.count * craft.amount * 10))
+            
+            for i = 1, craft.count do
+                if craftGem("quartz", craft.amount, i, craft.count) then
+                    wait(3)
+                    refreshGems()
+                else
+                    print("Stopping crafting due to error")
+                    return true
+                end
             end
         end
         print("Finished crafting Topaz from Quartz")
+        craftedSomething = true
         return true
+    end
+    
+    -- Topaz to Onyx
+    if gems.topaz >= 10 then
+        local crafts = calculateCrafts(gems.topaz)
+        print(string.format("\nStarting craft Onyx from Topaz (%d Topaz in Inventory)", gems.topaz))
         
-    elseif gems.topaz >= 1000 then
-        local totalCrafts = math.floor(gems.topaz / 1000)
-        local craftAmount = 100
-        print(string.format("\nStarting craft Onyx from Topaz (%d Topaz in Inventory) (0/%d)", gems.topaz, totalCrafts))
-        
-        for i = 1, totalCrafts do
-            if craftGem("topaz", craftAmount, i, totalCrafts) then
-                wait(3)
-            else
-                break
+        for _, craft in ipairs(crafts) do
+            print(string.format("Processing %d crafts of %d Topaz each (total %d Topaz)", 
+                craft.count, craft.amount * 10, craft.count * craft.amount * 10))
+            
+            for i = 1, craft.count do
+                if craftGem("topaz", craft.amount, i, craft.count) then
+                    wait(3)
+                    refreshGems()
+                else
+                    print("Stopping crafting due to error")
+                    return true
+                end
             end
         end
         print("Finished crafting Onyx from Topaz")
+        craftedSomething = true
         return true
-    else
-        print("\nNot enough gems to craft anything")
+    end
+    
+    -- Onyx to Huge Mining Monkey (special case - always craft 1 at a time)
+    if gems.onyx >= 10 then
+        local totalCrafts = math.floor(gems.onyx / 10)
+        print(string.format("\nStarting craft Huge Mining Monkey from Onyx (%d Onyx in Inventory)", gems.onyx))
+        
+        for i = 1, totalCrafts do
+            if craftGem("onyx", 1, i, totalCrafts) then
+                wait(3)
+                refreshGems()
+            else
+                print("Stopping crafting due to error")
+                return true
+            end
+        end
+        print("Finished crafting Huge Mining Monkey from Onyx")
+        craftedSomething = true
+        return true
+    end
+    
+    if not craftedSomething then
+        print("\nNot enough gems to craft anything (minimum 10 required)")
         return false
     end
 end
-
-
-print("Teleporting to initial position...")
-teleportToCFrame(CFrame.new(179.702148, 19.0086937, -139.804199, -2.56299973e-05, -0.998239934, 0.0593036786, 0.99999994, -2.56299973e-05, 7.59959221e-07, 7.59959221e-07, 0.0593036786, 0.998239994))
-wait(5)
-
-print("Teleporting to mining zone...")
-teleportToZone()
-wait(4)
-
-print("Teleporting to crafting machine...")
-teleportToCraftingMachine()
-wait(2)
 
 print("\nStarting crafting process...")
 local crafting = true
