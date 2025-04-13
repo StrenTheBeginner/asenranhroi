@@ -527,6 +527,8 @@ local function MoveToPosition(targetPos, distanceThreshold)
     print("Arrived at position:", targetPos)
 end
 
+local TeleportService = game:GetService("TeleportService")
+
 local function AttemptUnlock(island)
     for attempt = 1, getgenv().Config.IslandUnlockAttempts do
         print(string.format("Attempt %d/%d for %s", attempt, getgenv().Config.IslandUnlockAttempts, island.Name))
@@ -545,14 +547,21 @@ end
 local function AutoUnlockIslands()
     while getgenv().Config.AutoUnlockIslands do
         AddAction("Checking & Unlocking Islands...")
+
+        local unlockedThisSession = 0
+
         for _, island in ipairs(Islands) do
             if not IsIslandUnlocked(island.Name) then
-                AttemptUnlock(island)
+                local success = AttemptUnlock(island)
+                if success then
+                    unlockedThisSession += 1
+                end
             else
                 print(island.Name .. " is already unlocked.")
             end
         end
-        -- Update island count
+
+        -- Count how many are unlocked total
         local discovered = 0
         local rg = SafeGeneric()
         if rg then
@@ -563,10 +572,19 @@ local function AutoUnlockIslands()
             end
         end
         BubbleStats.IslandsDiscovered = discovered
-        -- Wait before next check
+
+        -- If all unlocked and at least one was just unlocked now → rejoin
+        if discovered == #Islands and unlockedThisSession > 0 then
+            AddAction("✅ All islands unlocked this session. Rejoining once to fix movement...")
+            task.wait(2)
+            TeleportService:Teleport(game.PlaceId, Players.LocalPlayer)
+            break
+        end
+
         task.wait(60)
     end
 end
+
 
 --------------------------------
 -- AUTO BUBBLE FARM
@@ -794,7 +812,7 @@ local function AutoUpgradeMasteryAndClaim()
         local argsPlaytime = { [1] = "ClaimPlaytime", [2] = 2 }  -- Change the number from 1 to 10 as needed
         RemoteFunction:InvokeServer(unpack(argsPlaytime))
         
-        task.wait(4)
+        task.wait(2)
     end
 end
 
@@ -803,7 +821,7 @@ local function AutoClaimSeason()
     while true do
         local argsSeason = { [1] = "ClaimSeason" }
         RemoteEvent:FireServer(unpack(argsSeason))
-        task.wait(60)
+        task.wait(30)
     end
 end
 
