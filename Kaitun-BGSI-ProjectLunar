@@ -895,21 +895,29 @@ print("WalkSpeed set to 40")
 -- Execute the RedeemCode function one time
 AutoRedeemCodeOnce()
 
--- Then in AutoHatchEggs() replace the inner hatch loop with this:
-for i = 1, getgenv().Config.MaxHatchAttempts do
-    -- Check chests before hatching
-    if CheckAndClaimChests() then
-        print("⏳ Waiting for character to reload after chest claim...")
-        WaitForCharacter()
+for _, eggName in ipairs(orderToUse) do
+    local eggData = Eggs[eggName]
+    if eggData then
+        print("Moving to " .. eggName)
         SafeMoveTo(eggData.pos)
-        print("Back to hatching: " .. eggName)
-    end
 
-    SpamEKey(getgenv().Config.ESpamDuration)
-    RemoteEvent:FireServer("EggHatch", eggName)
-    print("Hatching " .. eggName .. ": " .. i .. "/" .. getgenv().Config.MaxHatchAttempts)
-    task.wait(0.1)
+        print("Hatching " .. eggName .. "...")
+        for i = 1, getgenv().Config.MaxHatchAttempts do
+            if CheckAndClaimChests() then
+                print("⏳ Waiting for character to reload after chest claim...")
+                WaitForCharacter()
+                SafeMoveTo(eggData.pos)
+                print("Back to hatching: " .. eggName)
+            end
+
+            SpamEKey(getgenv().Config.ESpamDuration)
+            RemoteEvent:FireServer("EggHatch", eggName)
+            print("Hatching " .. eggName .. ": " .. i .. "/" .. getgenv().Config.MaxHatchAttempts)
+            task.wait(0.1)
+        end
+    end
 end
+
 
     -- Update currency & islands discovered every 2s
     while true do
