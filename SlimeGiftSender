@@ -6,8 +6,6 @@ local player = game.Players.LocalPlayer
 local username = getgenv().Config.Username
 local threshold = getgenv().Config.SlimeGiftAmounts
 local interval = (getgenv().Config.SendEveryMinutes or 30) * 60
-
---// Remote Name Recovery Script (for obfuscated remotes)
 local Network = getsenv(ReplicatedStorage.Library.Client.Network)
 local RemoteStruct = getupvalues(Network._remote)[1]
 local nameCache = { [1] = {}, [2] = {}, [3] = {} }
@@ -49,7 +47,6 @@ local function BypassRemote()
     warn(("-"):rep(50))
 end
 
---// Hàm gửi Slime Gift nếu đủ
 local function sendSlimeGifts()
     local inventory = Save.Get()["Inventory"]
     local lootboxInv = inventory["Lootbox"] or {}
@@ -91,7 +88,6 @@ local function sendSlimeGifts()
     end
 end
 
---// Chạy khôi phục remote và bắt đầu vòng lặp
 task.spawn(function()
     BypassRemote()
     while true do
