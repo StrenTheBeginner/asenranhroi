@@ -7,7 +7,7 @@
 -- WAIT FOR GAME & SETUP
 --------------------------------
 repeat task.wait() until game:IsLoaded() and game.Players.LocalPlayer
-task.wait(20)
+task.wait(1)
 print("Starting Project Lunar Bubble Gum Simulator...")
 
 --------------------------------
@@ -877,6 +877,36 @@ end
 -- AUTO HATCH SELECTED EGG
 --------------------------------
 
+local function DisableHatchCutscene()
+    local HatchModule = require(ReplicatedStorage:WaitForChild("Client"):WaitForChild("Effects"):WaitForChild("HatchEgg"))
+    local originalPlay = HatchModule.Play
+
+    HatchModule.Play = function(hatchResult)
+        -- 🧼 Skip cutscene logic
+        if hatchResult and hatchResult.Pets then
+            local gui = Players.LocalPlayer:WaitForChild("PlayerGui")
+            local screen = gui:FindFirstChild("ScreenGui")
+            if screen then
+                local hatchUI = screen:FindFirstChild("Hatching")
+                if hatchUI then
+                    hatchUI.Visible = false
+                end
+                if screen:FindFirstChild("HUD") then
+                    screen.HUD.Visible = true
+                end
+            end
+
+            local GuiFrameController = require(ReplicatedStorage:WaitForChild("Client"):WaitForChild("Gui"):WaitForChild("GuiFrame"))
+            GuiFrameController:OpenLast(true)
+
+            print("🚫 Hatch cutscene skipped.")
+            AddAction("🚫 Hatch cutscene skipped")
+        end
+        -- Optionally, skip calling originalPlay if visuals are unwanted
+    end
+end
+
+
 -- 📦 Handles auto-hatching or fallback
 local function AutoSelectedEggOrFallback()
     -- Wait for islands unlock first
@@ -1242,6 +1272,8 @@ print("WalkSpeed set to 40")
     BypassLoadingScreen()
     CreateUI()
     Disable3DRendering()
+    DisableHatchCutscene()
+
 
     -- Start concurrent processes --License Owned by Project Lunar ( nesa ), dont skid hahahahaahaha
     if getgenv().Config.AutoUnlockIslands then
