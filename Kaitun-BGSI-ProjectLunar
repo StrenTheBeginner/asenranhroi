@@ -25,6 +25,7 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Framework = Shared:WaitForChild("Framework")
 local Network = Framework:WaitForChild("Network")
 local RemoteFunction = Network:WaitForChild("Remote"):WaitForChild("Function")
+local TeleportService = game:GetService("TeleportService")
 
 local player = Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
@@ -84,37 +85,18 @@ local StorageGum = {
 
 
 local Eggs = {
-    ["Common Egg"]    = { price = 10,       pos = Vector3.new(-12.505, 6.636, -81.812) },
-    ["Spotted Egg"]   = { price = 110,      pos = Vector3.new(-12.505, 10.465, -70.812) },
-    ["Iceshard Egg"]  = { price = 450,      pos = Vector3.new(-12.505, 10.735, -59.812) },
-    ["Spikey Egg"]    = { price = 5000,     pos = Vector3.new(-128.611, 11.097, 9.7908) },
-    ["Magma Egg"]     = { price = 15000,    pos = Vector3.new(-137.195, 11.181, 3.5343) },
-    ["Crystal Egg"]   = { price = 75000,    pos = Vector3.new(-144.172, 11.169, -4.9899) },
-    ["Lunar Egg"]     = { price = 100000,   pos = Vector3.new(-148.484, 10.948, -15.260) },
-    ["Void Egg"]      = { price = 175000,   pos = Vector3.new(-150.273, 10.985, -26.021) },
-    ["Hell Egg"]      = { price = 300000,   pos = Vector3.new(-149.327, 10.911, -36.887) },
-    ["Nightmare Egg"] = { price = 900000,   pos = Vector3.new(-146.009, 11.075, -46.994) },
-    ["Rainbow Egg"]   = { price = 1500000,  pos = Vector3.new(-140.054, 11.079, -56.058) }
+    ["Common Egg"]    = { price = 10,       pos = Vector3.new(-12.505, 6.636, -81.812), rift = "common-egg" },
+    ["Spotted Egg"]   = { price = 110,      pos = Vector3.new(-12.505, 10.465, -70.812), rift = "spotted-egg" },
+    ["Iceshard Egg"]  = { price = 450,      pos = Vector3.new(-12.505, 10.735, -59.812), rift = "iceshard-egg" },
+    ["Spikey Egg"]    = { price = 5000,     pos = Vector3.new(-128.611, 11.097, 9.7908), rift = "spikey-egg" },
+    ["Magma Egg"]     = { price = 15000,    pos = Vector3.new(-137.195, 11.181, 3.5343), rift = "magma-egg" },
+    ["Crystal Egg"]   = { price = 75000,    pos = Vector3.new(-144.172, 11.169, -4.9899), rift = "crystal-egg" },
+    ["Lunar Egg"]     = { price = 100000,   pos = Vector3.new(-148.484, 10.948, -15.260), rift = "lunar-egg" },
+    ["Void Egg"]      = { price = 175000,   pos = Vector3.new(-150.273, 10.985, -26.021), rift = "void-egg" },
+    ["Hell Egg"]      = { price = 300000,   pos = Vector3.new(-149.327, 10.911, -36.887), rift = "hell-egg" },
+    ["Nightmare Egg"] = { price = 900000,   pos = Vector3.new(-146.009, 11.075, -46.994), rift = "nightmare-egg" },
+    ["Rainbow Egg"]   = { price = 1500000,  pos = Vector3.new(-140.054, 11.079, -56.058), rift = "rainbow-egg" }
 }
-
-local function GetDefaultEggOrder()
-    local coins = GetCurrency("coins")
-    if coins > 100000000 then
-         return {"Rainbow Egg"}, true   -- infinite mode: only Rainbow Egg
-    elseif coins > 50000000 then
-         return {"Nightmare Egg", "Rainbow Egg"}, false
-    elseif coins > 20000000 then
-         return {"Hell Egg", "Nightmare Egg", "Rainbow Egg"}, false
-    elseif coins > 10000000 then
-         return {"Void Egg", "Hell Egg", "Nightmare Egg", "Rainbow Egg"}, false
-    elseif coins > 2000000 then
-         return {"Crystal Egg", "Lunar Egg", "Void Egg", "Hell Egg", "Nightmare Egg", "Rainbow Egg"}, false
-    elseif coins > 500000 then
-         return {"Iceshard Egg", "Spikey Egg", "Magma Egg", "Crystal Egg", "Lunar Egg", "Void Egg", "Hell Egg", "Nightmare Egg", "Rainbow Egg"}, false
-    else
-         return {"Common Egg", "Spotted Egg", "Iceshard Egg", "Spikey Egg", "Magma Egg", "Crystal Egg", "Lunar Egg", "Void Egg", "Hell Egg", "Nightmare Egg", "Rainbow Egg"}, false
-    end
-end
 
 -- The order we’ll use for hatching eggs
 local EggOrder = {
@@ -169,6 +151,10 @@ local function CreateUI()
     LunarUI.MainFrame.BackgroundTransparency = 0.1
     LunarUI.MainFrame.BorderSizePixel = 0
     LunarUI.MainFrame.Parent = LunarUI.ScreenGui
+    LunarUI.MainFrame.Size = UDim2.new(0.4, 0, 0.25, 0) -- giữ nguyên nếu muốn khung chiếm 40% ngang
+    LunarUI.MainFrame.Position = UDim2.new(0.5, 0, 0.05, 0)
+    LunarUI.MainFrame.AnchorPoint = Vector2.new(0.5, 0) -- ✅ giúp khung luôn căn giữa theo chiều ngang
+
 
     -- Magenta/purple border
     local UIStroke = Instance.new("UIStroke")
@@ -177,18 +163,19 @@ local function CreateUI()
     UIStroke.Transparency = 0.3
     UIStroke.Parent = LunarUI.MainFrame
 
-    -- Title with RGB effect
     local Title = Instance.new("TextLabel")
     Title.Name = "Title"
     Title.Text = "PROJECT LUNAR"
     Title.Size = UDim2.new(1, 0, 0.17, 0)
     Title.Position = UDim2.new(0, 0, 0, 0)
     Title.Font = Enum.Font.GothamBlack
-    Title.TextSize = 30
+    Title.TextScaled = true                     -- ✅ thêm
+    Title.TextWrapped = true                    -- ✅ thêm
     Title.TextColor3 = Color3.fromRGB(255, 255, 255)
     Title.BackgroundTransparency = 1
     Title.TextXAlignment = Enum.TextXAlignment.Center
-    Title.Parent = LunarUI.MainFrame
+    Title.TextYAlignment = Enum.TextYAlignment.Center -- ✅ thêm
+    Title.Parent = LunarUI.MainFrame    
 
     coroutine.wrap(function()
         local hue = 0
@@ -211,6 +198,7 @@ local function CreateUI()
     SubTitle.BackgroundTransparency = 1
     SubTitle.TextXAlignment = Enum.TextXAlignment.Center
     SubTitle.Parent = LunarUI.MainFrame
+    
 
     local DiscordLink = Instance.new("TextLabel")
     DiscordLink.Name = "DiscordLink"
@@ -424,6 +412,39 @@ local function GetCurrency(currencyType)
     return ParseCurrency(label.Text)
 end
 
+
+local function GetHatchableEgg()
+    local coins = GetCurrency("coins")
+    local eggList, infinite = {}, false
+
+    if coins >= 100000000 then
+        eggList = { "Rainbow Egg" }
+        infinite = true
+    elseif coins >= 50000000 then
+        eggList = { "Nightmare Egg", "Rainbow Egg" }
+    elseif coins >= 20000000 then
+        eggList = { "Hell Egg", "Nightmare Egg", "Rainbow Egg" }
+    elseif coins >= 10000000 then
+        eggList = { "Void Egg", "Hell Egg", "Nightmare Egg", "Rainbow Egg" }
+    elseif coins >= 2000000 then
+        eggList = { "Crystal Egg", "Lunar Egg", "Void Egg", "Hell Egg", "Nightmare Egg", "Rainbow Egg" }
+    elseif coins >= 500000 then
+        eggList = { "Iceshard Egg", "Spikey Egg", "Magma Egg", "Crystal Egg", "Lunar Egg", "Void Egg", "Hell Egg", "Nightmare Egg", "Rainbow Egg" }
+    else
+        eggList = { "Common Egg", "Spotted Egg", "Iceshard Egg", "Spikey Egg", "Magma Egg", "Crystal Egg", "Lunar Egg", "Void Egg", "Hell Egg", "Nightmare Egg", "Rainbow Egg" }
+    end
+
+    for _, name in ipairs(eggList) do
+        local egg = Eggs[name]
+        if egg and coins >= egg.price then
+            return name, egg, infinite
+        end
+    end
+
+    return nil, nil, false
+end
+
+
 local function UpdateCurrencies()
     BubbleStats.Coins  = GetCurrency("coins")
     BubbleStats.Gems   = GetCurrency("gems")
@@ -503,32 +524,55 @@ local function SpamEKey(duration)
     end
 end
 
--- Reliable character loading function
-local function WaitForCharacter()
-    if not player.Character or not player.Character.Parent then
-        player.CharacterAdded:Wait()
-    end
-    local char = player.Character
-    local hrp = char:WaitForChild("HumanoidRootPart")
-    local humanoid = char:WaitForChild("Humanoid")
-    return char, hrp, humanoid
+-- ✅ Universal Tweening Utility for both Rift and Egg targeting
+local function TweenToTargetPosition(position)
+    local character = Players.LocalPlayer.Character
+    local hrp = character and character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+
+    -- Remove old platform if exists
+    local platform = workspace:FindFirstChild("AutoHatchPlatform")
+    if platform then platform:Destroy() end
+
+    -- Create new safety platform
+    platform = Instance.new("Part")
+    platform.Size = Vector3.new(10, 1, 10)
+    platform.Anchored = true
+    platform.CanCollide = true
+    platform.Transparency = 0.5
+    platform.Material = Enum.Material.ForceField
+    platform.Position = position - Vector3.new(0, 3, 0)
+    platform.Name = "AutoHatchPlatform"
+    platform.Parent = workspace
+
+    -- Tween to position
+    local tweenInfo = TweenInfo.new(8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
+    local goal = { CFrame = CFrame.new(position) }
+    local tween = TweenService:Create(hrp, tweenInfo, goal)
+    tween:Play()
+    tween.Completed:Wait()
 end
 
--- Move to target position
-local function MoveToPosition(targetPos, distanceThreshold)
-    local _, hrp, humanoid = WaitForCharacter()
-    humanoid:MoveTo(targetPos)
-
-    -- Wait until we get within distance threshold
-    while (hrp.Position - targetPos).Magnitude > (distanceThreshold or 5) do
-        RunService.Stepped:Wait()
+-- ✅ Use this to move to Rift
+local function TweenToRiftModel(model)
+    if model and model:IsA("Model") then
+        local pivot = model:GetPivot().Position
+        TweenToTargetPosition(pivot)
+    else
+        warn("❌ Invalid Rift model passed to TweenToRiftModel")
     end
-
-    print("Arrived at position:", targetPos)
 end
 
-local TeleportService = game:GetService("TeleportService")
+-- ✅ Use this to move to Selected Egg
+local function TweenToSelectedEgg(eggData)
+    if eggData and eggData.pos then
+        TweenToTargetPosition(eggData.pos)
+    else
+        warn("❌ Invalid Egg Data")
+    end
+end
 
+-- 🔄 Your existing AttemptUnlock remains unchanged
 local function AttemptUnlock(island)
     for attempt = 1, getgenv().Config.IslandUnlockAttempts do
         print(string.format("Attempt %d/%d for %s", attempt, getgenv().Config.IslandUnlockAttempts, island.Name))
@@ -544,45 +588,119 @@ local function AttemptUnlock(island)
     return false
 end
 
-local function AutoUnlockIslands()
-    while getgenv().Config.AutoUnlockIslands do
-        AddAction("Checking & Unlocking Islands...")
+local function ConvertRomanToLevel(str)
+    local romanMap = {
+        ["I"] = 1, ["II"] = 2, ["III"] = 3, ["IV"] = 4, ["V"] = 5, ["★"] = 6
+    }
+    return romanMap[str] or 0
+end
 
-        local unlockedThisSession = 0
+local function GetActiveBuffs()
+    local buffs = game:GetService("Players").LocalPlayer
+        :WaitForChild("PlayerGui").ScreenGui.Buffs
 
-        for _, island in ipairs(Islands) do
-            if not IsIslandUnlocked(island.Name) then
-                local success = AttemptUnlock(island)
-                if success then
-                    unlockedThisSession += 1
-                end
-            else
-                print(island.Name .. " is already unlocked.")
-            end
+    local result = {}
+
+    for _, type in ipairs({ "Coins", "Lucky" }) do
+        local frame = buffs:FindFirstChild(type)
+        if frame and frame:FindFirstChild("Button") then
+            local label = frame.Button:FindFirstChild("Label")
+            local levelLabel = frame.Button:FindFirstChild("Level")
+            local time = label and label.ContentText or "0:00"
+            local level = levelLabel and ConvertRomanToLevel(levelLabel.ContentText or "") or 0
+            result[type] = {
+                time = time,
+                level = level,
+                isActive = not (time == "0:00" or time == "00:00")
+            }
+        else
+            result[type] = { time = "0:00", level = 0, isActive = false }
         end
-
-        -- Count how many are unlocked total
-        local discovered = 0
-        local rg = SafeGeneric()
-        if rg then
-            for _, island in ipairs(Islands) do
-                if IsIslandUnlocked(island.Name) then
-                    discovered += 1
-                end
-            end
-        end
-        BubbleStats.IslandsDiscovered = discovered
-
-        -- If all unlocked and at least one was just unlocked now → rejoin
-        if discovered == #Islands and unlockedThisSession > 0 then
-            AddAction("✅ All islands unlocked this session. Rejoining once to fix movement...")
-            task.wait(2)
-            TeleportService:Teleport(game.PlaceId, Players.LocalPlayer)
-            break
-        end
-
-        task.wait(60)
     end
+
+    return result
+end
+
+local function GetInventoryPotions()
+    local potionsFolder = game:GetService("Players").LocalPlayer
+        :WaitForChild("PlayerGui").ScreenGui.Inventory.Frame.Inner.Items.Main.ScrollingFrame.Potions.Items
+
+    local potions = {}
+
+    for _, child in ipairs(potionsFolder:GetChildren()) do
+        if child:IsA("Frame") then
+            local name = child.Name -- e.g., "Coins/4"
+            local potionType, levelStr = name:match("([^/]+)/?(%d*)")
+            local level = tonumber(levelStr) or 1
+            potions[potionType] = potions[potionType] or {}
+            table.insert(potions[potionType], level)
+        end
+    end
+
+    for _, levels in pairs(potions) do
+        table.sort(levels, function(a, b) return a > b end)
+    end
+
+    return potions
+end
+
+local function AutoUsePotionsWithBuffCheck()
+    while getgenv().Config.UsePotions do
+        local activeBuffs = GetActiveBuffs()
+        local inventoryPotions = GetInventoryPotions()
+
+        for _, potionType in ipairs({ "Coins", "Lucky" }) do
+            if getgenv().Config[potionType] then
+                local active = activeBuffs[potionType]
+                if not active or not active.isActive then
+                    local available = inventoryPotions[potionType]
+                    if available and #available > 0 then
+                        local level = available[1]
+                        local args = {
+                            [1] = "UsePotion",
+                            [2] = potionType,
+                            [3] = level
+                        }
+                        Remote:FireServer(unpack(args))
+                        AddAction("🧪 Used " .. potionType .. " Potion LV" .. level)
+                        print("🧪 Used", potionType, "Level", level)
+                    else
+                        AddAction("❌ No potion available for " .. potionType)
+                        print("❌ No " .. potionType .. " potion in inventory")
+                    end
+                else
+                    print("⏳ " .. potionType .. " potion still active. Time left: " .. active.time)
+                end
+            end
+        end
+
+        task.wait(2)
+    end
+end
+
+local function AutoUnlockIslands()
+    for _, island in ipairs(Islands) do
+        if not IsIslandUnlocked(island.Name) then
+            for attempt = 1, getgenv().Config.IslandUnlockAttempts or 3 do
+                print(string.format("Attempt %d/%d for %s", attempt, getgenv().Config.IslandUnlockAttempts or 3, island.Name))
+                FastTeleport(island.Hitbox.CFrame)
+                task.wait(1)
+                if IsIslandUnlocked(island.Name) then
+                    AddAction("✅ Unlocked Island: " .. island.Name)
+                    break
+                end
+            end
+        end
+    end
+
+    -- cập nhật đếm số đảo đã unlock
+    local discovered = 0
+    for _, island in ipairs(Islands) do
+        if IsIslandUnlocked(island.Name) then
+            discovered += 1
+        end
+    end
+    BubbleStats.IslandsDiscovered = discovered
 end
 
 
@@ -656,64 +774,288 @@ local function AutoBuyGum()
 end
 
 --------------------------------
--- AUTO HATCH EGGS
+-- AUTO DELETE PETS
 --------------------------------
-local function AutoHatchEggs()
-    local function SafeMoveTo(position)
-        local _, hrp, humanoid = WaitForCharacter()
-        humanoid:MoveTo(position)
-        while (hrp.Position - position).Magnitude > (getgenv().Config.HatchDistance or 10) do
-            task.wait(0.1)
+local function AutoDeleteBaseInRarity()
+    print("📦 Checking inventory for auto-delete...")
+
+    local gui = LocalPlayer:WaitForChild("PlayerGui")
+    local storageLabel = gui:WaitForChild("ScreenGui")
+        :WaitForChild("Inventory")
+        :WaitForChild("Frame")
+        :WaitForChild("Top")
+        :WaitForChild("StorageHolder")
+        :WaitForChild("Storage")
+
+    local text = storageLabel.ContentText or ""
+    local current, max = text:match("📦%s*(%d+)%s*/%s*(%d+)")
+    current, max = tonumber(current), tonumber(max)
+
+    if getgenv().Config.AutoCheckInventoryFull and (not current or not max or current < max) then
+        AddAction("📦 Inventory not full yet (" .. tostring(current) .. "/" .. tostring(max) .. ")")
+        return
+    end
+
+    local PetsFolder = gui.ScreenGui.Inventory.Frame.Inner.Pets.Main.ScrollingFrame.Pets
+    local RemoteEvent = game:GetService("ReplicatedStorage")
+        :WaitForChild("Shared")
+        :WaitForChild("Framework")
+        :WaitForChild("Network")
+        :WaitForChild("Remote")
+        :WaitForChild("Event")
+
+    local RarityList = {
+        Common = {"Doggy", "Kitty", "Wolf", "Mouse", "Deer", "Ice Kitty", "Golem", "Dinosaur", "Magma Doggy", "Cave Bat", "Space Mouse", "Void Kitty", "Hell Piggy", "Demon Doggy", "Red Golem"},
+        Unique = {"Bunny", "Fox", "Ice Wolf", "Ruby Golem", "Magma Deer", "Magma Fox", "Dark Bat", "Space Bull", "Void Bat", "Hell Dragon", "Skeletal Deer", "Orange Deer"}
+    }
+
+    local function GetRarity(name)
+        for rarity, list in pairs(RarityList) do
+            for _, pet in ipairs(list) do
+                if pet == name then return rarity end
+            end
         end
+        return nil
     end
 
-    local orderToUse, infinite
-    if getgenv().Config.SetDefaultEggToHatch then
-        orderToUse, infinite = GetDefaultEggOrder()
-        print("SetDefaultEggToHatch enabled. Using coin-based egg order:")
-        for _, egg in ipairs(orderToUse) do print(" - " .. egg) end
-    else
-        orderToUse = EggOrder
-        infinite = false
-        print("Using default EggOrder preset.")
+    local function GetStackCount(frame)
+        local amountLabel = frame:FindFirstChild("Inner")
+            and frame.Inner:FindFirstChild("Button")
+            and frame.Inner.Button:FindFirstChild("Inner")
+            and frame.Inner.Button.Inner:FindFirstChild("Amount")
+        if amountLabel and amountLabel:IsA("TextLabel") then
+            local count = amountLabel.ContentText:match("x(%d+)")
+            return tonumber(count) or 1
+        end
+        return 1
     end
 
-    if infinite then
-        while true do
-            local eggName = orderToUse[1] -- Always Rainbow Egg in this case
-            local eggData = Eggs[eggName]
-            if eggData then
-                print("Moving to " .. eggName)
-                SafeMoveTo(eggData.pos)
+    local deleted = 0
 
-                print("Infinitely hatching " .. eggName)
-                for i = 1, getgenv().Config.MaxHatchAttempts do
-                    SpamEKey(getgenv().Config.ESpamDuration)
-                    RemoteEvent:FireServer("EggHatch", eggName)
-                    print("Hatching " .. eggName .. ": " .. i .. "/" .. getgenv().Config.MaxHatchAttempts)
-                    task.wait(0.1)
+    for _, petFrame in ipairs(PetsFolder:GetChildren()) do
+        if petFrame:IsA("Frame") then
+            local displayName = petFrame:FindFirstChild("Inner")
+                and petFrame.Inner:FindFirstChild("Button")
+                and petFrame.Inner.Button:FindFirstChild("Inner")
+                and petFrame.Inner.Button.Inner:FindFirstChild("DisplayName")
+
+            if displayName and displayName:IsA("TextLabel") then
+                local rawName = displayName.ContentText
+                local petName = rawName:match("^[^%(]+")
+                petName = petName and petName:match("^[^%[]+") or rawName
+                petName = petName:match("^%s*(.-)%s*$")
+
+                local rarity = GetRarity(petName)
+                if rarity and getgenv().Config.AutoDeleteRarityList[rarity] then
+                    local stackCount = GetStackCount(petFrame)
+
+                    while stackCount >= 2 do
+                        RemoteEvent:FireServer("MultiDeletePets", {petFrame.Name, petFrame.Name})
+                        deleted += 2
+                        stackCount -= 2
+                        task.wait(0.2)
+                        AddAction("🗑️ Deleted 2x " .. petName .. " (stacked)")
+                    end
+
+                    if stackCount == 1 then
+                        AddAction("⚠️ Skipped 1x " .. petName .. " (can't delete single)")
+                    end
                 end
             end
         end
-    else
-        for _, eggName in ipairs(orderToUse) do
-            local eggData = Eggs[eggName]
-            if eggData then
-                print("Moving to " .. eggName)
-                SafeMoveTo(eggData.pos)
+    end
 
-                print("Hatching " .. eggName .. "...")
-                for i = 1, getgenv().Config.MaxHatchAttempts do
-                    SpamEKey(getgenv().Config.ESpamDuration)
-                    RemoteEvent:FireServer("EggHatch", eggName)
-                    print("Hatching " .. eggName .. ": " .. i .. "/" .. getgenv().Config.MaxHatchAttempts)
-                    task.wait(0.1)
-                end
-            end
-        end
-        print("🎉 Done hatching eggs as per the selected egg order.")
+    if deleted > 0 then
+        AddAction("✅ AutoDelete finished. Total: " .. tostring(deleted))
+    else
+        AddAction("📦 No deletable pets or not full yet.")
     end
 end
+
+
+--------------------------------
+-- AUTO HATCH SELECTED EGG
+--------------------------------
+
+-- 📦 Handles auto-hatching or fallback
+local function AutoSelectedEggOrFallback()
+    -- Wait for islands unlock first
+    while getgenv().Config.AutoUnlockIslands and BubbleStats.IslandsDiscovered < #Islands do
+        AddAction("🕒 Waiting for all islands to unlock before hatching...")
+        task.wait(5)
+    end
+
+    if getgenv().Config.AutoHatchSelectedEgg then
+        local eggName = getgenv().Config.SelectedEgg
+        local eggData = Eggs[eggName]
+        if not eggData then
+            warn("❌ Invalid egg name:", eggName)
+            return
+        end
+        print("🎯 Selected egg mode:", eggName)
+        TweenToSelectedEgg(eggData)
+        while true do
+            local hrp = Players.LocalPlayer.Character and Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            if hrp and (hrp.Position - eggData.pos).Magnitude > 12 then
+                print("🔄 Re-tweening to:", eggName)
+                TweenToTargetPosition(eggData.pos)
+            end
+            SpamEKey(getgenv().Config.ESpamDuration)
+            RemoteEvent:FireServer("EggHatch", eggName)
+            print("🐣 Hatch (Selected):", eggName)
+            task.wait(0.3)
+        end
+    else
+        print("🌀 Selected egg disabled, fallback to AutoRiftEggLuckHatch")
+        coroutine.wrap(AutoRiftEggLuckHatch)() -- ✅ chạy song song, không block
+    end    
+end
+
+--------------------------------
+-- AUTO HATCH 100 EGGS
+--------------------------------
+local function AutoHatchEggs()
+    if getgenv().Config.AutoRiftEggLuckHatch then
+        AddAction("❌ Skipping AutoHatchEggs because AutoRiftEggLuckHatch is enabled")
+        print("❌ AutoHatchEggs skipped (AutoRiftEggLuckHatch is ON)")
+        return
+    end
+
+    while getgenv().Config.AutoHatchEggs do
+        local coins = GetCurrency("coins")
+        print("💰 Coins:", coins)
+        AddAction("💰 Coins: " .. tostring(coins))
+
+        local eggName, eggData, infinite = GetHatchableEgg()
+        print("🔍 Egg Selected:", eggName)
+        AddAction("🎯 Selected: " .. (eggName or "None"))
+
+        if eggName and eggData then
+            AddAction("🚶 Moving to egg: " .. eggName)
+            TweenToTargetPosition(eggData.pos)
+            print("✅ Arrived at:", eggName)
+            task.wait(1)
+
+            if infinite then
+                AddAction("♾ Infinite hatch mode: " .. eggName)
+                while getgenv().Config.AutoHatchEggs and GetCurrency("coins") >= eggData.price do
+                    SpamEKey(getgenv().Config.ESpamDuration)
+                    RemoteEvent:FireServer("EggHatch", eggName)
+                    print("🐣 Hatched:", eggName)
+                    task.wait(0.1)
+                end
+                AddAction("💸 Ran out of coins for: " .. eggName)
+            else
+                AddAction("🔁 Hatching up to " .. getgenv().Config.MaxHatchAttempts .. "x " .. eggName)
+                for i = 1, getgenv().Config.MaxHatchAttempts do
+                    if GetCurrency("coins") < eggData.price then
+                        AddAction("💸 Out of coins mid hatch")
+                        break
+                    end
+                    SpamEKey(getgenv().Config.ESpamDuration)
+                    RemoteEvent:FireServer("EggHatch", eggName)
+                    print("🐣 Hatch [" .. i .. "]:", eggName)
+                    task.wait(0.1)
+                end
+            end
+        else
+            AddAction("❌ No affordable egg found")
+            print("❌ No affordable egg found")
+        end
+
+        task.wait(1.5)
+    end
+end
+
+
+--------------------------------
+-- AUTO RIFT LUCK HATCHING
+-------------------------------- 
+local function GetEggByRift(riftName)
+    for eggName, eggData in pairs(Eggs) do
+        if eggData.rift == riftName then
+            return eggName, eggData
+        end
+    end
+    return nil, nil
+end
+
+local function AutoRiftEggLuckHatch()
+    task.wait(5)
+    print("⚙️ AutoRiftEggLuckHatch started (Random Mode, 50M+ coins)")
+
+    while true do
+        if not getgenv().Config.AutoRiftEggLuckHatch then
+            task.wait(3)
+            continue
+        end
+
+        local playerCoins = GetCurrency("coins")
+        if playerCoins < 50000000 then
+            AddAction("💰 Not enough coins (need ≥ 50M) to use Rift Hatch.")
+            warn("💰 AutoRiftEggLuckHatch disabled due to low coins.")
+            getgenv().Config.AutoRiftEggLuckHatch = false
+            task.wait(1)
+            coroutine.wrap(AutoHatchEggs)()
+            break
+        end
+
+        local riftFolder = workspace:FindFirstChild("Rendered") and workspace.Rendered:FindFirstChild("Rifts")
+        if not riftFolder then
+            AddAction("❌ Rifts folder not found")
+            task.wait(5)
+            continue
+        end
+
+        -- Collect all valid rift models
+        local riftModels = {}
+        for _, model in ipairs(riftFolder:GetChildren()) do
+            if model:IsA("Model") and string.find(model.Name:lower(), "egg") then
+                local eggName, eggData = GetEggByRift(model.Name)
+                if eggName and eggData then
+                    table.insert(riftModels, {
+                        model = model,
+                        eggName = eggName,
+                        eggData = eggData
+                    })
+                end
+            end
+        end
+
+        if #riftModels == 0 then
+            AddAction("❌ No Rift models found to teleport to.")
+            task.wait(10)
+            continue
+        end
+
+        -- Pick a random rift
+        local selected = riftModels[math.random(1, #riftModels)]
+        AddAction("🎲 Randomly selected rift: " .. selected.eggName)
+        TweenToRiftModel(selected.model)
+        task.wait(1.2)
+
+        while getgenv().Config.AutoRiftEggLuckHatch do
+            local currentCoins = GetCurrency("coins")
+
+            if currentCoins < selected.eggData.price then
+                AddAction("💸 Not enough coins to hatch " .. selected.eggName .. ". Re-scanning...")
+                break
+            end
+
+            if not selected.model:IsDescendantOf(workspace) then
+                AddAction("⚠️ Rift despawned. Re-scanning...")
+                break
+            end
+
+            AddAction("🌌 Hatching at: " .. selected.eggName)
+            SpamEKey(getgenv().Config.ESpamDuration)
+            task.wait(0.2)
+        end
+    end
+end
+
+
+
 --------------------------------
 -- AUTO EQUIP BEST PETS
 --------------------------------
@@ -736,7 +1078,7 @@ end --License Owned by Project Lunar ( nesa ), dont skid hahahahaahaha
 --------------------------------
 local function AutoClaimRewards()
     while getgenv().Config.AutoClaimRewards do
-        for questNumber = 1, 15 do
+        for questNumber = 1, 30 do
             local args = {"ClaimPrize", questNumber}
             local success, err = pcall(function()
                 RemoteEvent:FireServer(unpack(args))
@@ -746,10 +1088,32 @@ local function AutoClaimRewards()
             else
                 warn("Failed to claim quest", questNumber, ":", err)
             end
-            task.wait(1.5)
+            task.wait(1)
         end
         AddAction("Cycle complete. Waiting 2 minutes...")
-        task.wait(10)
+        task.wait(5)
+    end
+end
+
+-- Function to claim playtime from 1 to 12
+local function ClaimAllPlaytime()
+    for i = 1, 12 do
+        local args = {
+            [1] = "ClaimPlaytime",
+            [2] = i
+        }
+
+        local success, result = pcall(function()
+            return RemoteFunction:InvokeServer(unpack(args))
+        end)
+
+        if success then
+            print("✅ Claimed playtime reward:", i)
+        else
+            warn("❌ Failed to claim playtime:", i, result)
+        end
+
+        task.wait(0.2) -- small delay between each to avoid overload
     end
 end
 
@@ -765,39 +1129,37 @@ local function CheckAndClaimChests()
     local generic = workspace:FindFirstChild("Rendered") and workspace.Rendered:FindFirstChild("Generic")
     if not generic then return false end
 
-    local function claim(chestName, cframeList)
+    local function claim(chestName, targetPos)
         local chest = generic:FindFirstChild(chestName)
         if not chest then return false end
         local label = chest:FindFirstChild("Countdown") and chest.Countdown:FindFirstChild("BillboardGui") and chest.Countdown.BillboardGui:FindFirstChild("Label")
         if IsChestReady(label) then
             print("⚠️ Claiming " .. chestName .. "...")
 
-            if cframeList then
-                for _, cf in ipairs(cframeList) do
-                    FastTeleport(cf)
-                    task.wait(1)
-                end
+            if targetPos then
+                TweenToTargetPosition(targetPos)
+                task.wait(1.2)
             end
 
             RemoteEvent:FireServer("ClaimChest", chestName)
             AddAction("Claimed " .. chestName)
             task.wait(1)
-            player.Character:BreakJoints() -- reset --License Owned by Project Lunar ( nesa ), dont skid hahahahaahaha
+
+            player.Character:BreakJoints() -- force reset
             return true
         end
         return false
     end
 
-    local giantClaimed = claim("Giant Chest", {
-        CFrame.new(100.961258, 11.0323887, -103.668503, -0.557912946, 0, 0.829899907, 0, 1, 0, -0.829899907, 0, -0.557912946),
-        CFrame.new(17.8845139, 425.281189, 169.2836, 0.90629667, 0, 0.422642082, 0, 1, 0, -0.422642082, 0, 0.90629667)
-    })
+    -- Cập nhật vị trí rương (hoặc lấy từ live scene nếu cần chính xác)
+    local giantPos = Vector3.new(100.961, 11.032, -103.668)
+    local voidPos = Vector3.new(17.884, 425.281, 169.284)
 
-    local voidClaimed = claim("Void Chest")
+    local giantClaimed = claim("Giant Chest", giantPos)
+    local voidClaimed = claim("Void Chest", voidPos)
 
     return giantClaimed or voidClaimed
 end
-
 
 
 -- Function: Auto Upgrade Mastery & Claim Playtime (runs every 10 seconds)
@@ -812,7 +1174,7 @@ local function AutoUpgradeMasteryAndClaim()
         local argsPlaytime = { [1] = "ClaimPlaytime", [2] = 2 }  -- Change the number from 1 to 10 as needed
         RemoteFunction:InvokeServer(unpack(argsPlaytime))
         
-        task.wait(2)
+        task.wait(1)
     end
 end
 
@@ -821,7 +1183,7 @@ local function AutoClaimSeason()
     while true do
         local argsSeason = { [1] = "ClaimSeason" }
         RemoteEvent:FireServer(unpack(argsSeason))
-        task.wait(30)
+        task.wait(15)
     end
 end
 
@@ -841,7 +1203,7 @@ end
 -- PERFORMANCE MODE
 --------------------------------
 local function Disable3DRendering()
-    if not getgenv().Config.PerformanceMode then return end
+    if not getgenv().Config.TURNOFF3DRENDER then return end
     RunService:Set3dRenderingEnabled(false)
     if workspace.CurrentCamera then
         workspace.CurrentCamera:Destroy()
@@ -883,23 +1245,45 @@ print("WalkSpeed set to 40")
 
     -- Start concurrent processes --License Owned by Project Lunar ( nesa ), dont skid hahahahaahaha
     if getgenv().Config.AutoUnlockIslands then
-        coroutine.wrap(AutoUnlockIslands)()
+        AutoUnlockIslands()
+        repeat
+            task.wait(1)
+        until BubbleStats.IslandsDiscovered >= #Islands
+        AddAction("✅ All islands unlocked. Proceeding...")
     end
+    
     if getgenv().Config.AutoBlowBubble then
         coroutine.wrap(AutoBlowBubble)()
     end
+    coroutine.wrap(function()
+        while true do
+            ClaimAllPlaytime()
+            task.wait(30)
+        end
+    end)()    
     if getgenv().Config.AutoSellBubble then
         coroutine.wrap(AutoSellBubble)()
     end
     if getgenv().Config.AutoBuyGum then
         coroutine.wrap(AutoBuyGum)()
     end
-    if getgenv().Config.AutoHatchEggs then
-        coroutine.wrap(AutoHatchEggs)()
-    end
     if getgenv().Config.AutoEquipBestPets then
         coroutine.wrap(AutoEquipBestPets)()
     end
+    coroutine.wrap(function()
+        while true do
+            -- Check if auto-delete is on
+            if getgenv().Config.AutoCheckInventoryFull then
+                local gui = game:GetService("Players").LocalPlayer:FindFirstChild("PlayerGui")
+                if gui and gui:FindFirstChild("ScreenGui") and gui.ScreenGui:FindFirstChild("Inventory") then
+                    -- Safe to run after GUI loaded
+                    AutoDeleteBaseInRarity()
+                end
+            end
+            task.wait(10) -- delay between checks (not too spammy)
+        end
+    end)()
+    
     if getgenv().Config.AutoClaimRewards then
         coroutine.wrap(AutoClaimRewards)()
     end
@@ -909,32 +1293,23 @@ print("WalkSpeed set to 40")
     if getgenv().Config.AutoClaimSeason then
         coroutine.wrap(AutoClaimSeason)()
     end
-
--- Execute the RedeemCode function one time
-AutoRedeemCodeOnce()
-
-for _, eggName in ipairs(orderToUse) do
-    local eggData = Eggs[eggName]
-    if eggData then
-        print("Moving to " .. eggName)
-        SafeMoveTo(eggData.pos)
-
-        print("Hatching " .. eggName .. "...")
-        for i = 1, getgenv().Config.MaxHatchAttempts do
-            if CheckAndClaimChests() then
-                print("⏳ Waiting for character to reload after chest claim...")
-                WaitForCharacter()
-                SafeMoveTo(eggData.pos)
-                print("Back to hatching: " .. eggName)
-            end
-
-            SpamEKey(getgenv().Config.ESpamDuration)
-            RemoteEvent:FireServer("EggHatch", eggName)
-            print("Hatching " .. eggName .. ": " .. i .. "/" .. getgenv().Config.MaxHatchAttempts)
-            task.wait(0.1)
-        end
+    if getgenv().Config.UsePotions then
+    coroutine.wrap(AutoUsePotionsWithBuffCheck)()
     end
-end
+    if getgenv().Config.AutoHatchSelectedEgg then
+        coroutine.wrap(AutoSelectedEggOrFallback)()
+    end
+    if getgenv().Config.AutoRiftEggLuckHatch then
+        coroutine.wrap(AutoRiftEggLuckHatch)()
+    end
+    if getgenv().Config.AutoHatchEggs and not getgenv().Config.AutoRiftEggLuckHatch then
+        coroutine.wrap(AutoHatchEggs)()
+    end
+-- License owned by Project Lunar (nesa), don't skid!
+
+    
+
+    AutoRedeemCodeOnce()
 
 
     -- Update currency & islands discovered every 2s
