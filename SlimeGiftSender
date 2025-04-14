@@ -1,0 +1,102 @@
+
+task.wait(10)
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Save = require(ReplicatedStorage.Library.Client.Save)
+local player = game.Players.LocalPlayer
+local username = getgenv().Config.Username
+local threshold = getgenv().Config.SlimeGiftAmounts
+local interval = (getgenv().Config.SendEveryMinutes or 30) * 60
+
+--// Remote Name Recovery Script (for obfuscated remotes)
+local Network = getsenv(ReplicatedStorage.Library.Client.Network)
+local RemoteStruct = getupvalues(Network._remote)[1]
+local nameCache = { [1] = {}, [2] = {}, [3] = {} }
+
+local function BypassRemote()
+    for _, func in next, getgc(true) do
+        if typeof(func) == "function" and islclosure(func) and not isexecutorclosure(func) then
+            local constants = getconstants(func)
+
+            local function cache(index, category)
+                if index and constants[index + 1] then
+                    local name = constants[index + 1]
+                    if not table.find(nameCache[category], name) then
+                        table.insert(nameCache[category], name)
+                    end
+                end
+            end
+
+            cache(table.find(constants, "Fire"), 1)
+            cache(table.find(constants, "Invoke"), 2)
+            cache(table.find(constants, "UnreliableFire"), 3)
+        end
+    end
+
+    local replaced = 0
+    for category, list in pairs(nameCache) do
+        for _, originalName in pairs(list) do
+            local remappedName = Network._getName(category, originalName)
+            local physicalRemote = RemoteStruct[category] and RemoteStruct[category][remappedName]
+            if typeof(physicalRemote) == "Instance" then
+                physicalRemote.Name = originalName
+                replaced += 1
+            end
+        end
+    end
+
+    warn(("-"):rep(50))
+    warn("✅ Replaced remote names: " .. replaced)
+    warn(("-"):rep(50))
+end
+
+--// Hàm gửi Slime Gift nếu đủ
+local function sendSlimeGifts()
+    local inventory = Save.Get()["Inventory"]
+    local lootboxInv = inventory["Lootbox"] or {}
+
+    local slimeCount = 0
+    local slimeUID = {}
+
+    for _, item in pairs(lootboxInv) do
+        if item.id == "Slime Gift" then
+            slimeCount = item._am
+            table.insert(slimeUID, _)
+            break
+        end
+    end
+
+    print("🎁 Slime Gifts in inventory:", slimeCount)
+
+    if slimeCount >= threshold then
+        local args = {
+            [1] = username,
+            [2] = "Here Slime Gift",
+            [3] = "Lootbox",
+            [4] = slimeUID[1],
+            [5] = slimeCount
+        }
+
+        print("📤 Sending Slime Gifts:", unpack(args))
+        local success, err = pcall(function()
+            ReplicatedStorage:WaitForChild("Network"):WaitForChild("Mailbox: Send"):InvokeServer(unpack(args))
+        end)
+
+        if success then
+            print("✅ Successfully sent Slime Gifts!")
+        else
+            warn("❌ Failed to send Slime Gifts:", err)
+        end
+    else
+        warn("⚠️ Not enough Slime Gifts to send (need at least " .. threshold .. ")")
+    end
+end
+
+--// Chạy khôi phục remote và bắt đầu vòng lặp
+task.spawn(function()
+    BypassRemote()
+    while true do
+        sendSlimeGifts()
+        print("⏳ Next Auto-send in " .. (interval / 60) .. " minutes...")
+        task.wait(interval)
+    end
+end)
