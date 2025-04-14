@@ -7,7 +7,7 @@
 -- WAIT FOR GAME & SETUP
 --------------------------------
 repeat task.wait() until game:IsLoaded() and game.Players.LocalPlayer
-task.wait(20)
+task.wait(20) --ji
 print("Starting Project Lunar Bubble Gum Simulator...")
 
 --------------------------------
