@@ -26,6 +26,9 @@ local Framework = Shared:WaitForChild("Framework")
 local Network = Framework:WaitForChild("Network")
 local RemoteFunction = Network:WaitForChild("Remote"):WaitForChild("Function")
 local TeleportService = game:GetService("TeleportService")
+local HttpService = game:GetService("HttpService")
+local Pets = require(ReplicatedStorage.Shared.Data.Pets)
+local LocalDataService = require(ReplicatedStorage.Client.Framework.Services.LocalData)
 
 local player = Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
@@ -413,6 +416,113 @@ local function GetCurrency(currencyType)
 end
 
 
+local TrackedPets = {}
+for name, pet in pairs(Pets) do
+    if pet.Rarity and getgenv().Config.WebhookPet.WebhookRaritySender[pet.Rarity] then
+        TrackedPets[name] = pet.Rarity
+    end
+end
+
+local function convertToShorter(number, type)
+    if type == "seconds" then
+        local h = math.floor(number / 3600)
+        local m = math.floor((number % 3600) / 60)
+        local s = number % 60
+        return string.format("%dh %dm %ds", h, m, s)
+    elseif type == "hatches" then
+        return string.format("%.2fk", number / 1000)
+    elseif type == "bubbles" then
+        if number < 1e6 then return tostring(number)
+        elseif number < 1e9 then return string.format("%.2fm", number / 1e6)
+        else return string.format("%.2fb", number / 1e9) end
+    end
+end
+
+local function getStats()
+    local data = LocalDataService:Get()
+    local pets = data.Pets or {}
+    local stats = data.Stats or {}
+    local totalPets, hatches, bubbles = 0, stats.Hatches or 0, stats.Bubbles or 0
+    for _, v in pairs(pets) do totalPets += (v.Amount or 0) end
+    return {
+        playTime = convertToShorter(stats.Playtime or 0, "seconds"),
+        hatches = convertToShorter(hatches, "hatches"),
+        bubbles = convertToShorter(bubbles, "bubbles"),
+        totalPets = totalPets,
+        gems = convertToShorter(data.Gems or 0, "bubbles")
+    }
+end
+
+local function getImageThumbnail(assetId)
+    local id = assetId:match("rbxassetid://(%d+)")
+    if not id then return nil end
+    local request = http_request or request or HttpPost or syn.request
+    local response = request({
+        Url = "https://thumbnails.roblox.com/v1/assets?assetIds="..id.."&size=420x420&format=png&isCircular=false",
+        Method = "GET"
+    })
+    local data = HttpService:JSONDecode(response.Body)
+    return data.data and data.data[1] and data.data[1].imageUrl or nil
+end
+
+local function sendWebhook(petData)
+    local player = game.Players.LocalPlayer
+    local petInfo = Pets[petData.Name]
+    if not petInfo then return end
+    local rarity = petInfo.Rarity or "Unknown"
+    local shiny = petData.Shiny and "Yes" or "No"
+    local stats = getStats()
+    local imageUrl = petInfo.Images and petInfo.Images.Normal and getImageThumbnail(petInfo.Images.Normal) or nil
+
+    local embed = {
+        title = "🌙 Hatched a " .. petData.Name .. " (" .. rarity .. ") 🌙",
+        description = "``"..player.Name.."`` just hatched a pet!",
+        color = 0xFF00FF,
+        fields = {
+            { name = "**Shiny:**", value = "``" .. shiny .. "``", inline = true },
+            { name = "**Gems:**", value = "``" .. stats.gems .. "``", inline = true },
+            { name = "**Total Pets:**", value = "``" .. tostring(stats.totalPets) .. "``", inline = true },
+            { name = "**Play Time:**", value = "``" .. stats.playTime .. "``", inline = true },
+            { name = "**Hatches:**", value = "``" .. stats.hatches .. "``", inline = true },
+            { name = "**Bubbles:**", value = "``" .. stats.bubbles .. "``", inline = true },
+        },
+        footer = {
+            text = "Project Lunar | " .. os.date("%Y-%m-%d %H:%M:%S"),
+            icon_url = "https://cdn.discordapp.com/attachments/1352668682492444844/1361505674982592554/bestscript.png"
+        },
+        thumbnail = imageUrl and { url = imageUrl } or nil
+    }
+
+    local jsonData = HttpService:JSONEncode({
+        content = getgenv().Config.WebhookPet.PingUserId and ("<@" .. getgenv().Config.WebhookPet.PingUserId .. ">") or nil,
+        username = "Project Lunar Hatch Notifier",
+        avatar_url = "https://cdn.discordapp.com/attachments/1352668682492444844/1361505674982592554/bestscript.png",
+        embeds = {embed}
+    })
+
+    local req = http_request or request or syn.request
+    req({
+        Url = getgenv().Config.WebhookPet.WebhookURL,
+        Method = "POST",
+        Headers = { ["Content-Type"] = "application/json" },
+        Body = jsonData
+    })
+end
+
+local RemoteEvent = ReplicatedStorage.Shared.Framework.Network.Remote.Event
+RemoteEvent.OnClientEvent:Connect(function(eventName, args)
+    if eventName == "HatchEgg" and typeof(args) == "table" and typeof(args.Pets) == "table" then
+        for _, pet in ipairs(args.Pets) do
+            if pet.Pet and TrackedPets[pet.Pet.Name] then
+                sendWebhook(pet.Pet)
+            end
+        end
+    end
+end)
+
+print("✅ Webhook notifier running with avatar & footer icon and formatted values.")
+
+
 local function GetHatchableEgg()
     local coins = GetCurrency("coins")
     local eggList, infinite = {}, false
@@ -460,6 +570,16 @@ local function SafeGeneric()
         return workspace.Rendered.Generic
     end
     return nil
+end
+
+local function SetFPSCap(fps)
+    local setfpscap = setfpscap or set_fps_cap or setfpscapinternal or function() end
+    if typeof(fps) == "number" and fps > 0 then
+        setfpscap(fps)
+        print("🎯 FPS cap set to:", fps)
+    else
+        print("⚠️ Invalid FPS cap value. Skipped.")
+    end
 end
 
 local function IsIslandUnlocked(displayName)
@@ -804,10 +924,14 @@ local function AutoDeleteBaseInRarity()
         :WaitForChild("Remote")
         :WaitForChild("Event")
 
-    local RarityList = {
-        Common = {"Doggy", "Kitty", "Wolf", "Mouse", "Deer", "Ice Kitty", "Golem", "Dinosaur", "Magma Doggy", "Cave Bat", "Space Mouse", "Void Kitty", "Hell Piggy", "Demon Doggy", "Red Golem"},
-        Unique = {"Bunny", "Fox", "Ice Wolf", "Ruby Golem", "Magma Deer", "Magma Fox", "Dark Bat", "Space Bull", "Void Bat", "Hell Dragon", "Skeletal Deer", "Orange Deer"}
-    }
+        local RarityList = {
+            Common = {"Dog", "Kitty", "Wolf", "Mouse", "Deer", "Ice Kitty", "Golem", "Dinosaur", "Magma Doggy", "Cave Bat", "Space Mouse", "Void Kitty", "Hell Piggy", "Demon Doggy", "Red Golem"},
+            Unique = {"Bunny", "Fox", "Ice Wolf", "Ruby Golem", "Magma Deer", "Magma Fox", "Dark Bat", "Space Bull", "Void Bat", "Hell Dragon", "Skeletal Deer", "Orange Deer"},
+            Rare = {"Bear", "Polar Bear", "Piggy", "Ice Deer", "Dragon", "Magma Bear", "Angel", "Lunar Fox", "Hell Crawler", "Manny", "Night Crawler", "Yellow Fox"},
+            Epic = {"Ice Dragon", "Panda", "Dark Dragon", "Demon", "Emerald Bat", "Lunarcorn", "Void Demon", "Inferno Demon", "Manicorn", "Hell Bat", "Green Angel"},
+            Legendary = {"Emerald Golem", "Inferno Dragon", "Unicorn", "Flying Pig", "Lunar Serpent", "Electra", "Dark Phoenix", "Neon Elemental", "NULLVoid", "Inferno Cube", "Virus", "Sigma Serpent", "Manirium", "Green Hydra", "Demonic Hydra", "Rainbow Shock", "Hexarium"},
+            Secret = {"MAN FACE GOD", "The Overlord"}
+        }
 
     local function GetRarity(name)
         for rarity, list in pairs(RarityList) do
