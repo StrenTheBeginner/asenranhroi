@@ -52,6 +52,42 @@ getgenv().SoNachHup = {
 			["Rainbow"] = true,
 		},
 	},
+	["BUY_PET"] = {
+		["Frog"] = 1,
+		["Bunny"] = 1,
+		["Deer"] = 1,
+		["Owl"] = 1,
+		["Robin"] = 1,
+		["Bee"] = 1,
+		["Monkey"] = 1,
+		["Unicorn"] = 1,
+		["Raccoon"] = 1,
+		["Golden Dragonfly"] = 1,
+		["Black Dragon"] = 1,
+		["Ice Serpent"] = 1,
+	},
+	["USE_GEAR"] = {
+		["Common Watering Can"] = false,
+		["Common Sprinkler"] = true,
+		["Sign"] = false,
+		["Lantern"] = false,
+		["Uncommon Sprinkler"] = false,
+		["Rare Sprinkler"] = false,
+		["Legendary Sprinkler"] = false,
+		["Super Sprinkler"] = false,
+		["Trowel"] = false,
+		["Speed Mushroom"] = false,
+		["Jump Mushroom"] = false,
+		["Gnome"] = false,
+		["Shrink Mushroom"] = false,
+		["Supersize Mushroom"] = false,
+		["Invisibility Mushroom"] = false,
+		["Wheelbarrow"] = false,
+		["Teleporter"] = false,
+		["Super Watering Can"] = false,
+		["Basic Pot"] = false,
+		["Flashbang"] = false,
+	},
 	["AutoMail"] = {
 		["Recipient"] = "sangbanking",
 		["Note"] = "",
@@ -237,6 +273,7 @@ local PET_INVENTORY_FOLDERS = {
 }
 local WILD_PET_BUY_EACH = 1
 local PET_BUY_ORDER = {}
+local WILD_PET_COLLECT_ORDER = {}
 local HazardSeeds = {}
 local HAZARD_CONTROLLER_TAGS = {
 	"VenusFlyTrap", "PoisonIvy", "GhostPepper", "DragonBreath",
@@ -815,12 +852,12 @@ PLANT_CAP_UPGRADE = 600
 AUTO_PLANT_UPGRADE = true
 PLANT_UPGRADE_GAP = 2.5
 SELL_LOOP_GAP = 1.5
-COLLECT_WAVES = 4
-COLLECT_CHUNK = 60
-COLLECT_GAP = 0.15
-COLLECT_MAX_FIRES = 400
+COLLECT_WAVES = 2
+COLLECT_CHUNK = 25
+COLLECT_GAP = 0.35
+COLLECT_MAX_FIRES = 80
 COLLECT_SORT_BY_VALUE = true
-COLLECT_BURST_PAUSE = 0
+COLLECT_BURST_PAUSE = 0.08
 STEAL_GAP = 0.05
 STEAL_PROMPT_RANGE = 24
 STEAL_GARDEN_POLL = 0.3
@@ -867,7 +904,10 @@ HARVEST_PROMPT_RANGE = 24
 PROMPT_RANGE_MAX = 32
 AUTO_INSTANT_PROMPTS = false
 SHOW_HUD = true
-HUD_REFRESH_GAP = 0.5
+HUD_REFRESH_GAP = 1
+HEAVY_STATS_CACHE_TTL = 2
+PLANT_COUNT_CACHE_TTL = 2
+FRUIT_COUNT_CACHE_TTL = 1
 DEBUG_LAG_PROBE = false
 WILD_PET_BUY_GAP = 0.5
 WEBHOOK_URL = tostring(userCfg["Webhook URL"] or userCfg.webhook or "")
@@ -895,6 +935,20 @@ PET_EQUIP_TRY_DELAY = 0.35
 BOOT = {
 	autoWaitGameLoad = true,
 	gameLoadTimeout = 60,
+}
+ANTI_AFK = {
+	enabled = true,
+	loopGap = 110,
+	idledLoopGap = 115,
+	methods = {
+		virtualUserIdled = true,
+		virtualUserLoop = true,
+		virtualInputManager = true,
+		cameraNudge = true,
+		humanoidHop = true,
+		disconnectIdled = true,
+		rootMicroMove = true,
+	},
 }
 PERF = {
 	ultimateOptimize = true,
@@ -926,9 +980,13 @@ PERF = {
 	optimizeGardensConn = nil,
 	optimizeMapConn = nil,
 	optimizeTextureLoopGap = 60,
+	optimizeFullRefreshGap = 300,
+	reduce3DRendering = true,
+	minimizeGraphics = true,
 	optimizeHarvestCache = setmetatable({}, { __mode = "k" }),
 	optimizeSoundMuted = false,
 	lightingOptimized = false,
+	reduce3DApplied = false,
 	blackOverlayGui = nil,
 	blackOverlayFrame = nil,
 	blackOverlayLabel = nil,
@@ -973,10 +1031,13 @@ stealSkip = {}
 stealGardensCache = { time = 0, data = {} }
 harvestTargetsCache = { time = 0, plot = nil, targets = {} }
 hudStatsCache = { time = 0, data = nil }
+plantCountCache = { plot = nil, time = 0, count = 0 }
+fruitCountCache = { time = 0, count = 0 }
+moneyPerSecState = { sheckles = 0, time = 0, rate = 0 }
 plantAreasCache = { plot = nil, time = 0, areas = {} }
 sprinklerPosCache = { plot = nil, time = 0, positions = {} }
 bestPlantForGearCache = { plot = nil, time = 0, data = nil }
-PLANT_AREAS_CACHE_TTL = 8
+PLANT_AREAS_CACHE_TTL = 12
 SPRINKLER_POS_CACHE_TTL = 2
 BEST_PLANT_CACHE_TTL = 3
 stealFloatConn = nil
@@ -1011,6 +1072,8 @@ lastPetEquipAt = 0
 petEquipRebalancing = false
 petEquipEnsureActive = false
 antiAfkHooked = false
+antiAfkConns = {}
+antiAfkThreads = {}
 lastShopBuyAt = 0
 lastSeedBuyAt = 0
 lastGearBuyAt = 0
@@ -1434,6 +1497,18 @@ SNH.cfgSource = function(...)
 			local v = userCfg["Send Webhook"] or userCfg.SendWebhook or userCfg[key]
 			if typeof(v) == "table" then return v end
 		end
+		if key == "BUY_PET" or key == "BuyPets" or key == "BuyPet" or key == "WildPetBuy" then
+			local v = userCfg["BUY_PET"] or userCfg.BuyPets or userCfg.BuyPet or userCfg.WildPetBuy or userCfg[key]
+			if typeof(v) == "table" then return v end
+		end
+		if key == "USE_GEAR" or key == "UseGear" or key == "UseGears" then
+			local v = userCfg["USE_GEAR"] or userCfg.UseGear or userCfg.UseGears or userCfg[key]
+			if typeof(v) == "table" then return v end
+		end
+		if key == "BUY_GEAR" or key == "BuyGear" or key == "BuyGears" then
+			local v = userCfg["BUY_GEAR"] or userCfg.BuyGear or userCfg.BuyGears or userCfg[key]
+			if typeof(v) == "table" then return v end
+		end
 	end
 	return nil
 end
@@ -1453,6 +1528,42 @@ SNH.buildAmountMap = function(defaults, overrides)
 	return map
 end
 
+SNH.parseBoolEntry = function(value)
+	if type(value) == "boolean" then return value end
+	if type(value) == "number" then return value > 0 end
+	if type(value) == "string" then
+		local lower = string.lower(value)
+		return lower == "true" or lower == "yes" or lower == "on" or lower == "1"
+	end
+	return false
+end
+
+SNH.buildBoolMap = function(defaults, overrides)
+	local map = {}
+	for _, name in ALL_GEAR do
+		map[name] = false
+	end
+	if typeof(defaults) == "table" then
+		for name, value in defaults do
+			if type(name) == "string" then
+				map[name] = SNH.parseBoolEntry(value)
+			end
+		end
+	end
+	if typeof(overrides) == "table" then
+		for name, value in overrides do
+			if type(name) == "string" then
+				map[name] = SNH.parseBoolEntry(value)
+			end
+		end
+	end
+	return map
+end
+
+SNH.shouldUseGear = function(gearName)
+	return UseGearConfig[gearName] == true
+end
+
 SNH.applyBuySeedsConfig = function(overrides)
 	BuySeedsConfig = SNH.buildAmountMap(USER_CONFIG["BUY_SEED"], overrides)
 	SNH.invalidateAffordableSeedBuyCache()
@@ -1467,18 +1578,13 @@ SNH.applyPlantSeedsConfig = function(overrides)
 end
 
 SNH.applyUseGearConfig = function(overrides)
-	UseGearConfig = {}
-	for gearName, value in USER_CONFIG["USE_GEAR"] do
-		UseGearConfig[gearName] = parseAmountEntry(value) > 0
-	end
-	if typeof(overrides) ~= "table" then return end
-	for gearName, value in overrides do
-		if type(gearName) == "string" then
-			if type(value) == "boolean" then
-				UseGearConfig[gearName] = value
-			else
-				UseGearConfig[gearName] = parseAmountEntry(value) > 0
-			end
+	local defaults = next(UseGearConfig) and UseGearConfig or USER_CONFIG["USE_GEAR"]
+	UseGearConfig = SNH.buildBoolMap(defaults, overrides)
+	AUTO_USE_GEAR = false
+	for _, enabled in UseGearConfig do
+		if enabled then
+			AUTO_USE_GEAR = true
+			break
 		end
 	end
 end
@@ -1618,7 +1724,9 @@ SNH.applyBuySeedsConfig(nil)
 SNH.applyBuyGearConfig(nil)
 SNH.applyPlantSeedsConfig(nil)
 SNH.applyUseGearConfig(nil)
+SNH.applyUseGearConfig(SNH.cfgSource("USE_GEAR", "UseGear", "UseGears"))
 SNH.applyBuyPetsConfig(nil)
+SNH.applyBuyPetsConfig(SNH.cfgSource("BUY_PET", "BuyPets", "BuyPet", "WildPetBuy"))
 SNH.applyAutoMailConfig(SNH.cfgSource("AutoMail", "AUTO_MAIL", "Mail", "MailConfig") or userCfg["AutoMail"])
 
 SNH.normalizeSendWebhookConfig = function(raw)
@@ -1687,8 +1795,11 @@ SNH.applySendWebhookConfig(
 if SNH.configHasBuyEntries(BuySeedsConfig) then
 	AUTO_BUY_SEED = true
 end
-if SNH.configHasBuyEntries(BuyGearConfig) then
+	if SNH.configHasBuyEntries(BuyGearConfig) then
 	AUTO_BUY_GEAR = true
+end
+if SNH.configHasBuyEntries(BuyPetsConfig) then
+	AUTO_BUY_WILD_PET = true
 end
 AUTO_BUY_WILD_PET = true
 for _, enabled in UseGearConfig do
@@ -1809,6 +1920,11 @@ SNH.isActionPausedForSeedSnipe = function()
 	if seedSnipeActive then return true end
 	if SNH.getMutationEventKind() then return true end
 	return select(1, SNH.getPendingMutationSpawn()) ~= nil
+end
+
+-- Wild pets keep running while farming; only pause during an active mutation snipe teleport.
+SNH.isWildPetBuyPaused = function()
+	return seedSnipeActive == true
 end
 
 SNH.shouldPrioritizeMutationSeeds = SNH.isActionPausedForSeedSnipe
@@ -2635,8 +2751,8 @@ SNH.tryUseGear = function()
 	plotId = tonumber(plotId) or plotId
 
 	local gearList = {}
-	for gearName, enabled in UseGearConfig do
-		if enabled then table.insert(gearList, gearName) end
+	for _, gearName in ALL_GEAR do
+		if SNH.shouldUseGear(gearName) then table.insert(gearList, gearName) end
 	end
 	if #gearList == 0 then
 		SNH.debugLog("GEAR", "skip: no gear enabled in UseGearConfig", "warn")
@@ -3337,9 +3453,19 @@ SNH.rebuildPetBuyOrder = function()
 	for _, entry in list do
 		table.insert(PET_BUY_ORDER, entry.key)
 	end
+	table.clear(WILD_PET_COLLECT_ORDER)
+	for i = #list, 1, -1 do
+		table.insert(WILD_PET_COLLECT_ORDER, list[i].key)
+	end
 end
 
 SNH.getWildPetProgress = function()
+	for _, petKey in WILD_PET_COLLECT_ORDER do
+		local owned = SNH.countOwnedPet(petKey)
+		if owned < WILD_PET_BUY_EACH then
+			return petKey, WILD_PET_BUY_EACH - owned
+		end
+	end
 	for _, petKey in PET_BUY_ORDER do
 		local owned = SNH.countOwnedPet(petKey)
 		if owned < WILD_PET_BUY_EACH then
@@ -3516,9 +3642,10 @@ end
 SNH.getWildPetRefs = function()
 	local map = workspace:FindFirstChild("Map")
 	local refs, seen = {}, {}
-	local function addRef(part)
+	local function addRef(part, petNameOverride)
 		if not part or not part:IsA("BasePart") then return end
-		if not part:GetAttribute("PetName") then return end
+		local petName = part:GetAttribute("PetName") or petNameOverride
+		if type(petName) ~= "string" or petName == "" then return end
 		if seen[part] then return end
 		seen[part] = true
 		table.insert(refs, part)
@@ -3532,13 +3659,25 @@ SNH.getWildPetRefs = function()
 	local spawns = map and map:FindFirstChild("WildPetSpawns")
 	if spawns then
 		for _, model in spawns:GetChildren() do
-			if not model:IsA("Model") then continue end
-			local petName = model:GetAttribute("PetName")
-			if type(petName) ~= "string" or petName == "" then continue end
-			for _, ref in folder and folder:GetChildren() or {} do
-				if ref:IsA("BasePart") and ref.Name == model.Name:match("_(.+)$") then
-					addRef(ref)
+			if model:IsA("Model") then
+				local petName = model:GetAttribute("PetName")
+				if type(petName) == "string" and petName ~= "" then
+					local ref = model:FindFirstChild("WildPetRef", true)
+						or model.PrimaryPart
+						or model:FindFirstChildWhichIsA("BasePart", true)
+					if ref and ref:IsA("BasePart") then
+						addRef(ref, petName)
+					end
 				end
+			elseif model:IsA("BasePart") then
+				addRef(model)
+			end
+		end
+	end
+	if folder then
+		for _, child in folder:GetDescendants() do
+			if child:IsA("BasePart") and child:GetAttribute("PetName") then
+				addRef(child)
 			end
 		end
 	end
@@ -3822,7 +3961,7 @@ SNH.tryBuyWildPet = function()
 		SNH.debugLog("WILD_PET", "skip: AUTO_BUY_WILD_PET=false")
 		return false
 	end
-	if SNH.isActionPausedForSeedSnipe() then return false end
+	if SNH.isWildPetBuyPaused() then return false end
 	SNH.ensureNetworking()
 	if not Networking or not Networking.Pets or not Networking.Pets.WildPetTame then
 		SNH.debugLog("WILD_PET", ("skip: net=%s pets=%s tame=%s"):format(
@@ -3855,6 +3994,9 @@ SNH.tryBuyWildPet = function()
 	for _, ref in refs do
 		scanned += 1
 		local petKey = ref:GetAttribute("PetName")
+		if not petKey and ref.Parent and ref.Parent:IsA("Model") then
+			petKey = ref.Parent:GetAttribute("PetName")
+		end
 		if not petKey then
 			SNH.debugLog("WILD_PET", ("ref[%d] skip: no PetName attr"):format(scanned))
 			continue
@@ -5197,12 +5339,24 @@ end
 
 SNH.countPlants = function(plot)
 	if not plot then return 0 end
+	local now = tick()
+	if plantCountCache.plot == plot and now - plantCountCache.time < PLANT_COUNT_CACHE_TTL then
+		return plantCountCache.count
+	end
 	local plants = plot:FindFirstChild("Plants")
-	if not plants then return 0 end
+	if not plants then
+		plantCountCache.plot = plot
+		plantCountCache.time = now
+		plantCountCache.count = 0
+		return 0
+	end
 	local count = 0
 	for _, child in plants:GetChildren() do
 		if child:IsA("Model") and child:GetAttribute("PlantId") then count += 1 end
 	end
+	plantCountCache.plot = plot
+	plantCountCache.time = now
+	plantCountCache.count = count
 	return count
 end
 
@@ -5372,16 +5526,18 @@ SNH.setupHud = function()
 	SNH.makeHudDivider(stack, 4)
 	labels.row1 = SNH.makeHudLabel(stack, 5, 16)
 	labels.row1.TextColor3 = Color3.fromRGB(130, 230, 150)
-	labels.row2 = SNH.makeHudLabel(stack, 6, 16)
+	labels.row1b = SNH.makeHudLabel(stack, 6, 16)
+	labels.row1b.TextColor3 = Color3.fromRGB(120, 210, 140)
+	labels.row2 = SNH.makeHudLabel(stack, 7, 16)
 	labels.row2.TextColor3 = Color3.fromRGB(200, 185, 255)
-	labels.row2b = SNH.makeHudLabel(stack, 7, 16)
+	labels.row2b = SNH.makeHudLabel(stack, 8, 16)
 	labels.row2b.TextColor3 = Color3.fromRGB(200, 185, 255)
-	labels.row3 = SNH.makeHudLabel(stack, 8, 16)
+	labels.row3 = SNH.makeHudLabel(stack, 9, 16)
 	labels.row3.TextColor3 = Color3.fromRGB(150, 200, 255)
-	labels.steal = SNH.makeHudLabel(stack, 9, 18)
+	labels.steal = SNH.makeHudLabel(stack, 10, 18)
 	labels.steal.TextColor3 = Color3.fromRGB(255, 150, 120)
-	SNH.makeHudDivider(stack, 10)
-	labels.time = SNH.makeHudLabel(stack, 11, 18)
+	SNH.makeHudDivider(stack, 11)
+	labels.time = SNH.makeHudLabel(stack, 12, 18)
 	labels.time.TextColor3 = Color3.fromRGB(180, 210, 255)
 	SNH.hudGui = gui
 	SNH.hudLabels = labels
@@ -5400,6 +5556,34 @@ SNH.formatEquippedPetList = function()
 	return table.concat(names, ", ")
 end
 
+SNH.getCachedFruitCount = function()
+	local now = tick()
+	if now - fruitCountCache.time < FRUIT_COUNT_CACHE_TTL then
+		return fruitCountCache.count
+	end
+	local count = SNH.countFruitInInventory()
+	fruitCountCache.time = now
+	fruitCountCache.count = count
+	return count
+end
+
+SNH.updateMoneyPerSec = function(sheckles)
+	local now = tick()
+	if moneyPerSecState.time <= 0 then
+		moneyPerSecState.sheckles = sheckles
+		moneyPerSecState.time = now
+		moneyPerSecState.rate = 0
+		return 0
+	end
+	local dt = now - moneyPerSecState.time
+	if dt >= 1 then
+		moneyPerSecState.rate = (sheckles - moneyPerSecState.sheckles) / dt
+		moneyPerSecState.sheckles = sheckles
+		moneyPerSecState.time = now
+	end
+	return moneyPerSecState.rate
+end
+
 SNH.getHudStats = function()
 	local now = tick()
 	if hudStatsCache.data and now - hudStatsCache.time < HUD_REFRESH_GAP then
@@ -5408,11 +5592,13 @@ SNH.getHudStats = function()
 	local _, plot = API.getLocalPlot()
 	local rainbowSeeds, goldSeeds = SNH.countSpecialSeeds()
 	local eventText, weatherText = SNH.getEventsWeatherText()
+	local sheckles = API.getSheckles()
 	hudStatsCache.data = {
 		plot = plot,
-		sheckles = API.getSheckles(),
+		sheckles = sheckles,
+		moneyPerSec = SNH.updateMoneyPerSec(sheckles),
 		plants = SNH.countPlants(plot),
-		fruits = SNH.countFruitInInventory(),
+		fruits = SNH.getCachedFruitCount(),
 		maxFruit = SNH.getMaxFruitCapacity(),
 		activePets = SNH.countActivePetsInPlot(plot),
 		maxPets = SNH.getMaxPetSlots(),
@@ -5435,8 +5621,10 @@ SNH.refreshHud = function()
 
 	labels.user.Text = "👤 Username: " .. LocalPlayer.Name
 	labels.status.Text = "📋 " .. statusText
-	labels.row1.Text = ("💰 Sheckles: %s | 🌱 Planted: %d | 🍎 Fruits: %d/%d"):format(
-		SNH.formatAbbrev(stats.sheckles), stats.plants, stats.fruits, stats.maxFruit)
+	labels.row1.Text = ("💰 Sheckles: %s | %s/s"):format(
+		SNH.formatAbbrev(stats.sheckles), SNH.formatAbbrev(stats.moneyPerSec or 0))
+	labels.row1b.Text = ("🌱 Planted: %d | 🍎 Fruits: %d/%d"):format(
+		stats.plants, stats.fruits, stats.maxFruit)
 	labels.row2.Text = ("🐾 Active Pets: %d/%d | %s"):format(
 		stats.activePets, stats.maxPets, stats.equippedPetList)
 	labels.row2b.Text = ("🏡 Plot: %d/%d | 🌈 Rainbow: %d | 🟡 Gold: %d"):format(
@@ -5687,35 +5875,136 @@ end
 end
 
 do --[[ SNH: AntiAfk ]]
+SNH.antiAfkVirtualUserPulse = function(vu)
+	if not vu then return false end
+	local ok = pcall(function()
+		vu:CaptureController()
+		vu:ClickButton2(Vector2.new(0, 0))
+		vu:ClickButton1(Vector2.new(1, 1))
+	end)
+	return ok
+end
+
+SNH.antiAfkVirtualInputPulse = function()
+	local ok = pcall(function()
+		local vim = game:GetService("VirtualInputManager")
+		vim:SendKeyEvent(true, Enum.KeyCode.LeftShift, false, game)
+		task.wait()
+		vim:SendKeyEvent(false, Enum.KeyCode.LeftShift, false, game)
+		vim:SendMouseMoveEvent(1, 1, game)
+	end)
+	return ok
+end
+
+SNH.antiAfkCameraNudge = function()
+	local cam = workspace.CurrentCamera
+	if not cam then return false end
+	return pcall(function()
+		cam.CFrame = cam.CFrame * CFrame.Angles(0, math.rad(0.02), 0)
+	end)
+end
+
+SNH.antiAfkHumanoidHop = function()
+	local char = LocalPlayer.Character
+	local hum = char and char:FindFirstChildOfClass("Humanoid")
+	if not hum or hum.Health <= 0 then return false end
+	return pcall(function()
+		hum:ChangeState(Enum.HumanoidStateType.Jumping)
+	end)
+end
+
+SNH.antiAfkDisconnectIdled = function()
+	if typeof(getconnections) ~= "function" then return false end
+	local disabled = 0
+	pcall(function()
+		for _, conn in getconnections(LocalPlayer.Idled) do
+			if conn.Disable then
+				conn:Disable()
+				disabled += 1
+			elseif conn.Disconnect then
+				conn:Disconnect()
+				disabled += 1
+			end
+		end
+	end)
+	return disabled > 0
+end
+
+SNH.antiAfkRootMicroMove = function()
+	local char = LocalPlayer.Character
+	local root = char and char:FindFirstChild("HumanoidRootPart")
+	if not root then return false end
+	return pcall(function()
+		local original = root.CFrame
+		root.CFrame = original + Vector3.new(0, 0.02, 0)
+		task.wait(0.03)
+		root.CFrame = original
+	end)
+end
+
+SNH.runAntiAfkPulse = function(vu)
+	local methods = ANTI_AFK.methods or {}
+	local ran = 0
+	if methods.virtualUserLoop ~= false then
+		if SNH.antiAfkVirtualUserPulse(vu) then ran += 1 end
+	end
+	if methods.virtualInputManager ~= false then
+		if SNH.antiAfkVirtualInputPulse() then ran += 1 end
+	end
+	if methods.cameraNudge ~= false then
+		if SNH.antiAfkCameraNudge() then ran += 1 end
+	end
+	if methods.humanoidHop ~= false then
+		if SNH.antiAfkHumanoidHop() then ran += 1 end
+	end
+	if methods.rootMicroMove ~= false then
+		if SNH.antiAfkRootMicroMove() then ran += 1 end
+	end
+	return ran
+end
+
 SNH.setupAntiAfk = function()
-	if antiAfkHooked then return end
+	if antiAfkHooked or ANTI_AFK.enabled == false then return end
 	antiAfkHooked = true
+	local methods = ANTI_AFK.methods or {}
 	local VirtualUser
 	pcall(function()
 		VirtualUser = game:GetService("VirtualUser")
 	end)
-	pcall(function()
-		LocalPlayer.Idled:Connect(function()
-			pcall(function()
-				if VirtualUser then
-					VirtualUser:CaptureController()
-					VirtualUser:ClickButton2(Vector2.new())
-				end
-			end)
+
+	if methods.disconnectIdled ~= false then
+		SNH.antiAfkDisconnectIdled()
+	end
+
+	if methods.virtualUserIdled ~= false and VirtualUser then
+		pcall(function()
+			table.insert(antiAfkConns, LocalPlayer.Idled:Connect(function()
+				pcall(function()
+					SNH.antiAfkVirtualUserPulse(VirtualUser)
+				end)
+			end))
 		end)
-	end)
-	task.spawn(function()
-		while running do
-			pcall(function()
-				if VirtualUser then
-					VirtualUser:CaptureController()
-					VirtualUser:ClickButton2(Vector2.new())
-				end
-			end)
-			task.wait(115)
+	end
+
+	local loopGap = math.max(30, tonumber(ANTI_AFK.loopGap) or 110)
+	table.insert(antiAfkThreads, task.spawn(function()
+		while running and ANTI_AFK.enabled do
+			SNH.runAntiAfkPulse(VirtualUser)
+			task.wait(loopGap)
 		end
-	end)
-	print("[So Nach Hup] Anti-AFK enabled")
+	end))
+
+	local idledGap = math.max(30, tonumber(ANTI_AFK.idledLoopGap) or 115)
+	table.insert(antiAfkThreads, task.spawn(function()
+		while running and ANTI_AFK.enabled do
+			if methods.virtualUserLoop ~= false then
+				SNH.antiAfkVirtualUserPulse(VirtualUser)
+			end
+			task.wait(idledGap)
+		end
+	end))
+
+	print("[So Nach Hup] Anti-AFK enabled (7 methods: VirtualUser Idled, VirtualUser loop, VirtualInputManager, camera nudge, humanoid hop, disconnect Idled, root micro-move)")
 end
 end
 
@@ -5897,7 +6186,57 @@ SNH.applyLightingOptimizeOnce = function()
 	PERF.lightingOptimized = true
 	pcall(function()
 		Lighting.GlobalShadows = false
+		Lighting.FogEnd = 9e9
+		Lighting.Brightness = 2
+		Lighting.EnvironmentDiffuseScale = 0
+		Lighting.EnvironmentSpecularScale = 0
 	end)
+end
+
+SNH.applyReduce3DRenderingOnce = function()
+	if PERF.reduce3DApplied then return end
+	PERF.reduce3DApplied = true
+	SNH.applyLightingOptimizeOnce()
+	pcall(function()
+		local terrain = workspace:FindFirstChildOfClass("Terrain")
+		if terrain then
+			terrain.Decoration = false
+			terrain.WaterWaveSize = 0
+			terrain.WaterWaveSpeed = 0
+		end
+	end)
+	pcall(function()
+		local renderSettings = settings()
+		if renderSettings and renderSettings.Rendering then
+			renderSettings.Rendering.QualityLevel = Enum.QualityLevel.Level01
+			renderSettings.Rendering.MeshPartDetailLevel = Enum.MeshPartDetailLevel.Level04
+			renderSettings.Rendering.EditQualityLevel = Enum.QualityLevel.Level01
+		end
+	end)
+	pcall(function()
+		local ugs = UserSettings():GetService("UserGameSettings")
+		ugs.SavedQualityLevel = Enum.SavedQualitySetting.QualityLevel1
+	end)
+	pcall(function()
+		if workspace.CurrentCamera then
+			workspace.CurrentCamera.FieldOfView = 70
+		end
+	end)
+end
+
+SNH.stripPartToMinimum3D = function(part)
+	if not part or not part:IsA("BasePart") or SNH.isOptimizeProtected(part) then return end
+	pcall(function()
+		part.Material = Enum.Material.SmoothPlastic
+		part.Reflectance = 0
+		part.CastShadow = false
+	end)
+	if part:IsA("MeshPart") then
+		pcall(function()
+			part.TextureID = ""
+			part.RenderFidelity = Enum.RenderFidelity.Performance
+		end)
+	end
 end
 
 SNH.isStripCandidate = function(inst)
@@ -6070,6 +6409,9 @@ SNH.applyAggressiveVisualStrip = function(inst, allowPartStrip)
 	if PERF.simplifyMeshes and inst:IsA("BasePart") and allowPartStrip then
 		SNH.stripPartToSquare(inst)
 	end
+	if PERF.reduce3DRendering and inst:IsA("BasePart") and allowPartStrip then
+		SNH.stripPartToMinimum3D(inst)
+	end
 end
 
 SNH.applyCharacterVisualStrip = function(inst)
@@ -6121,6 +6463,9 @@ SNH.applyVisualStrip = function(inst, allowFullStrip)
 
 	if PERF.simplifyMeshes and inst:IsA("BasePart") and allowFullStrip then
 		SNH.stripPartToSquare(inst)
+	end
+	if PERF.reduce3DRendering and inst:IsA("BasePart") and allowFullStrip then
+		SNH.stripPartToMinimum3D(inst)
 	end
 end
 
@@ -6228,7 +6573,7 @@ SNH.startOptimizeWorker = function()
 				end
 				processed += 1
 			end
-			task.wait(#PERF.optimizeQueue > 0 and 0.08 or 0.25)
+			task.wait(#PERF.optimizeQueue > 0 and 0.06 or 0.5)
 		end
 		PERF.optimizeWorkerRunning = false
 	end)
@@ -6298,6 +6643,9 @@ SNH.refreshUltimateOptimization = function()
 	local ownPlot = SNH.getOptimizeOwnPlot(true)
 	SNH.muteSoundServiceOnce()
 	SNH.applyLightingOptimizeOnce()
+	if PERF.reduce3DRendering then
+		SNH.applyReduce3DRenderingOnce()
+	end
 
 	local gardens = workspace:FindFirstChild("Gardens")
 	if gardens then
@@ -6345,10 +6693,13 @@ end
 SNH.setupUltimateOptimization = function()
 	if PERF.optimizeInstalled or not PERF.ultimateOptimize then return end
 	PERF.optimizeInstalled = true
-	print("[So Nach Hup] Ultimate optimize ON — strip local/all players, hide other plots/plants/players")
+	print("[So Nach Hup] Ultimate optimize ON — low 3D, strip textures, hide other plots/players")
 	SNH.setStatus("Ultimate optimize ON")
 	SNH.muteSoundServiceOnce()
 	SNH.applyLightingOptimizeOnce()
+	if PERF.reduce3DRendering then
+		SNH.applyReduce3DRenderingOnce()
+	end
 	SNH.hookAllGardenPlots()
 	pcall(SNH.refreshUltimateOptimization)
 	pcall(SNH.runTextureRemovalPass)
@@ -6425,11 +6776,16 @@ SNH.setupUltimateOptimization = function()
 	SNH.startOptimizeWorker()
 
 	task.spawn(function()
+		local lastFullRefresh = tick()
 		while running and PERF.ultimateOptimize do
 			pcall(function()
 				SNH.runTextureRemovalPass()
 				SNH.hookAllGardenPlots()
-				SNH.refreshUltimateOptimization()
+				local fullGap = tonumber(PERF.optimizeFullRefreshGap) or 300
+				if tick() - lastFullRefresh >= fullGap then
+					SNH.refreshUltimateOptimization()
+					lastFullRefresh = tick()
+				end
 			end)
 			task.wait(PERF.optimizeTextureLoopGap or 60)
 		end
@@ -6803,11 +7159,35 @@ end
 end
 
 do --[[ SNH: HarvestGather ]]
-SNH.getHarvestTargetValue = function(model, plantId, fruitId)
-	if model then
-		local value = API.getFruitValueFromModel(model)
-		if value > 0 then return value end
+SNH.getBestHarvestValueModel = function(model)
+	if not model then return nil, 0 end
+	local bestModel, bestValue = model, 0
+	local function consider(m)
+		if not m or not m:IsA("Model") then return end
+		local value = API.getFruitValueFromModel(m)
+		if value > bestValue then
+			bestValue = value
+			bestModel = m
+		end
 	end
+	consider(model)
+	local fruits = model:FindFirstChild("Fruits")
+	if fruits then
+		for _, child in fruits:GetChildren() do
+			if child:IsA("Model") then consider(child) end
+		end
+	end
+	for _, desc in model:GetDescendants() do
+		if desc:IsA("Model") and desc:GetAttribute("FruitId") then
+			consider(desc)
+		end
+	end
+	return bestModel, bestValue
+end
+
+SNH.getHarvestTargetValue = function(model, plantId, fruitId)
+	local _, value = SNH.getBestHarvestValueModel(model)
+	if value > 0 then return value end
 	local seedName = model and (model:GetAttribute("SeedName") or model:GetAttribute("CorePartName"))
 	if seedName then
 		return API.getSellValue(seedName)
@@ -6983,7 +7363,9 @@ SNH.gatherAllHarvestTargets = function(plot, ownerUserId, forceRefresh)
 			addFromModel(inst)
 		end
 	end
-	SNH.sortHarvestTargetsByValue(targets)
+	if COLLECT_SORT_BY_VALUE then
+		SNH.sortHarvestTargetsByValue(targets)
+	end
 	harvestTargetsCache.plot = plot
 	harvestTargetsCache.time = now
 	harvestTargetsCache.targets = targets
@@ -7456,6 +7838,31 @@ end
 end
 
 do --[[ SNH: HarvestBurst ]]
+SNH.burstFireHarvestTargets = function(remote, targets, limit)
+	if not remote or not targets or #targets == 0 then return 0 end
+	limit = math.max(1, math.min(#targets, tonumber(limit) or #targets))
+	local chunk = math.max(1, tonumber(COLLECT_CHUNK) or limit)
+	local pause = math.max(0, tonumber(COLLECT_BURST_PAUSE) or 0)
+	local fired = 0
+	local i = 1
+	while i <= limit do
+		local chunkEnd = math.min(i + chunk - 1, limit)
+		for j = i, chunkEnd do
+			local target = targets[j]
+			if not target or not target.plantId then continue end
+			pcall(function()
+				remote:Fire(tostring(target.plantId), tostring(target.fruitId or ""))
+			end)
+			fired += 1
+		end
+		i = chunkEnd + 1
+		if i <= limit and pause > 0 then
+			task.wait(pause)
+		end
+	end
+	return fired
+end
+
 SNH.burstHarvestAll = function(force)
 	if not AUTO_COLLECT or not Networking or stealActive then return 0 end
 	if SNH.isActionPausedForSeedSnipe() then return 0 end
@@ -7467,46 +7874,58 @@ SNH.burstHarvestAll = function(force)
 		collectFireRemote = Networking.Garden and Networking.Garden.CollectFruit
 		if not collectFireRemote then return 0 end
 	end
+	API.init()
 	local uid = LocalPlayer.UserId
 	local startCount = SNH.countFruitInInventory()
 	local maxCap = SNH.getMaxFruitCapacity()
-	local targets = SNH.gatherAllHarvestTargets(plot, uid, true)
-	SNH.sortHarvestTargetsByValue(targets)
-	if #targets == 0 then return 0 end
+	local topTarget = nil
+	local totalFired = 0
+	local waves = math.max(1, tonumber(COLLECT_WAVES) or 1)
 
-	local topTarget = targets[1]
-	local collected = 0
-	for _, target in targets do
-		if SNH.countFruitInInventory() >= maxCap then break end
-		if SNH.collectHarvestTarget(plot, target) then
-			collected += 1
-			harvestTargetsCache.time = 0
+	for wave = 1, waves do
+		local targets = SNH.gatherAllHarvestTargets(plot, uid, true)
+		if COLLECT_SORT_BY_VALUE then
+			SNH.sortHarvestTargetsByValue(targets)
 		end
-		if COLLECT_BURST_PAUSE > 0 then
+		if #targets == 0 then break end
+		if not topTarget then topTarget = targets[1] end
+
+		local room = maxCap - SNH.countFruitInInventory()
+		if room <= 0 then break end
+
+		local maxFires = tonumber(COLLECT_MAX_FIRES) or #targets
+		if maxFires <= 0 then maxFires = #targets end
+		local limit = math.min(#targets, maxFires, room)
+
+		totalFired += SNH.burstFireHarvestTargets(collectFireRemote, targets, limit)
+		harvestTargetsCache.time = 0
+
+		if COLLECT_BURST_PAUSE > 0 and wave < waves then
 			task.wait(COLLECT_BURST_PAUSE)
-		else
-			RunService.Heartbeat:Wait()
 		end
 	end
 
 	local gained = math.max(0, SNH.countFruitInInventory() - startCount)
 	lastCollectAt = now
 	hudStatsCache.time = 0
+	fruitCountCache.time = 0
+	plantCountCache.time = 0
 	harvestTargetsCache.time = 0
 	if gained > 0 then
 		lastHarvestAt = now
 		if topTarget and topTarget.seedName and (topTarget.value or 0) > 0 then
-			SNH.setStatus(("Harvested %d fruit | top %s (%s)"):format(
-				gained, topTarget.seedName, SNH.formatAbbrev(topTarget.value)))
+			SNH.setStatus(("Harvested %d fruit | top %s (%s) | fired %d"):format(
+				gained, topTarget.seedName, SNH.formatAbbrev(topTarget.value), totalFired))
 		else
-			SNH.setStatus(("Harvested %d fruit"):format(gained))
+			SNH.setStatus(("Harvested %d fruit | fired %d"):format(gained, totalFired))
 		end
 	elseif topTarget and topTarget.seedName then
-		print(("[So Nach Hup] Harvest retry next tick | top %s (%s) plant=%s fruit=%s"):format(
+		print(("[So Nach Hup] Harvest retry next tick | top %s (%s) plant=%s fruit=%s | fired %d"):format(
 			topTarget.seedName,
 			SNH.formatAbbrev(topTarget.value or 0),
 			tostring(topTarget.plantId),
-			tostring(topTarget.fruitId or "")))
+			tostring(topTarget.fruitId or ""),
+			totalFired))
 	end
 	return gained
 end
@@ -8857,12 +9276,12 @@ end
 SNH.startWildPetLoop = function()
 	task.spawn(function()
 		task.defer(function()
-			if ENABLED and AUTO_BUY_WILD_PET and not SNH.isActionPausedForSeedSnipe() then
+			if ENABLED and AUTO_BUY_WILD_PET and not SNH.isWildPetBuyPaused() then
 				SNH.loopBuyWildPet()
 			end
 		end)
 		while running do
-			if ENABLED and AUTO_BUY_WILD_PET and not SNH.isActionPausedForSeedSnipe() then
+			if ENABLED and AUTO_BUY_WILD_PET and not SNH.isWildPetBuyPaused() then
 				SNH.loopBuyWildPet()
 			end
 			task.wait(math.max(0.25, WILD_PET_BUY_GAP or 0.5))
@@ -8913,7 +9332,7 @@ SNH.loopUseGear = function()
 end
 
 SNH.loopBuyWildPet = function()
-	if SNH.isActionPausedForSeedSnipe() then return end
+	if SNH.isWildPetBuyPaused() then return end
 	if not AUTO_BUY_WILD_PET then return end
 	if wildPetBuying then return end
 	SNH.ensureNetworking()
@@ -9057,14 +9476,19 @@ print(("[So Nach Hup] Shop | AutoBuySeed=%s AutoBuyGear=%s | Carrot stock=%d bou
 	SNH.formatAbbrev(API.getSheckles())
 ))
 
+print(("[So Nach Hup] Wild pet | AutoBuy=%s config=%s loop=%.2fs"):format(
+	tostring(AUTO_BUY_WILD_PET),
+	tostring(SNH.configHasBuyEntries(BuyPetsConfig)),
+	WILD_PET_BUY_GAP or 0.5))
+
 print("[So Nach Hup] Ready")
 
 if SHOW_HUD then
-	SNH.hudRefreshAt = 0
-	RunService.Heartbeat:Connect(function()
-		if os.clock() - SNH.hudRefreshAt < HUD_REFRESH_GAP then return end
-		SNH.hudRefreshAt = os.clock()
-		pcall(SNH.refreshHud)
+	task.spawn(function()
+		while running do
+			pcall(SNH.refreshHud)
+			task.wait(HUD_REFRESH_GAP > 0 and HUD_REFRESH_GAP or 1)
+		end
 	end)
 end
 
@@ -9177,6 +9601,19 @@ _G.SoNachHup = {
 		if key == "OptimizeHideOtherPlants" then PERF.hideOtherPlants = value ~= false end
 		if key == "OptimizeHideOtherPlayers" then PERF.hideOtherPlayers = value ~= false end
 		if key == "OptimizeStripLocalPlayer" then PERF.stripLocalPlayer = value ~= false end
+		if key == "Reduce3DRendering" then
+			PERF.reduce3DRendering = value ~= false
+			if PERF.reduce3DRendering then
+				PERF.reduce3DApplied = false
+				pcall(SNH.applyReduce3DRenderingOnce)
+			end
+		end
+		if key == "OptimizeTextureLoopGap" and tonumber(value) then
+			PERF.optimizeTextureLoopGap = tonumber(value)
+		end
+		if key == "OptimizeFullRefreshGap" and tonumber(value) then
+			PERF.optimizeFullRefreshGap = tonumber(value)
+		end
 		if key == "AutoMailSend" then
 			AUTO_MAIL_SEND = value ~= false
 			autoMailState.enabled = AUTO_MAIL_SEND
@@ -9339,6 +9776,9 @@ _G.SoNachHup = {
 	DumpWildPetDebug = function() SNH.dumpWildPetDebug() end,
 	DebugGear = function() return DEBUG_GEAR end,
 	DebugWildPet = function() return DEBUG_WILD_PET end,
+	AntiAfk = ANTI_AFK,
+	setupAntiAfk = SNH.setupAntiAfk,
+	runAntiAfkPulse = SNH.runAntiAfkPulse,
 }
 
 print(("[%s] Ready"):format(SCRIPT_NAME))
