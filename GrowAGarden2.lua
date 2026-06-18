@@ -1,4 +1,260 @@
-
+getgenv().SoNachHup = {
+	["Webhook URL"] = "https://discord.com/api/webhooks/1378372318879027210/lgcub1_SGT88SEowf7ljckbXBYGkudtRxoyM9l9UZ34omo43Q1d8SufasNWYDxoItiR7",
+	["Ping ID"] = "",
+	["PetRarityLoopGap"] = 60,
+	["PetOkLogGap"] = 60,
+	["StealZeroHold"] = true,
+	["StealInstantRemote"] = true,
+	["AutoWaitGameLoad"] = true,
+	["UnifiedScheduler"] = true,
+	["AutoWaitGameLoad"] = true,
+	["RequireFullLoad"] = true,
+	["GameLoadTimeout"] = 120,
+	["BlackScreen"] = true,
+	["Send Webhook"] = {
+		["Pet"] = {
+			["Frog"] = false,
+			["Bunny"] = false,
+			["Deer"] = false,
+			["Owl"] = false,
+			["Robin"] = false,
+			["Bee"] = true,
+			["Monkey"] = true,
+			["Unicorn"] = true,
+			["Raccoon"] = true,
+			["Golden Dragonfly"] = true,
+			["Black Dragon"] = true,
+			["Ice Serpent"] = true,
+		},
+		["Seed"] = {
+			["Carrot"] = false,
+			["Strawberry"] = false,
+			["Blueberry"] = false,
+			["Tulip"] = false,
+			["Tomato"] = false,
+			["Apple"] = false,
+			["Bamboo"] = false,
+			["Corn"] = false,
+			["Cactus"] = false,
+			["Pineapple"] = false,
+			["Mushroom"] = false,
+			["Green Bean"] = false,
+			["Banana"] = false,
+			["Grape"] = false,
+			["Coconut"] = false,
+			["Mango"] = false,
+			["Dragon Fruit"] = false,
+			["Acorn"] = false,
+			["Cherry"] = false,
+			["Sunflower"] = false,
+			["Venus Fly Trap"] = true,
+			["Pomegranate"] = true,
+			["Poison Apple"] = true,
+			["Moon Bloom"] = true,
+			["Dragon's Breath"] = true,
+			["Ghost Pepper"] = true,
+			["Poison Ivy"] = true,
+			["Baby Cactus"] = true,
+			["Glow Mushroom"] = true,
+			["Romanesco"] = true,
+			["Horned Melon"] = true,
+			["Gold"] = true,
+			["Rainbow"] = true,
+		},
+	},
+	["BUY_PET"] = {
+		["Frog"] = 3,
+		["Bunny"] = 3,
+		["Deer"] = 3,
+		["Owl"] = 3,
+		["Robin"] = 3,
+		["Bee"] = 3,
+		["Monkey"] = 3,
+		["Unicorn"] = 3,
+		["Raccoon"] = 99,
+		["Golden Dragonfly"] = 99,
+		["Black Dragon"] = 99,
+		["Ice Serpent"] = 99,
+	},
+	["BUY_GEAR"] = {
+		["Common Watering Can"] = 999,
+		["Common Sprinkler"] = 99,
+		["Sign"] = 0,
+		["Lantern"] = 0,
+		["Uncommon Sprinkler"] = 999,
+		["Rare Sprinkler"] = 99,
+		["Legendary Sprinkler"] = 99,
+		["Super Sprinkler"] = 99,
+		["Trowel"] = 0,
+		["Speed Mushroom"] = 0,
+		["Jump Mushroom"] = 0,
+		["Gnome"] = 0,
+		["Shrink Mushroom"] = 0,
+		["Supersize Mushroom"] = 0,
+		["Invisibility Mushroom"] = 0,
+		["Wheelbarrow"] = 0,
+		["Teleporter"] = 0,
+		["Super Watering Can"] = 0,
+		["Basic Pot"] = 0,
+		["Flashbang"] = 0,
+	},
+	["USE_GEAR"] = {
+		["Common Watering Can"] = true,
+		["Common Sprinkler"] = true,
+		["Sign"] = false,
+		["Lantern"] = false,
+		["Uncommon Sprinkler"] = false,
+		["Rare Sprinkler"] = false,
+		["Legendary Sprinkler"] = false,
+		["Super Sprinkler"] = false,
+		["Trowel"] = false,
+		["Speed Mushroom"] = false,
+		["Jump Mushroom"] = false,
+		["Gnome"] = false,
+		["Shrink Mushroom"] = false,
+		["Supersize Mushroom"] = false,
+		["Invisibility Mushroom"] = false,
+		["Wheelbarrow"] = false,
+		["Teleporter"] = false,
+		["Super Watering Can"] = false,
+		["Basic Pot"] = false,
+		["Flashbang"] = false,
+	},
+	["BUY_SEED"] = {
+		["Carrot"] = 999,
+		["Strawberry"] = 999,
+		["Blueberry"] = 999,
+		["Tulip"] = 999,
+		["Tomato"] = 999,
+		["Apple"] = 999,
+		["Bamboo"] = 999,
+		["Corn"] = 999,
+		["Cactus"] = 999,
+		["Pineapple"] = 999,
+		["Mushroom"] = 999,
+		["Green Bean"] = 999,
+		["Banana"] = 999,
+		["Grape"] = 999,
+		["Coconut"] = 999,
+		["Mango"] = 999,
+		["Dragon Fruit"] = 999,
+		["Acorn"] = 999,
+		["Cherry"] = 999,
+		["Sunflower"] = 999,
+		["Venus Fly Trap"] = 999,
+		["Pomegranate"] = 999,
+		["Poison Apple"] = 999,
+		["Moon Bloom"] = 999,
+		["Dragon's Breath"] = 999,
+		["Ghost Pepper"] = 999,
+		["Poison Ivy"] = 999,
+		["Baby Cactus"] = 999,
+		["Glow Mushroom"] = 999,
+		["Romanesco"] = 999,
+		["Horned Melon"] = 999,
+		["Gold"] = 0,
+		["Rainbow"] = 0,
+	},
+	["PLANT_SEED"] = {
+		["Carrot"] = 50,
+		["Strawberry"] = 4,
+		["Blueberry"] = 4,
+		["Tulip"] = 50,
+		["Tomato"] = 4,
+		["Apple"] = 4,
+		["Bamboo"] = 50,
+		["Corn"] = 4,
+		["Cactus"] = 4,
+		["Pineapple"] = 4,
+		["Mushroom"] = 50,
+		["Green Bean"] = 50,
+		["Banana"] = 50,
+		["Grape"] = 50,
+		["Coconut"] = 50,
+		["Mango"] = 50,
+		["Dragon Fruit"] = 50,
+		["Acorn"] = 50,
+		["Cherry"] = 50,
+		["Sunflower"] = 50,
+		["Venus Fly Trap"] = 50,
+		["Pomegranate"] = 50,
+		["Poison Apple"] = 50,
+		["Moon Bloom"] = 50,
+		["Dragon's Breath"] = 50,
+		["Ghost Pepper"] = 50,
+		["Poison Ivy"] = 50,
+		["Baby Cactus"] = 50,
+		["Glow Mushroom"] = 50,
+		["Romanesco"] = 50,
+		["Horned Melon"] = 50,
+		["Gold"] = 0,
+		["Rainbow"] = 0,
+	},
+	["AutoMail"] = {
+		["Username"] = "sangbanking",
+		["Note"] = "",
+		["Pets"] = {
+			["Frog"] = false,
+			["Bunny"] = false,
+			["Deer"] = false,
+			["Owl"] = false,
+			["Robin"] = false,
+			["Bee"] = false,
+			["Monkey"] = true,
+			["Unicorn"] = true,
+			["Raccoon"] = true,
+			["Golden Dragonfly"] = true,
+			["Black Dragon"] = true,
+			["Ice Serpent"] = true,
+		},
+		["Seeds"] = {
+			["Carrot"] = 0,
+			["Strawberry"] = 0,
+			["Blueberry"] = 0,
+			["Tulip"] = 0,
+			["Tomato"] = 0,
+			["Apple"] = 0,
+			["Bamboo"] = 0,
+			["Corn"] = 0,
+			["Cactus"] = 0,
+			["Pineapple"] = 0,
+			["Mushroom"] = 99,
+			["Green Bean"] = 0,
+			["Banana"] = 0,
+			["Grape"] = 0,
+			["Coconut"] = 0,
+			["Mango"] = 0,
+			["Dragon Fruit"] = 0,
+			["Acorn"] = 0,
+			["Cherry"] = 0,
+			["Sunflower"] = 0,
+			["Venus Fly Trap"] = 0,
+			["Pomegranate"] = 0,
+			["Poison Apple"] = 0,
+			["Moon Bloom"] = 0,
+			["Dragon's Breath"] = 0,
+			["Ghost Pepper"] = 0,
+			["Poison Ivy"] = 0,
+			["Baby Cactus"] = 0,
+			["Glow Mushroom"] = 0,
+			["Romanesco"] = 0,
+			["Horned Melon"] = 0,
+			["Gold"] = 3,
+			["Rainbow"] = 3,
+		},
+	},
+	["Auto Harvest"] = true,
+	["Auto Steal"] = true,
+	["Max Expansions"] = 3,
+	["Target Pet Slots"] = 5,
+	["Fps"] = 20,
+	["DisableGameControllers"] = { "DroppedItemController" },
+	["DisableAllEffects"] = true,
+	["DisableEffectVfxPurge"] = false,
+	["HazardImmunity"] = true,
+	["HazardAvoidTeleport"] = true,
+	["HazardAvoidRange"] = 35,
+}
 local NORMAL_SEEDS = {
 	"Carrot", "Strawberry", "Blueberry", "Tulip", "Tomato", "Apple", "Bamboo", "Corn",
 	"Cactus", "Pineapple", "Mushroom", "Green Bean", "Banana", "Grape", "Coconut", "Mango",
@@ -997,6 +1253,8 @@ HARVEST_TARGETS_CACHE_TTL = 1.2
 HARVEST_TARGET_CACHE_MAX = 600
 SHOW_HUD = true
 HUD_REFRESH_GAP = 1
+HUD_WATCHDOG_GAP = 5
+HUD_RECREATE_COOLDOWN = 4
 HEAVY_STATS_CACHE_TTL = 2
 PLANT_COUNT_CACHE_TTL = 2
 FRUIT_COUNT_CACHE_TTL = 1
@@ -1400,6 +1658,9 @@ disableAllEffectsHooked = false
 disableAllEffectsConns = {}
 lastDisableAllEffectsAt = 0
 disableAllEffectsPurgeDone = false
+guiRecreateSuppressUntil = 0
+hudSetupRunning = false
+lastHudSetupAt = 0
 lastShopBuyAt = 0
 lastSeedBuyAt = 0
 lastGearBuyAt = 0
@@ -1417,6 +1678,7 @@ shopBuyBlockedUntil = {}
 shopBuyFailStrikes = {}
 shopStockWatchHooked = false
 debugLastAt = {}
+pruneRuntimeGcAt = 0
 PlayerStateClient = nil
 autoMailState = {
 	enabled = false,
@@ -1502,6 +1764,16 @@ SNH.pruneRuntimeCaches = function(force)
 			shopBuyBlockedUntil[k] = nil
 		end
 	end
+	for key, untilAt in stealSkip do
+		if type(untilAt) == "number" and untilAt < now then
+			stealSkip[key] = nil
+		end
+	end
+	for key, at in debugLastAt do
+		if type(at) == "number" and now - at > 120 then
+			debugLastAt[key] = nil
+		end
+	end
 	if force then
 		stealGardensCache.time = 0
 		harvestTargetsCache.time = 0
@@ -1509,6 +1781,15 @@ SNH.pruneRuntimeCaches = function(force)
 		fruitCountCache.time = 0
 		affordableSeedBuyCache = nil
 		affordableSeedBuyCacheAt = 0
+		table.clear(debugLastAt)
+	end
+	if now - (pruneRuntimeGcAt or 0) >= 300 then
+		pruneRuntimeGcAt = now
+		pcall(function()
+			if typeof(collectgarbage) == "function" then
+				collectgarbage("collect")
+			end
+		end)
 	end
 end
 
@@ -7068,6 +7349,7 @@ SNH.makeHudLabel = function(parent, order, size, allowWrap)
 	label.TextXAlignment = Enum.TextXAlignment.Center
 	label.TextWrapped = allowWrap == true
 	label.TextTruncate = Enum.TextTruncate.AtEnd
+	label.Text = "..."
 	label.Parent = parent
 	return label
 end
@@ -7094,6 +7376,14 @@ SNH.registerGuiRecreate = function(token, recreateFn)
 	PERF.guiRecreateCallbacks[token] = recreateFn
 end
 
+SNH.suppressGuiRecreate = function(seconds)
+	guiRecreateSuppressUntil = tick() + math.max(0.25, tonumber(seconds) or 1)
+end
+
+SNH.isGuiRecreateSuppressed = function()
+	return tick() < (guiRecreateSuppressUntil or 0)
+end
+
 SNH.applyGuiProtection = function(gui, recreateToken)
 	if not gui or not gui:IsA("ScreenGui") then return gui end
 	pcall(function()
@@ -7111,7 +7401,9 @@ SNH.applyGuiProtection = function(gui, recreateToken)
 	if type(recreateToken) == "string" and recreateToken ~= "" then
 		gui:SetAttribute("SNH_RecreateToken", recreateToken)
 		local conn = gui.Destroying:Connect(function()
+			if SNH.isGuiRecreateSuppressed() then return end
 			task.defer(function()
+				if SNH.isGuiRecreateSuppressed() then return end
 				local fn = PERF.guiRecreateCallbacks[recreateToken]
 				if fn then pcall(fn) end
 			end)
@@ -7141,8 +7433,15 @@ SNH.startGuiProtectWatchdog = function()
 		while running do
 			if SHOW_HUD then
 				pcall(function()
-					if not SNH.hudGui or not SNH.hudGui.Parent then
-						SNH.setupHud()
+					local gui = SNH.hudGui
+					local missing = not gui or not gui.Parent
+					if missing then
+						local now = tick()
+						local gap = tonumber(HUD_WATCHDOG_GAP) or 5
+						local cooldown = tonumber(HUD_RECREATE_COOLDOWN) or 4
+						if now - (lastHudSetupAt or 0) >= cooldown then
+							SNH.setupHud()
+						end
 					end
 				end)
 			end
@@ -7153,22 +7452,38 @@ SNH.startGuiProtectWatchdog = function()
 					end
 				end)
 			end
-			task.wait(2)
+			task.wait(math.max(2, tonumber(HUD_WATCHDOG_GAP) or 5))
 		end
 	end)
 end
 
+SNH.destroyHudGui = function(inst)
+	if not inst then return end
+	SNH.suppressGuiRecreate(2)
+	pcall(function() inst:Destroy() end)
+end
+
 SNH.setupHud = function()
+	if hudSetupRunning then return end
+	if SNH.hudGui and SNH.hudGui.Parent then
+		pcall(SNH.refreshHud)
+		return
+	end
+	hudSetupRunning = true
+	local setupOk, setupErr = pcall(function()
+	SNH.suppressGuiRecreate(2)
 	local playerGui = LocalPlayer:WaitForChild("PlayerGui")
 	pcall(function()
 		local hidden = SNH.tryHiddenGuiParent()
 		if hidden then
 			local old = hidden:FindFirstChild("SoNachHupStats")
-			if old then old:Destroy() end
+			if old and old ~= SNH.hudGui then SNH.destroyHudGui(old) end
 		end
 	end)
 	local oldPg = playerGui:FindFirstChild("SoNachHupStats")
-	if oldPg then oldPg:Destroy() end
+	if oldPg and oldPg ~= SNH.hudGui then SNH.destroyHudGui(oldPg) end
+	SNH.hudGui = nil
+	SNH.hudLabels = nil
 
 	local gui = Instance.new("ScreenGui")
 	gui.Name = "SoNachHupStats"
@@ -7217,7 +7532,9 @@ SNH.setupHud = function()
 	labels.title.Text = SCRIPT_NAME
 	labels.title.TextColor3 = Color3.fromRGB(255, 220, 80)
 	labels.user = SNH.makeHudLabel(stack, 2, 22)
+	labels.user.Text = "👤 Username: ..."
 	labels.status = SNH.makeHudLabel(stack, 3, 20)
+	labels.status.Text = "📋 Loading..."
 	labels.status.TextColor3 = Color3.fromRGB(255, 210, 100)
 	SNH.makeHudDivider(stack, 4)
 	labels.row1 = SNH.makeHudLabel(stack, 5, 16)
@@ -7242,6 +7559,15 @@ SNH.setupHud = function()
 	})
 	SNH.hudGui = gui
 	SNH.hudLabels = labels
+	if SHOW_HUD then
+		pcall(SNH.refreshHud)
+	end
+	end)
+	lastHudSetupAt = tick()
+	hudSetupRunning = false
+	if not setupOk then
+		warn("[So Nach Hup] HUD setup error: " .. tostring(setupErr))
+	end
 end
 end
 
@@ -7315,33 +7641,45 @@ SNH.getHudStats = function()
 end
 
 SNH.refreshHud = function()
-	if not SHOW_HUD or not SNH.hudGui or not SNH.hudLabels then return end
-	local stats = SNH.getHudStats()
-	local stealName, stealValue = SNH.getBestStealDisplay()
-	local labels = SNH.hudLabels
-
-	labels.user.Text = "👤 Username: " .. LocalPlayer.Name
-	labels.status.Text = "📋 " .. statusText
-	labels.row1.Text = ("💰 Sheckles: %s | %s/s"):format(
-		SNH.formatAbbrev(stats.sheckles), SNH.formatAbbrev(stats.moneyPerSec or 0))
-	labels.row1b.Text = ("🌱 Planted: %d | 🍎 Fruits: %d/%d"):format(
-		stats.plants, stats.fruits, stats.maxFruit)
-	labels.row2.Text = ("🐾 Active Pets: %d/%d | %s"):format(
-		stats.activePets, stats.maxPets, stats.equippedPetList)
-	labels.row2b.Text = ("🏡 Plot: %d/%d | 🌈 Rainbow: %d | 🟡 Gold: %d"):format(
-		stats.expansions, MAX_EXPANSIONS, stats.rainbowSeeds, stats.goldSeeds)
-	labels.row3.Text = ("✨ Phase: %s | 🌦️ Weather: %s"):format(stats.eventText, stats.weatherText)
-	if stealName == "None" then
-		labels.steal.Text = "🎯 Best Steal: None"
-	else
-		local from = lastSuccessfulSteal and lastSuccessfulSteal.ownerName or ""
-		labels.steal.Text = from ~= ""
-			and ("🎯 Best Steal: %s (%s) from %s"):format(stealName, SNH.formatAbbrev(stealValue), from)
-			or ("🎯 Best Steal: %s (%s)"):format(stealName, SNH.formatAbbrev(stealValue))
+	if not SHOW_HUD then return end
+	if not SNH.hudGui or not SNH.hudGui.Parent or not SNH.hudLabels then
+		if not hudSetupRunning and tick() - (lastHudSetupAt or 0) >= (tonumber(HUD_RECREATE_COOLDOWN) or 4) then
+			pcall(SNH.setupHud)
+		end
+		return
 	end
-	labels.time.Text = ("⏰ Time: %s | 💾 %.0f MB"):format(
-		SNH.formatElapsed(), SNH.getClientMemoryMb and SNH.getClientMemoryMb() or 0)
-	if SNH.hudScale then SNH.hudScale.Scale = SNH.getHudScale() end
+	local labels = SNH.hudLabels
+	if not labels.user or not labels.user.Parent then return end
+	local ok, err = pcall(function()
+		local stats = SNH.getHudStats()
+		local stealName, stealValue = SNH.getBestStealDisplay()
+
+		labels.user.Text = "👤 Username: " .. LocalPlayer.Name
+		labels.status.Text = "📋 " .. statusText
+		labels.row1.Text = ("💰 Sheckles: %s | %s/s"):format(
+			SNH.formatAbbrev(stats.sheckles), SNH.formatAbbrev(stats.moneyPerSec or 0))
+		labels.row1b.Text = ("🌱 Planted: %d | 🍎 Fruits: %d/%d"):format(
+			stats.plants, stats.fruits, stats.maxFruit)
+		labels.row2.Text = ("🐾 Active Pets: %d/%d | %s"):format(
+			stats.activePets, stats.maxPets, stats.equippedPetList)
+		labels.row2b.Text = ("🏡 Plot: %d/%d | 🌈 Rainbow: %d | 🟡 Gold: %d"):format(
+			stats.expansions, MAX_EXPANSIONS, stats.rainbowSeeds, stats.goldSeeds)
+		labels.row3.Text = ("✨ Phase: %s | 🌦️ Weather: %s"):format(stats.eventText, stats.weatherText)
+		if stealName == "None" then
+			labels.steal.Text = "🎯 Best Steal: None"
+		else
+			local from = lastSuccessfulSteal and lastSuccessfulSteal.ownerName or ""
+			labels.steal.Text = from ~= ""
+				and ("🎯 Best Steal: %s (%s) from %s"):format(stealName, SNH.formatAbbrev(stealValue), from)
+				or ("🎯 Best Steal: %s (%s)"):format(stealName, SNH.formatAbbrev(stealValue))
+		end
+		labels.time.Text = ("⏰ Time: %s | 💾 %.0f MB"):format(
+			SNH.formatElapsed(), SNH.getClientMemoryMb and SNH.getClientMemoryMb() or 0)
+		if SNH.hudScale then SNH.hudScale.Scale = SNH.getHudScale() end
+	end)
+	if not ok then
+		labels.status.Text = "📋 HUD loading..."
+	end
 end
 end
 
@@ -9697,16 +10035,21 @@ end
 
 SNH.setupBlackScreenToggle = function()
 	if not PERF.blackScreen then return end
+	if PERF.blackOverlayGui and PERF.blackOverlayGui.Parent then
+		SNH.updateBlackOverlay()
+		return
+	end
+	SNH.suppressGuiRecreate(2)
 	local playerGui = LocalPlayer:WaitForChild("PlayerGui")
 	pcall(function()
 		local hidden = SNH.tryHiddenGuiParent()
 		if hidden then
 			local old = hidden:FindFirstChild("SNH_BlackOverlay")
-			if old then old:Destroy() end
+			if old and old ~= PERF.blackOverlayGui then SNH.destroyHudGui(old) end
 		end
 	end)
 	local oldPg = playerGui:FindFirstChild("SNH_BlackOverlay")
-	if oldPg then oldPg:Destroy() end
+	if oldPg and oldPg ~= PERF.blackOverlayGui then SNH.destroyHudGui(oldPg) end
 
 	if not PERF.blackOverlayGui or not PERF.blackOverlayGui.Parent then
 		local gui = Instance.new("ScreenGui")
@@ -15173,12 +15516,15 @@ SNH.setupGiftListener()
 	SNH.setupMutationSeedWatcher()
 	SNH.setupStealNotificationHook()
 	SNH.setupTeleportBackHook()
-SNH.setupHud()
-SNH.startGuiProtectWatchdog()
-SNH.startTutorialAutoCompleteLoop()
-if SHOW_HUD then
-	SNH.refreshHud()
-end
+	task.defer(function()
+		task.wait(0.5)
+		SNH.setupHud()
+		SNH.startGuiProtectWatchdog()
+		if SHOW_HUD then
+			pcall(SNH.refreshHud)
+		end
+	end)
+	SNH.startTutorialAutoCompleteLoop()
 SNH.startLagProbeLoop()
 
 if DEBUG_GEAR or DEBUG_WILD_PET then
