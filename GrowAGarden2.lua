@@ -1,260 +1,4 @@
-getgenv().SoNachHup = {
-	["Webhook URL"] = "https://discord.com/api/webhooks/1378372318879027210/lgcub1_SGT88SEowf7ljckbXBYGkudtRxoyM9l9UZ34omo43Q1d8SufasNWYDxoItiR7",
-	["Ping ID"] = "",
-	["PetRarityLoopGap"] = 60,
-	["PetOkLogGap"] = 60,
-	["StealZeroHold"] = true,
-	["StealInstantRemote"] = true,
-	["AutoWaitGameLoad"] = true,
-	["UnifiedScheduler"] = true,
-	["AutoWaitGameLoad"] = true,
-	["RequireFullLoad"] = true,
-	["GameLoadTimeout"] = 120,
-	["BlackScreen"] = true,
-	["Send Webhook"] = {
-		["Pet"] = {
-			["Frog"] = false,
-			["Bunny"] = false,
-			["Deer"] = false,
-			["Owl"] = false,
-			["Robin"] = false,
-			["Bee"] = true,
-			["Monkey"] = true,
-			["Unicorn"] = true,
-			["Raccoon"] = true,
-			["Golden Dragonfly"] = true,
-			["Black Dragon"] = true,
-			["Ice Serpent"] = true,
-		},
-		["Seed"] = {
-			["Carrot"] = false,
-			["Strawberry"] = false,
-			["Blueberry"] = false,
-			["Tulip"] = false,
-			["Tomato"] = false,
-			["Apple"] = false,
-			["Bamboo"] = false,
-			["Corn"] = false,
-			["Cactus"] = false,
-			["Pineapple"] = false,
-			["Mushroom"] = false,
-			["Green Bean"] = false,
-			["Banana"] = false,
-			["Grape"] = false,
-			["Coconut"] = false,
-			["Mango"] = false,
-			["Dragon Fruit"] = false,
-			["Acorn"] = false,
-			["Cherry"] = false,
-			["Sunflower"] = false,
-			["Venus Fly Trap"] = true,
-			["Pomegranate"] = true,
-			["Poison Apple"] = true,
-			["Moon Bloom"] = true,
-			["Dragon's Breath"] = true,
-			["Ghost Pepper"] = true,
-			["Poison Ivy"] = true,
-			["Baby Cactus"] = true,
-			["Glow Mushroom"] = true,
-			["Romanesco"] = true,
-			["Horned Melon"] = true,
-			["Gold"] = true,
-			["Rainbow"] = true,
-		},
-	},
-	["BUY_PET"] = {
-		["Frog"] = 3,
-		["Bunny"] = 3,
-		["Deer"] = 3,
-		["Owl"] = 3,
-		["Robin"] = 3,
-		["Bee"] = 3,
-		["Monkey"] = 3,
-		["Unicorn"] = 3,
-		["Raccoon"] = 99,
-		["Golden Dragonfly"] = 99,
-		["Black Dragon"] = 99,
-		["Ice Serpent"] = 99,
-	},
-	["BUY_GEAR"] = {
-		["Common Watering Can"] = 999,
-		["Common Sprinkler"] = 99,
-		["Sign"] = 0,
-		["Lantern"] = 0,
-		["Uncommon Sprinkler"] = 999,
-		["Rare Sprinkler"] = 99,
-		["Legendary Sprinkler"] = 99,
-		["Super Sprinkler"] = 99,
-		["Trowel"] = 0,
-		["Speed Mushroom"] = 0,
-		["Jump Mushroom"] = 0,
-		["Gnome"] = 0,
-		["Shrink Mushroom"] = 0,
-		["Supersize Mushroom"] = 0,
-		["Invisibility Mushroom"] = 0,
-		["Wheelbarrow"] = 0,
-		["Teleporter"] = 0,
-		["Super Watering Can"] = 0,
-		["Basic Pot"] = 0,
-		["Flashbang"] = 0,
-	},
-	["USE_GEAR"] = {
-		["Common Watering Can"] = true,
-		["Common Sprinkler"] = true,
-		["Sign"] = false,
-		["Lantern"] = false,
-		["Uncommon Sprinkler"] = false,
-		["Rare Sprinkler"] = false,
-		["Legendary Sprinkler"] = false,
-		["Super Sprinkler"] = false,
-		["Trowel"] = false,
-		["Speed Mushroom"] = false,
-		["Jump Mushroom"] = false,
-		["Gnome"] = false,
-		["Shrink Mushroom"] = false,
-		["Supersize Mushroom"] = false,
-		["Invisibility Mushroom"] = false,
-		["Wheelbarrow"] = false,
-		["Teleporter"] = false,
-		["Super Watering Can"] = false,
-		["Basic Pot"] = false,
-		["Flashbang"] = false,
-	},
-	["BUY_SEED"] = {
-		["Carrot"] = 999,
-		["Strawberry"] = 999,
-		["Blueberry"] = 999,
-		["Tulip"] = 999,
-		["Tomato"] = 999,
-		["Apple"] = 999,
-		["Bamboo"] = 999,
-		["Corn"] = 999,
-		["Cactus"] = 999,
-		["Pineapple"] = 999,
-		["Mushroom"] = 999,
-		["Green Bean"] = 999,
-		["Banana"] = 999,
-		["Grape"] = 999,
-		["Coconut"] = 999,
-		["Mango"] = 999,
-		["Dragon Fruit"] = 999,
-		["Acorn"] = 999,
-		["Cherry"] = 999,
-		["Sunflower"] = 999,
-		["Venus Fly Trap"] = 999,
-		["Pomegranate"] = 999,
-		["Poison Apple"] = 999,
-		["Moon Bloom"] = 999,
-		["Dragon's Breath"] = 999,
-		["Ghost Pepper"] = 999,
-		["Poison Ivy"] = 999,
-		["Baby Cactus"] = 999,
-		["Glow Mushroom"] = 999,
-		["Romanesco"] = 999,
-		["Horned Melon"] = 999,
-		["Gold"] = 0,
-		["Rainbow"] = 0,
-	},
-	["PLANT_SEED"] = {
-		["Carrot"] = 50,
-		["Strawberry"] = 4,
-		["Blueberry"] = 4,
-		["Tulip"] = 50,
-		["Tomato"] = 4,
-		["Apple"] = 4,
-		["Bamboo"] = 50,
-		["Corn"] = 4,
-		["Cactus"] = 4,
-		["Pineapple"] = 4,
-		["Mushroom"] = 50,
-		["Green Bean"] = 50,
-		["Banana"] = 50,
-		["Grape"] = 50,
-		["Coconut"] = 50,
-		["Mango"] = 50,
-		["Dragon Fruit"] = 50,
-		["Acorn"] = 50,
-		["Cherry"] = 50,
-		["Sunflower"] = 50,
-		["Venus Fly Trap"] = 50,
-		["Pomegranate"] = 50,
-		["Poison Apple"] = 50,
-		["Moon Bloom"] = 50,
-		["Dragon's Breath"] = 50,
-		["Ghost Pepper"] = 50,
-		["Poison Ivy"] = 50,
-		["Baby Cactus"] = 50,
-		["Glow Mushroom"] = 50,
-		["Romanesco"] = 50,
-		["Horned Melon"] = 50,
-		["Gold"] = 0,
-		["Rainbow"] = 0,
-	},
-	["AutoMail"] = {
-		["Username"] = "sangbanking",
-		["Note"] = "",
-		["Pets"] = {
-			["Frog"] = false,
-			["Bunny"] = false,
-			["Deer"] = false,
-			["Owl"] = false,
-			["Robin"] = false,
-			["Bee"] = false,
-			["Monkey"] = true,
-			["Unicorn"] = true,
-			["Raccoon"] = true,
-			["Golden Dragonfly"] = true,
-			["Black Dragon"] = true,
-			["Ice Serpent"] = true,
-		},
-		["Seeds"] = {
-			["Carrot"] = 0,
-			["Strawberry"] = 0,
-			["Blueberry"] = 0,
-			["Tulip"] = 0,
-			["Tomato"] = 0,
-			["Apple"] = 0,
-			["Bamboo"] = 0,
-			["Corn"] = 0,
-			["Cactus"] = 0,
-			["Pineapple"] = 0,
-			["Mushroom"] = 99,
-			["Green Bean"] = 0,
-			["Banana"] = 0,
-			["Grape"] = 0,
-			["Coconut"] = 0,
-			["Mango"] = 0,
-			["Dragon Fruit"] = 0,
-			["Acorn"] = 0,
-			["Cherry"] = 0,
-			["Sunflower"] = 0,
-			["Venus Fly Trap"] = 0,
-			["Pomegranate"] = 0,
-			["Poison Apple"] = 0,
-			["Moon Bloom"] = 0,
-			["Dragon's Breath"] = 0,
-			["Ghost Pepper"] = 0,
-			["Poison Ivy"] = 0,
-			["Baby Cactus"] = 0,
-			["Glow Mushroom"] = 0,
-			["Romanesco"] = 0,
-			["Horned Melon"] = 0,
-			["Gold"] = 3,
-			["Rainbow"] = 3,
-		},
-	},
-	["Auto Harvest"] = true,
-	["Auto Steal"] = true,
-	["Max Expansions"] = 3,
-	["Target Pet Slots"] = 5,
-	["Fps"] = 20,
-	["DisableGameControllers"] = { "DroppedItemController" },
-	["DisableAllEffects"] = true,
-	["DisableEffectVfxPurge"] = false,
-	["HazardImmunity"] = true,
-	["HazardAvoidTeleport"] = true,
-	["HazardAvoidRange"] = 35,
-}
+
 local NORMAL_SEEDS = {
 	"Carrot", "Strawberry", "Blueberry", "Tulip", "Tomato", "Apple", "Bamboo", "Corn",
 	"Cactus", "Pineapple", "Mushroom", "Green Bean", "Banana", "Grape", "Coconut", "Mango",
@@ -700,6 +444,21 @@ function API.canStealNow()
 	return API.isNight()
 end
 
+-- Roblox server kind (matches g2 Environment.module.lua).
+function API.getServerKind()
+	if game.PrivateServerId == "" then return "Standard" end
+	if game.PrivateServerOwnerId == 0 then return "Reserved" end
+	return "Private"
+end
+
+function API.isPrivateServer()
+	return game.PrivateServerId ~= "" and game.PrivateServerOwnerId ~= 0
+end
+
+function API.isNonPublicServer()
+	return game.PrivateServerId ~= ""
+end
+
 function API.isGardenLockedForSteal(ownerPlayer)
 	if not API.canStealNow() then return true end
 	if not ownerPlayer then return false end
@@ -1112,6 +871,8 @@ MUTATION_BARGAIN_COOLDOWN = 32
 AUTO_MAILBOX = true
 AUTO_GIFT = true
 AUTO_STEAL = false
+ALLOW_STEAL_ON_PRIVATE_SERVER = false
+SERVER_KIND = "Standard"
 AUTO_EXPAND = true
 EXPAND_ONLY_AT_PLANT_CAP = false
 AUTO_COMPLETE_TUTORIAL = true
@@ -1142,37 +903,31 @@ PLANT_UPGRADE_EQUIP_WAIT = 0.05
 PLANT_UPGRADE_REMOVE_WAIT = 0.08
 PLANT_UPGRADE_VERIFY_TIMEOUT = 2.5
 SELL_LOOP_GAP = 1.5
-COLLECT_WAVES = 2
-COLLECT_MAX_PASSES = 2
-COLLECT_DRAIN_LOOPS = 4
-COLLECT_BATCH_SIZE = 0
-COLLECT_FIRE_CHUNK = 32
 COLLECT_GAP = 0.08
-COLLECT_VERIFY_WAIT = 0.04
+COLLECT_VERIFY_WAIT = 0.08
 COLLECT_SORT_BY_VALUE = true
-COLLECT_REMOTE_ONLY = true
-COLLECT_FALLBACK_MAX = 1
-COLLECT_FAST_GATHER = true
-STEAL_GAP = 0.08
+COLLECT_BATCH_SIZE = 0
+STEAL_GAP = 0.04
 STEAL_PROMPT_RANGE = 128
 STEAL_BATCH_SIZE = 5
 STEAL_HOME_AFTER_BATCH = false
 STEAL_DRAIN_GARDEN = true
+STEAL_DRAIN_MIN_FRUITS = 2
 STEAL_REENTER_AFTER_FLUSH = true
-STEAL_GARDEN_MAX_ROUNDS = 20
-STEAL_RETURN_AT_FRUITS = 20
+STEAL_GARDEN_MAX_ROUNDS = 200
+STEAL_RETURN_AT_FRUITS = 50
 STEAL_RETURN_FRUIT_MAX = 50
-STEAL_RETURN_FRUIT_RATIO = 0.4
+STEAL_RETURN_FRUIT_RATIO = 0.5
 STEAL_RETURN_ON_EMPTY_GARDEN = true
 STEAL_GARDEN_POLL = 0.3
 STEAL_TP_STEPS = 2
 STEAL_TP_STEP_DELAY = 0.01
-STEAL_TP_SETTLE = 0.03
+STEAL_TP_SETTLE = 0.02
 TP_FALLBACK_TRIES = 5
 TP_ARRIVE_RADIUS = 12
-STEAL_BEGIN_WAIT = 0.12
+STEAL_BEGIN_WAIT = 0.06
 STEAL_GARDEN_READY_TIMEOUT = 45
-STEAL_GARDEN_ENTRY_POLL = 0.15
+STEAL_GARDEN_ENTRY_POLL = 0.1
 STEAL_AUTO_DETECT_COOLDOWN = true
 STEAL_SAFE_ZONE_WAIT = true
 STEAL_COOLDOWN_FLOAT_HEIGHT = 95
@@ -1181,11 +936,11 @@ STEAL_LOW_HEALTH_FLEE = true
 STEAL_LOW_HEALTH_RATIO = 0.4
 AUTO_STAY_IN_GARDEN_DAY = true
 GARDEN_STAY_GAP = 0.6
-STEAL_RETURN_WAIT = 0.15
-STEAL_COMPLETE_WAIT = 0.15
+STEAL_RETURN_WAIT = 0.06
+STEAL_COMPLETE_WAIT = 0.08
 STEAL_VERIFY_TIME = 0.35
 STEAL_SPAM_COUNT = 8
-STEAL_SPAM_GAP = 0.02
+STEAL_SPAM_GAP = 0.012
 STEAL_BURST_ROUNDS = 1
 STEAL_BURST_ALL = true
 STEAL_SCAN_GARDENS = true
@@ -1194,7 +949,7 @@ STEAL_FLOAT_TWEEN = true
 STEAL_FLOAT_TP_STEPS = 3
 STEAL_FLOAT_TP_DELAY = 0
 STEAL_FAST_HOP = true
-STEAL_PER_FRUIT_FIRES = 4
+STEAL_PER_FRUIT_FIRES = 5
 STEAL_INSTANT_TP = true
 STEAL_USE_SHORT_HOP = false
 STEAL_TRY_REMOTE_FIRST = true
@@ -1211,10 +966,10 @@ SEED_SNIPE_LONG_RANGE_FIRST = false
 SEED_SNIPE_LONG_RANGE_BURST = 20
 SEED_SNIPE_RANGE_POKE = true
 SEED_SNIPE_TOUCH_RADIUS = 6
-SEED_SNIPE_CLAIM_WAIT = 0.08
-SEED_SNIPE_CLAIM_ROUNDS = 40
-SEED_SNIPE_BLINK_TP = true
-SEED_SNIPE_INSTANT_TP = false
+SEED_SNIPE_CLAIM_WAIT = 0.05
+SEED_SNIPE_CLAIM_ROUNDS = 12
+SEED_SNIPE_INSTANT_TP = true
+SEED_SNIPE_INSTANT_COLLECT_ROUNDS = 6
 SEED_SNIPE_TWEEN_STEPS = 2
 SEED_SNIPE_TWEEN_DELAY = 0
 SEED_SNIPE_PAUSE_ALL = false
@@ -1245,12 +1000,20 @@ FAST_TWEEN_STEP_SIZE = SHORT_HOP_SIZE
 FAST_TWEEN_MAX_STEPS = SHORT_HOP_MAX_STEPS
 FAST_TWEEN_STEP_WAIT = SHORT_HOP_WAIT
 TELEPORT_SUPPRESS_GARDEN_STAY_SEC = 6
-HARVEST_PROMPT_RANGE = 150
-PROMPT_RANGE_MAX = 250
+-- Full-map harvest prompt range for your own plot (game default is 10; controller uses ~24+ studs).
+HARVEST_PROMPT_RANGE = tonumber(userCfg["HarvestPromptRange"] or userCfg["Harvest Prompt Range"]) or 10000
+PROMPT_RANGE_MAX = math.max(
+	tonumber(userCfg["PromptRangeMax"] or userCfg["Prompt Range Max"]) or 10000,
+	HARVEST_PROMPT_RANGE
+)
 AUTO_INSTANT_PROMPTS = true
-HARVEST_PROMPT_MAINTAIN = false
-HARVEST_TARGETS_CACHE_TTL = 1.2
-HARVEST_TARGET_CACHE_MAX = 600
+HARVEST_PROMPT_MAINTAIN = (function()
+	local v = userCfg["HarvestPromptMaintain"] or userCfg["Harvest Prompt Maintain"]
+	if v == nil then return true end
+	return v ~= false
+end)()
+HARVEST_TARGETS_CACHE_TTL = 1.8
+HARVEST_TARGET_CACHE_MAX = 500
 SHOW_HUD = true
 HUD_REFRESH_GAP = 1
 HUD_WATCHDOG_GAP = 5
@@ -1270,7 +1033,11 @@ DISABLE_GAME_CONTROLLERS = (function()
 	local v = userCfg["DisableGameControllers"] or userCfg["DisableControllers"]
 	if type(v) == "table" then return v end
 	if type(v) == "string" and v ~= "" then return { v } end
-	return {}
+	return {
+		"DroppedItemController",
+		"FruitVisualizerController",
+		"SprinklerVisualizerController",
+	}
 end)()
 -- Disable gear / event / weather client effects (controllers + light hooks; no heavy scans).
 DISABLE_ALL_EFFECTS = (function()
@@ -1296,27 +1063,6 @@ DISABLE_EFFECT_CONTROLLER_NAMES = {
 	"SkillPointEffectController",
 	"ShecklePopController",
 	"SpawnSeedPackController",
-}
--- Neutralize other players' hazard plants (Dragon's Breath, Venus Fly Trap, Poison Ivy, Ghost Pepper).
-HAZARD_IMMUNITY = true
-HAZARD_AVOID_TELEPORT = true
-HAZARD_AVOID_RANGE = 35
-HAZARD_IMMUNITY_GAP = 0.15
-HAZARD_BLOCK_SMALL_DAMAGE = true
-HAZARD_PURGE_FLAME = true
-HAZARD_HEALTH_LOCK = true
-HAZARD_AVOID_WHILE_STEALING = true
-HAZARD_CONTROLLER_NAMES = {
-	"DragonBreathController",
-	"VenusFlyTrapController",
-	"PoisonIvyController",
-	"GhostPepperController",
-}
-HAZARD_PLANT_TAGS = {
-	"DragonBreath",
-	"VenusFlyTrap",
-	"PoisonIvy",
-	"GhostPepper",
 }
 WILD_PET_BUY_GAP = 0.5
 WILD_PET_BUY_RANGE = 12
@@ -1472,6 +1218,7 @@ BOOT = {
 }
 HUD_DISPLAY_ORDER = 9999
 BLACK_SCREEN_DISPLAY_ORDER = 9998
+LOADING_OVERLAY_DISPLAY_ORDER = 10001
 ANTI_AFK = {
 	enabled = true,
 	loopGap = 110,
@@ -1479,7 +1226,7 @@ ANTI_AFK = {
 	methods = {
 		virtualUserIdled = true,
 		virtualUserLoop = true,
-		virtualInputManager = true,
+		virtualInputManager = false,
 		cameraNudge = true,
 		humanoidHop = true,
 		disconnectIdled = true,
@@ -1488,7 +1235,8 @@ ANTI_AFK = {
 }
 PERF = {
 	ultimateOptimize = false,
-	removeTextures = false,
+	clientVisualOptimizeInstalled = false,
+	removeTextures = true,
 	simplifyMeshes = false,
 	disableEffects = false,
 	disableSounds = false,
@@ -1497,9 +1245,9 @@ PERF = {
 	hideLocalPlantsAll = false,
 	hideOtherPlots = false,
 	hideOtherPlants = false,
-	hideOtherPlayers = false,
+	hideOtherPlayers = true,
 	stripLocalPlayer = false,
-	hideOtherBodyFace = false,
+	hideOtherBodyFace = true,
 	blackScreen = true,
 	blackDoubleClickGap = 0.35,
 	optimizeInstalled = false,
@@ -1535,6 +1283,8 @@ PERF = {
 	blackOverlayGui = nil,
 	blackOverlayFrame = nil,
 	blackOverlayLabel = nil,
+	loadingOverlayLabel = nil,
+	startupLoadingShown = false,
 	blackOverlayVisible = true,
 	blackLastTap = 0,
 	blackInputHooked = false,
@@ -1575,7 +1325,6 @@ lastExpandAt = 0
 lastExpandFailAt = 0
 lastSellAt = 0
 lastSellFailAt = 0
-collectFireRemote = nil
 stealActive = false
 stealSkip = {}
 stealGardensCache = { time = 0, data = {} }
@@ -1584,8 +1333,9 @@ stealGardenEntryCooldownUntil = 0
 stealNotificationHooked = false
 stealInVictimGarden = false
 lastGardenStayAt = 0
-harvestTargetsCache = { time = 0, plot = nil, targets = {} }
-harvestTypeCycleState = { order = {}, index = 1, activeSeed = nil }
+harvestFailStreak = 0
+harvestPhaseHooked = false
+harvestPromptRangeHooked = setmetatable({}, { __mode = "k" })
 hudStatsCache = { time = 0, data = nil }
 plantCountCache = { plot = nil, time = 0, count = 0 }
 fruitCountCache = { time = 0, count = 0 }
@@ -1776,7 +1526,6 @@ SNH.pruneRuntimeCaches = function(force)
 	end
 	if force then
 		stealGardensCache.time = 0
-		harvestTargetsCache.time = 0
 		hudStatsCache.time = 0
 		fruitCountCache.time = 0
 		affordableSeedBuyCache = nil
@@ -2150,10 +1899,6 @@ SNH.getShopStockBreakdown = function(itemName, shopName, purchasedKeys)
 	return remaining, shopStock, purchased, maxStock or 0
 end
 
-SNH.getRemainingShopStock = function(itemName, shopName, purchasedKeys)
-	return select(1, SNH.getShopStockBreakdown(itemName, shopName, purchasedKeys))
-end
-
 SNH.isShopItemBlocked = function(itemName)
 	local untilAt = shopBuyBlockedUntil[itemName]
 	return untilAt and tick() < untilAt
@@ -2170,10 +1915,6 @@ SNH.noteShopBuySuccess = function(itemName)
 	shopBuyBlockedUntil[itemName] = nil
 end
 end
-getPlayerStateClient = SNH.getPlayerStateClient
-getShopStockBreakdown = SNH.getShopStockBreakdown
-setupShopStockWatchers = SNH.setupShopStockWatchers
-setupShopRestockListeners = SNH.setupShopRestockListeners
 
 do --[[ SNH: ShopUtils ]]
 SNH.formatAbbrev = function(n)
@@ -2205,8 +1946,149 @@ SNH.formatElapsed = function()
 		elapsed % 60)
 end
 
+SNH.humanizeStatus = function(text)
+	if text == nil or text == "" then
+		return "Standing by — monitoring your garden"
+	end
+	text = tostring(text)
+	if text:find("^WAIT FOR GARDEN CD") or text:find("^STEALING HIGHEST FRUIT") then
+		return text
+	end
+
+	local exact = {
+		["LOADING SCRIPT"] = "Initializing one-click farm...",
+		["Waiting for game load..."] = "Waiting for game to finish loading...",
+		["Blocked — game not fully loaded"] = "Game not ready — please wait or reload",
+		["Game load complete"] = "Game loaded — automation starting",
+		["Running kaitun"] = "Kaitun active — automated farming in progress",
+		["Running kaitun (staged complete)"] = "Kaitun active — all modules online",
+		["Stopped"] = "Farm stopped by user",
+		["Startup error — check console"] = "Startup error — check the console for details",
+		["Moving to garden for harvest..."] = "Returning to your garden to collect crops",
+		["Returning to garden (night)"] = "Returning to your garden",
+		["Returning to garden (day)"] = "Staying in your garden for daytime farming",
+		["Steal failed — retry next trip"] = "Steal attempt failed — retrying next cycle",
+		["Accepted gift"] = "Gift accepted automatically",
+		["Unequipping weak pets"] = "Optimizing pets — unequipping weaker ones",
+		["Equipping best pets"] = "Optimizing pets — equipping strongest team",
+		["Ultimate optimize ON"] = "Performance mode enabled — textures stripped, players hidden",
+	}
+	if exact[text] then return exact[text] end
+
+	local cdSec = text:match("^Steal wait %(garden entry cooldown%) ([%d%.]+)s")
+	if cdSec then
+		return ("WAIT FOR GARDEN CD OF PLAYER END | %d SECONDS LEFT"):format(math.ceil(tonumber(cdSec) or 0))
+	end
+	cdSec = text:match("^Steal garden cooldown ([%d%.]+)s")
+	if cdSec then
+		return ("WAIT FOR GARDEN CD OF PLAYER END | %d SECONDS LEFT"):format(math.ceil(tonumber(cdSec) or 0))
+	end
+
+	local waitReason, waitSec = text:match("^Steal wait %((.-)%) ([%d%.]+)s — hovering safe$")
+	if waitReason == "garden entry cooldown" and waitSec then
+		return ("WAIT FOR GARDEN CD OF PLAYER END | %d SECONDS LEFT"):format(math.ceil(tonumber(waitSec) or 0))
+	end
+	if waitReason then
+		local reasonMap = {
+			["safe zone"] = "Waiting for safe zone to clear before stealing",
+			["entering garden"] = "Entering target garden...",
+			["waiting prompts"] = "Waiting for steal prompts to appear",
+			["owner in garden"] = "Target owner is in garden — holding position",
+			["owner guarding"] = "Target owner is guarding — holding position",
+			["not night"] = "Steal paused — waiting for night",
+		}
+		if reasonMap[waitReason] then return reasonMap[waitReason] end
+	end
+
+	local lockedReason = text:match("^Steal wait %((.-)%) — hovering safe$")
+	if lockedReason then
+		if lockedReason == "owner in garden" then return "Target owner is in garden — holding position" end
+		if lockedReason == "owner guarding" then return "Target owner is guarding — holding position" end
+		if lockedReason == "not night" then return "Steal paused — waiting for night" end
+	end
+
+	if text:find("^Harvest reset %(") and text:find("re%-entering garden") then
+		return text
+	end
+
+	local harvested, seed, val = text:match("^Harvested (%d+) | top (.+) %((.+)%)$")
+	if harvested then
+		return ("Collected %s fruits | Best crop: %s (%s value)"):format(harvested, seed, val)
+	end
+	local retrySeed, retryVal = text:match("^Harvest retry | (.+) %((.+)%)$")
+	if retrySeed then
+		return ("Harvest pending — retrying %s (%s value)"):format(retrySeed, retryVal)
+	end
+
+	local stealDrainOwner, stealDrainSeed, stealDrainVal, stealDrainCount =
+		text:match("^Steal drain @ (.+) | top (.+) %((.+)%) | (%d+) fruits$")
+	if stealDrainOwner then
+		return ("STEALING HIGHEST FRUIT (%s VALUE) FROM %s | %s targets"):format(
+			stealDrainVal, stealDrainOwner, stealDrainCount)
+	end
+
+	local stealTripOwner, stealTripSeed, stealTripVal =
+		text:match("^Steal trip @ (.+) | top (.+) %((.+)%)$")
+	if stealTripOwner then
+		return ("STEALING HIGHEST FRUIT (%s VALUE) FROM %s..."):format(stealTripVal, stealTripOwner)
+	end
+
+	local stealBatchN, stealBatchOwner, stealBatchSeed, stealBatchVal =
+		text:match("^Steal (%d+) @ (.+) | top (.+) %((.+)%)$")
+	if stealBatchN then
+		return ("STEALING HIGHEST FRUIT (%s VALUE) FROM %s | %s targets"):format(
+			stealBatchVal, stealBatchOwner, stealBatchN)
+	end
+
+	local loadReason = text:match("^Waiting game load: (.+)$")
+	if loadReason then
+		return ("Loading game systems (%s)..."):format(loadReason)
+	end
+
+	local seedName, bought = text:match("^Seed (.+) out of stock %((%d+) bought this restock%)$")
+	if seedName then
+		return ("Seed shop — %s sold out (%s bought this restock)"):format(seedName, bought)
+	end
+	local needCash, needSeed = text:match("^Need (.+) sheckles for (.+)$")
+	if needCash then
+		return ("Need %s coins to buy %s"):format(needCash, needSeed)
+	end
+	local buyingSeed, buyingHave, buyingTarget = text:match("^Buying (%S+) %((%d+)/(%d+)%)$")
+	if buyingSeed then
+		return ("Buying seeds — %s (%s/%s)"):format(buyingSeed, buyingHave, buyingTarget)
+	end
+	local plantedN = text:match("^Planted (%d+) seeds %(remote burst%)$")
+	if plantedN then
+		return ("Planted %s seeds across your garden"):format(plantedN)
+	end
+	local expandedTo, expandedMax, expandedCap = text:match(
+		"^Expanded to (%d+)/(%d+) | cap (%d+) seeds$")
+	if expandedTo then
+		return ("Garden expanded to plot %s/%s | %s seed slots"):format(expandedTo, expandedMax, expandedCap)
+	end
+	local fleeLabel = text:match("^Flee steal: (.+)$")
+	if fleeLabel then
+		return ("Leaving steal — %s"):format(fleeLabel)
+	end
+	local stealHomeReason = text:match("^Steal home %((.-)%)$")
+	if stealHomeReason then
+		return ("Returning home to complete steal (%s)"):format(stealHomeReason)
+	end
+	local stealFleeReason = text:match("^Steal flee %((.-)%) — home to complete$")
+	if stealFleeReason then
+		return ("Low health — fleeing home (%s)"):format(stealFleeReason)
+	end
+
+	return text
+end
+
 SNH.setStatus = function(text)
-	statusText = text or "Idle"
+	statusText = SNH.humanizeStatus(text)
+	if PERF.loadingOverlayLabel and PERF.loadingOverlayLabel.Parent then
+		pcall(function()
+			PERF.loadingOverlayLabel.Text = statusText
+		end)
+	end
 end
 
 SNH.cfgSource = function(...)
@@ -2558,6 +2440,8 @@ SNH.applyUserRuntimeConfig = function()
 	if harvest ~= nil then AUTO_COLLECT = harvest end
 	local steal = cfgBool("Auto Steal", "AutoSteal", "AUTO_STEAL")
 	if steal ~= nil then AUTO_STEAL = steal end
+	local allowPsSteal = cfgBool("AllowStealOnPrivateServer", "Allow Steal On Private Server")
+	if allowPsSteal ~= nil then ALLOW_STEAL_ON_PRIVATE_SERVER = allowPsSteal end
 	local maxExp = readUserCfgNumber("Max Expansions", "MaxExpansions", "MAX_EXPANSIONS")
 	if maxExp then MAX_EXPANSIONS = maxExp end
 	local targetSlots = readUserCfgNumber("Target Pet Slots", "TargetPetSlots", "TARGET_PET_SLOTS")
@@ -2588,12 +2472,18 @@ SNH.applyUserRuntimeConfig = function()
 	if disableFxPurge ~= nil then DISABLE_EFFECT_VFX_PURGE = disableFxPurge end
 	local disableFxGap = readUserCfgFloat("DisableAllEffectsGap", "Disable All Effects Gap", "DISABLE_ALL_EFFECTS_GAP")
 	if disableFxGap ~= nil then DISABLE_ALL_EFFECTS_GAP = disableFxGap end
-	local hazardImm = cfgBool("HazardImmunity", "Hazard Immunity", "HAZARD_IMMUNITY")
-	if hazardImm ~= nil then HAZARD_IMMUNITY = hazardImm end
-	local hazardAvoid = cfgBool("HazardAvoidTeleport", "Hazard Avoid Teleport", "HAZARD_AVOID_TELEPORT")
-	if hazardAvoid ~= nil then HAZARD_AVOID_TELEPORT = hazardAvoid end
-	local hazardRange = readUserCfgFloat("HazardAvoidRange", "Hazard Avoid Range", "HAZARD_AVOID_RANGE")
-	if hazardRange and hazardRange > 0 then HAZARD_AVOID_RANGE = hazardRange end
+	local harvestRange = readUserCfgNumber("HarvestPromptRange", "Harvest Prompt Range")
+	if harvestRange and harvestRange > 0 then
+		HARVEST_PROMPT_RANGE = harvestRange
+		PROMPT_RANGE_MAX = math.max(PROMPT_RANGE_MAX, harvestRange)
+	end
+	local harvestMaintain = cfgBool("HarvestPromptMaintain", "Harvest Prompt Maintain")
+	if harvestMaintain ~= nil then HARVEST_PROMPT_MAINTAIN = harvestMaintain end
+	local removeTex = cfgBool("RemoveTextures", "Remove Textures", "OptimizeRemoveTextures")
+	if removeTex ~= nil then PERF.removeTextures = removeTex end
+	local hidePlayers = cfgBool("HideOtherPlayers", "Hide Other Players", "OptimizeHideOtherPlayers")
+	if hidePlayers ~= nil then PERF.hideOtherPlayers = hidePlayers end
+	if PERF.hideOtherPlayers then PERF.hideOtherBodyFace = true end
 	local black = cfgBool("BlackScreen", "BlackScreenVisible", "Black Screen")
 	if black ~= nil then PERF.blackScreen = black end
 	local requireLoad = cfgBool("RequireFullLoad", "Require Full Load", "RequireFullLoad")
@@ -2604,10 +2494,29 @@ SNH.applyUserRuntimeConfig = function()
 	if loadTimeout and loadTimeout > 0 then BOOT.gameLoadTimeout = loadTimeout end
 end
 
+SNH.applyServerKindRules = function()
+	SERVER_KIND = API.getServerKind()
+	if SERVER_KIND == "Standard" or ALLOW_STEAL_ON_PRIVATE_SERVER then
+		return SERVER_KIND
+	end
+	if AUTO_STEAL then
+		AUTO_STEAL = false
+		print(("[So Nach Hup] %s server — auto steal disabled (no other gardens)"):format(SERVER_KIND))
+	end
+	return SERVER_KIND
+end
+
+SNH.isStealAllowed = function()
+	if not AUTO_STEAL or not Networking then return false end
+	if not ALLOW_STEAL_ON_PRIVATE_SERVER and SERVER_KIND ~= "Standard" then return false end
+	return API.canStealNow()
+end
+
 SNH.applySendWebhookConfig(
 	SNH.cfgSource("Send Webhook", "SendWebhook", "WEBHOOK_SEND", "WebhookSend") or userCfg["Send Webhook"]
 )
 SNH.applyUserRuntimeConfig()
+SNH.applyServerKindRules()
 if SNH.configHasBuyEntries(BuySeedsConfig) then
 	AUTO_BUY_SEED = true
 end
@@ -2705,11 +2614,7 @@ SNH.getGearPrice = function(gearName)
 end
 
 SNH.getSeedStock = function(seedName)
-	return SNH.getRemainingShopStock(seedName, "SeedShop", { "SeedShop", "Seeds" })
-end
-
-SNH.getGearStock = function(gearName)
-	return SNH.getRemainingShopStock(gearName, "GearShop", { "GearShop", "Gear" })
+	return select(1, SNH.getShopStockBreakdown(seedName, "SeedShop", { "SeedShop", "Seeds" }))
 end
 
 SNH.isMutationShopSeed = function(seedName)
@@ -2777,13 +2682,7 @@ end
 SNH.isWildPetBuyPaused = function()
 	return seedSnipeActive == true
 end
-
-SNH.shouldPrioritizeMutationSeeds = SNH.isActionPausedForSeedSnipe
 end
-loadShopCatalog = SNH.loadShopCatalog
-getSeedPrice = SNH.getSeedPrice
-getGearPrice = SNH.getGearPrice
-getSeedStock = SNH.getSeedStock
 
 do --[[ SNH: ShopBuy ]]
 SNH.waitForShopPurchaseConfirm = function(beforeInv, beforePurchased, countInvFn, countPurchasedFn)
@@ -3673,10 +3572,10 @@ SNH.tryUseGear = function()
 		return false
 	end
 
-	local tp = SNH.teleportRootTo
+	local tp = SNH.safeTeleport
 	local tpHome = SNH.returnToOwnGarden
 	if not tp then
-		SNH.debugLog("GEAR", "skip: no teleportRootTo", "warn")
+		SNH.debugLog("GEAR", "skip: no safeTeleport", "warn")
 		return false
 	end
 
@@ -4031,8 +3930,8 @@ SNH.useAllInventoryGearOnBestPlant = function(options)
 
 	local results = { ok = 0, fail = 0, skipped = 0, target = target, log = {} }
 	local okAll, errAll = pcall(function()
-		if teleport and SNH.teleportRootTo then
-			SNH.teleportRootTo(basePos + Vector3.new(0, 3, 0))
+		if teleport then
+			SNH.safeTeleport(basePos + Vector3.new(0, 3, 0))
 			task.wait(0.12)
 		end
 
@@ -4074,8 +3973,8 @@ SNH.useAllInventoryGearOnBestPlant = function(options)
 				continue
 			end
 
-			if teleport and SNH.teleportRootTo and kind ~= "mushroom" then
-				SNH.teleportRootTo(pos + Vector3.new(0, 2.5, 0))
+			if teleport and kind ~= "mushroom" then
+				SNH.safeTeleport(pos + Vector3.new(0, 2.5, 0))
 				task.wait(0.06)
 			end
 
@@ -4299,7 +4198,6 @@ SNH.placeSprinklersOnPlant = function(options)
 	return { ok = ok, fail = fail, seed = seedName, gear = gearName, price = seedPrice, center = centerPos }
 end
 
-SNH.placeSprinklersOnBestPlant = SNH.placeSprinklersOnPlant
 end
 useAllInventoryGearOnBestPlant = SNH.useAllInventoryGearOnBestPlant
 placeSprinklersOnPlant = SNH.placeSprinklersOnPlant
@@ -4822,16 +4720,6 @@ SNH.followWildPetStep = function(ref)
 	return true
 end
 
-SNH.isNearWildPet = function(ref, range)
-	range = tonumber(range) or WILD_PET_BUY_RANGE
-	local standPos = SNH.getWildPetStandPosition(ref)
-	if not standPos then return false end
-	local character = LocalPlayer.Character
-	local root = character and character:FindFirstChild("HumanoidRootPart")
-	if not root then return false end
-	return (root.Position - standPos).Magnitude <= range + 2
-end
-
 SNH.attemptWildPetRemoteBuy = function(ref, petKey, beforeOwned, rounds)
 	rounds = math.max(1, tonumber(rounds) or 4)
 	ref = SNH.resolveWildPetTameRef(ref)
@@ -4869,7 +4757,7 @@ SNH.attemptWildPetBuy = function(ref, petKey, beforeOwned)
 	local pressCount = 0
 	while WILD_PET_FOLLOW ~= false and tick() < followDeadline do
 		if SNH.countOwnedPet(petKey) > beforeOwned then return true end
-		local prompt = select(1, SNH.getWildPetBuyPrompt(ref))
+		local prompt = select(1, SNH.findWildPetBuyPrompt(SNH.resolveWildPetTameRef(ref) or ref))
 		-- Prompt/model gone => tame accepted, pet is walking home. Move to phase 2.
 		if not prompt then break end
 		-- Follow the pet to its current position, then press E.
@@ -4887,10 +4775,6 @@ SNH.attemptWildPetBuy = function(ref, petKey, beforeOwned)
 		return true
 	end
 	return SNH.countOwnedPet(petKey) > beforeOwned
-end
-
-SNH.attemptWildPetTeleportBuy = function(ref, petKey, beforeOwned)
-	return SNH.attemptWildPetBuy(ref, petKey, beforeOwned)
 end
 
 SNH.findWildPetBuyPrompt = function(ref)
@@ -4925,36 +4809,6 @@ SNH.findWildPetBuyPrompt = function(ref)
 		return bestPrompt, bestModel
 	end
 	return nil, nil
-end
-
-SNH.triggerWildPetPrompt = function(ref)
-	local bestPrompt, bestModel = SNH.getWildPetBuyPrompt(ref)
-	if not bestPrompt then
-		SNH.debugLog("WILD_PET", ("prompt: none found for ref %s"):format(tostring(ref and ref:GetAttribute("PetName"))), "warn")
-		return false
-	end
-	local fired = false
-	pcall(function()
-		bestPrompt.HoldDuration = 0
-		bestPrompt.MaxActivationDistance = math.min(24, PROMPT_RANGE_MAX)
-		bestPrompt.RequiresLineOfSight = false
-		for i = 1, 5 do
-			if typeof(fireproximityprompt) == "function" then
-				fireproximityprompt(bestPrompt, 0)
-				task.wait(0.03)
-				fireproximityprompt(bestPrompt, 1)
-			else
-				bestPrompt:InputHoldBegin()
-				task.wait(0.03)
-				bestPrompt:InputHoldEnd()
-			end
-			task.wait(0.05)
-		end
-		fired = true
-	end)
-	SNH.debugLog("WILD_PET", ("prompt: model=%s fired=%s"):format(
-		tostring(bestModel and bestModel.Name), tostring(fired)), fired and "force" or "warn")
-	return fired
 end
 
 SNH.httpPostJson = function(url, payload)
@@ -5282,8 +5136,6 @@ SNH.sendSeedWebhook = function(seedName, extra)
 	return true
 end
 
-SNH.sendWildPetWebhook = SNH.sendPetWebhook
-
 SNH.setupWildPetWebhooks = function()
 	if not Networking or not Networking.Pets or not Networking.Pets.WildPetTameResult then return end
 	if wildPetWebhookHooked then return end
@@ -5300,7 +5152,7 @@ SNH.setupWildPetWebhooks = function()
 		if not petKey then return end
 		petKey = SNH.resolvePetKey(petKey) or petKey
 		if not SNH.shouldSendPetWebhook(petKey) then return end
-		SNH.sendWildPetWebhook(petKey, ref:GetAttribute("Price"), {
+		SNH.sendPetWebhook(petKey, ref:GetAttribute("Price"), {
 			rarity = ref:GetAttribute("Rarity"),
 			size = ref:GetAttribute("PetSize") or "Normal",
 		})
@@ -5784,8 +5636,6 @@ SNH.getPetNameFromTool = function(tool)
 	return nil
 end
 
-SNH.getStackPetNameFromTool = SNH.getPetNameFromTool
-
 SNH.isIndividualPetTool = function(tool)
 	if not tool or not tool:IsA("Tool") then return false end
 	local petId = tool:GetAttribute("PetId")
@@ -5800,7 +5650,7 @@ SNH.isStackPetTool = function(tool)
 	if not tool or not tool:IsA("Tool") then return false end
 	local petId = tool:GetAttribute("PetId")
 	if type(petId) == "string" and petId ~= "" then return false end
-	return SNH.getStackPetNameFromTool(tool) ~= nil
+	return SNH.getPetNameFromTool(tool) ~= nil
 end
 
 SNH.toolMatchesPetKey = function(tool, petKey)
@@ -5810,7 +5660,7 @@ SNH.toolMatchesPetKey = function(tool, petKey)
 		local petAttr = tool:GetAttribute("Pet") or tool:GetAttribute("PetName")
 		return SNH.petNameMatches(petAttr, key)
 	end
-	local stackName = SNH.getStackPetNameFromTool(tool)
+	local stackName = SNH.getPetNameFromTool(tool)
 	if stackName then
 		return SNH.petNameMatches(stackName, key)
 	end
@@ -6155,7 +6005,7 @@ SNH.equipPetByName = function(petName, petId)
 	-- Path B: stack pet (Raccoon etc) — hold tool + EquipPet GUI + RequestEquipByName
 	local stackTool = SNH.findStackPetTool(key)
 	if stackTool then
-		local stackName = SNH.getStackPetNameFromTool(stackTool)
+		local stackName = SNH.getPetNameFromTool(stackTool)
 		print(("[So Nach Hup] Equip stack pet %s (tool=%s)"):format(tostring(key), tostring(stackName)))
 		if SNH.holdToolInstance(stackTool) then
 			SNH.prepareEquipPetGui()
@@ -6215,7 +6065,7 @@ SNH.unequipPetByName = function(petName)
 		task.wait(0.4)
 		SNH.prepareEquipPetGui()
 		local names = SNH.collectPetNameCandidates(key, nil)
-		local stackName = SNH.getStackPetNameFromTool(stackTool)
+		local stackName = SNH.getPetNameFromTool(stackTool)
 		if stackName and not table.find(names, stackName) then
 			table.insert(names, 1, stackName)
 		end
@@ -6268,9 +6118,7 @@ SNH.ensureInsideOwnPlotForPets = function()
 	local pos = SNH.getGardenInteriorPosition and SNH.getGardenInteriorPosition(plot)
 	if not pos then return false end
 	for _ = 1, 3 do
-		if SNH.teleportRootTo then
-			SNH.teleportRootTo(pos)
-		end
+		SNH.safeTeleport(pos)
 		task.wait(0.15)
 		if API.isPlayerInsidePlot(LocalPlayer, plot) then return true end
 	end
@@ -6286,6 +6134,12 @@ SNH.ensureInsideOwnPlotForHarvest = function()
 	if not plot then return false end
 	if SNH.canHarvestFromPlot(plot) then return true end
 	SNH.setStatus("Moving to garden for harvest...")
+	if SNH.returnToOwnGarden and SNH.returnToOwnGarden() then
+		task.wait(0.15)
+		if API.isInOwnGarden(LocalPlayer) and SNH.canHarvestFromPlot(plot) then
+			return true
+		end
+	end
 	local positions = {}
 	local center = SNH.getPlotHarvestStandPosition(plot)
 	local interior = SNH.getGardenInteriorPosition(plot)
@@ -6294,15 +6148,13 @@ SNH.ensureInsideOwnPlotForHarvest = function()
 	for _, pos in positions do
 		for _ = 1, 3 do
 			SNH.teleportToPlotCenter(plot)
-			if SNH.teleportRootTo then SNH.teleportRootTo(pos) end
+			SNH.safeTeleport(pos)
 			task.wait(0.15)
 			if SNH.canHarvestFromPlot(plot) then return true end
 		end
 	end
 	return SNH.canHarvestFromPlot(plot)
 end
-SNH.moveToOwnGardenForHarvestIfNeeded = SNH.ensureInsideOwnPlotForHarvest
-SNH.teleportToOwnGardenForHarvestIfNeeded = SNH.ensureInsideOwnPlotForHarvest
 
 SNH.petEntryScore = function(entry)
 	if not entry then return -1 end
@@ -6909,10 +6761,6 @@ SNH.tryBuyPetSlot = function()
 
 	lastPetSlotBuyFailAt = now
 	return false
-end
-
-SNH.loopBuyPetSlot = function()
-	SNH.tryBuyPetSlot()
 end
 end
 tryEquipBestPets = SNH.tryEquipBestPets
@@ -8128,10 +7976,6 @@ SNH.tryAutoMailSend = function()
 	end
 	return false
 end
-
-SNH.loopAutoMailSend = function()
-	SNH.tryAutoMailSend()
-end
 end
 
 do --[[ SNH: AntiAfk ]]
@@ -8146,11 +7990,9 @@ SNH.antiAfkVirtualUserPulse = function(vu)
 end
 
 SNH.antiAfkVirtualInputPulse = function()
+	-- Shift key removed — it toggles shift-lock and is not needed for anti-AFK.
 	local ok = pcall(function()
 		local vim = game:GetService("VirtualInputManager")
-		vim:SendKeyEvent(true, Enum.KeyCode.LeftShift, false, game)
-		task.wait()
-		vim:SendKeyEvent(false, Enum.KeyCode.LeftShift, false, game)
 		vim:SendMouseMoveEvent(1, 1, game)
 	end)
 	return ok
@@ -8264,7 +8106,7 @@ SNH.setupAntiAfk = function()
 		end
 	end))
 
-	print("[So Nach Hup] Anti-AFK enabled (7 methods: VirtualUser Idled, VirtualUser loop, VirtualInputManager, camera nudge, humanoid hop, disconnect Idled, root micro-move)")
+	print("[So Nach Hup] Anti-AFK enabled (no shift key — VirtualUser, camera nudge, humanoid hop, disconnect Idled, root micro-move)")
 end
 end
 
@@ -8558,271 +8400,6 @@ SNH.setupDisableAllEffects = function()
 	print("[So Nach Hup] Disabled gear / event / weather effects (light mode — no workspace scan loop)")
 end
 
-do --[[ SNH: HazardImmunity ]]
-hazardImmunityHooked = false
-hazardTakeDamageHook = nil
-
-SNH.getHazardOwnerUserId = function(inst)
-	local cur = inst
-	while cur and cur ~= workspace do
-		local uid = tonumber(cur:GetAttribute("UserId"))
-		if uid then return uid end
-		if cur:IsA("Model") and cur:GetAttribute("PlantId") then
-			uid = tonumber(cur:GetAttribute("UserId"))
-			if uid then return uid end
-		end
-		cur = cur.Parent
-	end
-	return nil
-end
-
-SNH.getHazardPivot = function(inst)
-	if not inst then return nil end
-	if inst:IsA("BasePart") then return inst.Position end
-	if inst:IsA("Model") then
-		local ok, pivot = pcall(function() return inst:GetPivot().Position end)
-		if ok then return pivot end
-	end
-	local part = inst:FindFirstChildWhichIsA("BasePart", true)
-	return part and part.Position or nil
-end
-
-SNH.isForeignHazardInstance = function(inst)
-	if not inst or not HAZARD_IMMUNITY then return false end
-	local ownerUid = SNH.getHazardOwnerUserId(inst)
-	if ownerUid and ownerUid == LocalPlayer.UserId then return false end
-	for _, tag in HAZARD_PLANT_TAGS do
-		if CollectionService:HasTag(inst, tag) then return true end
-	end
-	local seedName = inst:GetAttribute("SeedName") or inst:GetAttribute("CorePartName")
-	if seedName and HazardSeeds[seedName] then
-		return ownerUid ~= nil and ownerUid ~= LocalPlayer.UserId
-	end
-	return false
-end
-
-SNH.isNearForeignHazard = function(maxRange)
-	if not HAZARD_IMMUNITY then return false end
-	local char = LocalPlayer.Character
-	local root = char and char:FindFirstChild("HumanoidRootPart")
-	if not root then return false end
-	maxRange = tonumber(maxRange) or HAZARD_AVOID_RANGE or 35
-	local pos = root.Position
-	local flatPos = Vector3.new(pos.X, 0, pos.Z)
-
-	for _, tag in HAZARD_PLANT_TAGS do
-		for _, inst in CollectionService:GetTagged(tag) do
-			if not SNH.isForeignHazardInstance(inst) then continue end
-			local pivot = SNH.getHazardPivot(inst)
-			if not pivot then continue end
-			local flat = Vector3.new(pivot.X, 0, pivot.Z)
-			if (flatPos - flat).Magnitude <= maxRange then
-				return true
-			end
-		end
-	end
-
-	-- DragonBreath flame hitbox lives under workspace.Temporary.
-	local temp = workspace:FindFirstChild("Temporary")
-	if temp then
-		for _, child in temp:GetChildren() do
-			if child.Name == "DragonBreathEnd" or child:GetAttribute("Enabled") == true then
-				local ownerPlotUid = nil
-				pcall(function()
-					for _, model in CollectionService:GetTagged("DragonBreath") do
-						if SNH.isForeignHazardInstance(model) then
-							local pivot = SNH.getHazardPivot(model)
-							if pivot and (child.Position - pivot).Magnitude < 40 then
-								ownerPlotUid = true
-							end
-						end
-					end
-				end)
-				if ownerPlotUid then
-					if (pos - child.Position).Magnitude <= (maxRange + 5) then
-						return true
-					end
-				end
-			end
-		end
-	end
-
-	return false
-end
-
-SNH.clearHazardScreenEffects = function()
-	local gui = LocalPlayer:FindFirstChild("PlayerGui")
-	if gui then
-		local poisonGui = gui:FindFirstChild("PoisonIvyScreenEffect")
-		if poisonGui then poisonGui:Destroy() end
-	end
-	local char = LocalPlayer.Character
-	local hum = char and char:FindFirstChildOfClass("Humanoid")
-	if hum then
-		pcall(function() hum.CameraOffset = Vector3.zero end)
-	end
-	for _, tag in { "PoisonIvyAppearance", "GhostPepperAppearance" } do
-		for _, inst in CollectionService:GetTagged(tag) do
-			if inst:IsDescendantOf(char or workspace) then
-				pcall(function()
-					if inst:IsA("ParticleEmitter") or inst:IsA("SurfaceGui") then
-						inst.Enabled = false
-					end
-					inst:Destroy()
-				end)
-			end
-		end
-	end
-end
-
-SNH.neutralizeForeignHazardVfx = function()
-	if not HAZARD_IMMUNITY then return end
-	SNH.purgeDragonBreathFlame()
-	SNH.disableForeignDragonBreathBeams()
-	SNH.clearDragonBreathScreenFx()
-end
-
--- DragonBreathController: aimbot ray uses workspace.Temporary.DragonBreathEnd (2.2 stud hitbox).
-SNH.purgeDragonBreathFlame = function()
-	if not HAZARD_PURGE_FLAME then return end
-	local temp = workspace:FindFirstChild("Temporary")
-	if not temp then return end
-	for _, child in temp:GetChildren() do
-		if child.Name ~= "DragonBreathEnd" then continue end
-		pcall(function()
-			child:SetAttribute("Enabled", false)
-			for _, d in child:GetDescendants() do
-				if d:IsA("ParticleEmitter") or d:IsA("Beam") or d:IsA("SurfaceGui") then
-					d.Enabled = false
-				end
-			end
-			if child:IsA("BasePart") then
-				child.CFrame = CFrame.new(0, -10000, 0)
-				child.CanTouch = false
-				child.CanQuery = false
-			end
-		end)
-	end
-end
-
-SNH.disableForeignDragonBreathBeams = function()
-	for _, model in CollectionService:GetTagged("DragonBreath") do
-		if not SNH.isForeignHazardInstance(model) then continue end
-		for _, d in model:GetDescendants() do
-			if d:IsA("Beam") or d:IsA("ParticleEmitter") then
-				pcall(function() d.Enabled = false end)
-			end
-		end
-	end
-end
-
-SNH.clearDragonBreathScreenFx = function()
-	pcall(function()
-		for _, child in Lighting:GetChildren() do
-			if child:IsA("ColorCorrectionEffect") and child.Name == "FlameEffect" then
-				child.Enabled = false
-			end
-		end
-	end)
-	local gui = LocalPlayer:FindFirstChild("PlayerGui")
-	if not gui then return end
-	for _, child in gui:GetChildren() do
-		if not child:IsA("ScreenGui") then continue end
-		local img = child:FindFirstChild("ImageLabel", true)
-		if not img or not img:IsA("ImageLabel") then continue end
-		local c = img.ImageColor3
-		if child.Name == "Vignette" or (c.R > 0.9 and c.G < 0.2 and c.B < 0.2) then
-			pcall(function() child:Destroy() end)
-		end
-	end
-end
-
-SNH.protectHazardHealth = function()
-	if not HAZARD_HEALTH_LOCK or not HAZARD_IMMUNITY then return end
-	local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
-	if not hum or hum.Health <= 0 then return end
-	local nearHazard = SNH.isNearForeignHazard((HAZARD_AVOID_RANGE or 35) + 20)
-	if nearHazard or stealActive or stealInVictimGarden then
-		if hum.Health < hum.MaxHealth then
-			hum.Health = hum.MaxHealth
-		end
-	end
-end
-
-SNH.hookHazardRagdoll = function()
-	if hazardImmunityHooked then return end
-	pcall(function()
-		local ragMod = ReplicatedStorage:WaitForChild("ClientModules", 5)
-		if not ragMod then return end
-		ragMod = require(ragMod:WaitForChild("RagdollModule"))
-		if type(ragMod) ~= "table" or type(ragMod.Ragdoll) ~= "function" then return end
-		if ragMod._snhRagdollHooked then return end
-		local oldRagdoll = ragMod.Ragdoll
-		ragMod.Ragdoll = function(self, character, ...)
-			if HAZARD_IMMUNITY and character == LocalPlayer.Character then
-				return
-			end
-			return oldRagdoll(self, character, ...)
-		end
-		ragMod._snhRagdollHooked = true
-	end)
-end
-
-SNH.hookHazardTakeDamage = function()
-	if hazardTakeDamageHook or not HAZARD_BLOCK_SMALL_DAMAGE then return end
-	if typeof(hookmetamethod) ~= "function" or typeof(getnamecallmethod) ~= "function" then return end
-	local old
-	old = hookmetamethod(game, "__namecall", function(self, ...)
-		if HAZARD_IMMUNITY and getnamecallmethod() == "TakeDamage" then
-			local char = LocalPlayer.Character
-			if char and self:IsA("Humanoid") and self:IsDescendantOf(char) then
-				return
-			end
-		end
-		return old(self, ...)
-	end)
-	hazardTakeDamageHook = old
-end
-
-SNH.setupHazardImmunity = function()
-	if not HAZARD_IMMUNITY then return false end
-	SNH.disableGameControllers(HAZARD_CONTROLLER_NAMES)
-	SNH.hookHazardRagdoll()
-	SNH.hookHazardTakeDamage()
-	SNH.clearHazardScreenEffects()
-	hazardImmunityHooked = true
-	print("[So Nach Hup] Hazard immunity ON (Dragon's Breath / Venus Fly Trap / Poison Ivy / Ghost Pepper)")
-	return true
-end
-
-SNH.loopHazardImmunity = function()
-	if not HAZARD_IMMUNITY then return end
-	SNH.neutralizeForeignHazardVfx()
-	SNH.clearHazardScreenEffects()
-	SNH.protectHazardHealth()
-	local avoidTp = HAZARD_AVOID_TELEPORT
-		and not (HAZARD_AVOID_WHILE_STEALING and (stealActive or stealInVictimGarden))
-	if avoidTp and SNH.isNearForeignHazard(HAZARD_AVOID_RANGE) then
-		if SNH.ensureInsideOwnPlotForPets then
-			SNH.ensureInsideOwnPlotForPets()
-			SNH.setStatus("Hazard avoid — returned to your garden")
-		end
-	end
-end
-
-SNH.startHazardImmunityLoop = function()
-	if USE_UNIFIED_SCHEDULER then return end
-	task.spawn(function()
-		while running do
-			if HAZARD_IMMUNITY then
-				pcall(SNH.loopHazardImmunity)
-			end
-			task.wait(math.max(0.2, tonumber(HAZARD_IMMUNITY_GAP) or 0.5))
-		end
-	end)
-end
-end
-
 do --[[ SNH: LoadAndOptimize ]]
 SNH.ensureCatalogsLoaded = function()
 	if next(SeedMeta) == nil then
@@ -8989,10 +8566,6 @@ SNH.trimOptimizeCaches = function(force)
 		if type(untilAt) == "number" and untilAt < skipNow then
 			stealSkip[key] = nil
 		end
-	end
-	harvestTargetsCache.time = 0
-	if harvestTargetsCache.targets then
-		table.clear(harvestTargetsCache.targets)
 	end
 	stealGardensCache.time = 0
 	pcall(function()
@@ -9880,6 +9453,66 @@ SNH.refreshUltimateOptimization = function()
 	PERF.optimizeRefreshAt = tick()
 end
 
+SNH.hideOtherPlayerCharacter = function(char)
+	if not char then return end
+	for _, inst in char:GetDescendants() do
+		SNH.applyCharacterVisualStrip(inst)
+		SNH.hideInstanceLocal(inst)
+	end
+	char.DescendantAdded:Connect(function(inst)
+		if PERF.hideOtherPlayers then
+			SNH.applyCharacterVisualStrip(inst)
+			SNH.hideInstanceLocal(inst)
+		end
+	end)
+end
+
+SNH.setupClientVisualOptimize = function()
+	if PERF.clientVisualOptimizeInstalled then return end
+	if not PERF.removeTextures and not PERF.hideOtherPlayers then return end
+	PERF.clientVisualOptimizeInstalled = true
+	PERF.ultimateOptimize = true
+	print("[So Nach Hup] Client visual optimize ON — strip textures, hide other players")
+	SNH.setStatus("Performance mode enabled — textures stripped, players hidden")
+
+	task.spawn(function()
+		pcall(SNH.runTextureRemovalPass)
+	end)
+
+	if PERF.hideOtherPlayers then
+		for _, plr in Players:GetPlayers() do
+			if plr ~= LocalPlayer then
+				if plr.Character then SNH.hideOtherPlayerCharacter(plr.Character) end
+				plr.CharacterAdded:Connect(function(char)
+					task.defer(function()
+						SNH.hideOtherPlayerCharacter(char)
+					end)
+				end)
+			end
+		end
+		Players.PlayerAdded:Connect(function(plr)
+			if plr == LocalPlayer then return end
+			plr.CharacterAdded:Connect(function(char)
+				task.defer(function()
+					SNH.hideOtherPlayerCharacter(char)
+				end)
+			end)
+		end)
+	end
+
+	task.spawn(function()
+		while running do
+			if PERF.removeTextures then
+				pcall(SNH.runTextureRemovalPass)
+			end
+			if PERF.hideOtherPlayers then
+				pcall(SNH.runOtherPlayerHidePass)
+			end
+			task.wait(math.max(30, tonumber(PERF.optimizeTextureLoopGap) or 45))
+		end
+	end)
+end
+
 SNH.setupUltimateOptimization = function()
 	-- Optimize system removed: this is now a permanent no-op. It will never hide plants,
 	-- destroy VFX, cap FPS, downgrade graphics, or hook gardens.
@@ -10019,24 +9652,8 @@ SNH.setupUltimateOptimization = function()
 	end)
 end
 
-SNH.updateBlackOverlay = function()
-	task.defer(function()
-		pcall(function()
-			if not PERF.blackOverlayFrame then return end
-			PERF.blackOverlayFrame.Visible = PERF.blackOverlayVisible
-			if PERF.blackOverlayLabel then
-				PERF.blackOverlayLabel.Text = PERF.blackOverlayVisible
-					and "BLACK SCREEN ON - DOUBLE CLICK TO VIEW GAME"
-					or "BLACK SCREEN OFF - DOUBLE CLICK TO HIDE GAME"
-			end
-		end)
-	end)
-end
-
-SNH.setupBlackScreenToggle = function()
-	if not PERF.blackScreen then return end
-	if PERF.blackOverlayGui and PERF.blackOverlayGui.Parent then
-		SNH.updateBlackOverlay()
+SNH.ensureBlackOverlayGui = function()
+	if PERF.blackOverlayGui and PERF.blackOverlayGui.Parent and PERF.blackOverlayFrame then
 		return
 	end
 	SNH.suppressGuiRecreate(2)
@@ -10051,43 +9668,125 @@ SNH.setupBlackScreenToggle = function()
 	local oldPg = playerGui:FindFirstChild("SNH_BlackOverlay")
 	if oldPg and oldPg ~= PERF.blackOverlayGui then SNH.destroyHudGui(oldPg) end
 
-	if not PERF.blackOverlayGui or not PERF.blackOverlayGui.Parent then
-		local gui = Instance.new("ScreenGui")
-		gui.Name = "SNH_BlackOverlay"
-		gui.IgnoreGuiInset = true
-		gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-		gui.DisplayOrder = BLACK_SCREEN_DISPLAY_ORDER or 9998
+	local gui = Instance.new("ScreenGui")
+	gui.Name = "SNH_BlackOverlay"
+	gui.IgnoreGuiInset = true
+	gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+	gui.DisplayOrder = LOADING_OVERLAY_DISPLAY_ORDER or BLACK_SCREEN_DISPLAY_ORDER or 9998
 
-		local frame = Instance.new("Frame")
-		frame.Name = "Overlay"
-		frame.Size = UDim2.fromScale(1, 1)
-		frame.Position = UDim2.fromScale(0, 0)
-		frame.BackgroundColor3 = Color3.new(0, 0, 0)
-		frame.BorderSizePixel = 0
-		frame.ZIndex = BLACK_SCREEN_DISPLAY_ORDER or 9998
-		frame.Parent = gui
+	local frame = Instance.new("Frame")
+	frame.Name = "Overlay"
+	frame.Size = UDim2.fromScale(1, 1)
+	frame.Position = UDim2.fromScale(0, 0)
+	frame.BackgroundColor3 = Color3.new(0, 0, 0)
+	frame.BorderSizePixel = 0
+	frame.ZIndex = LOADING_OVERLAY_DISPLAY_ORDER or BLACK_SCREEN_DISPLAY_ORDER or 9998
+	frame.Parent = gui
 
-		local label = Instance.new("TextLabel")
-		label.Name = "Hint"
-		label.AnchorPoint = Vector2.new(0.5, 1)
-		label.Position = UDim2.fromScale(0.5, 0.98)
-		label.Size = UDim2.new(1, -20, 0, 26)
-		label.BackgroundTransparency = 1
-		label.TextColor3 = Color3.fromRGB(180, 180, 180)
-		label.TextStrokeTransparency = 0.6
-		label.Font = Enum.Font.GothamBold
-		label.TextScaled = true
-		label.ZIndex = frame.ZIndex + 1
-		label.Parent = frame
+	local label = Instance.new("TextLabel")
+	label.Name = "Hint"
+	label.AnchorPoint = Vector2.new(0.5, 1)
+	label.Position = UDim2.fromScale(0.5, 0.98)
+	label.Size = UDim2.new(1, -20, 0, 26)
+	label.BackgroundTransparency = 1
+	label.TextColor3 = Color3.fromRGB(180, 180, 180)
+	label.TextStrokeTransparency = 0.6
+	label.Font = Enum.Font.GothamBold
+	label.TextScaled = true
+	label.Visible = false
+	label.ZIndex = frame.ZIndex + 1
+	label.Parent = frame
 
-		gui = SNH.mountSecureGui(gui, {
-			displayOrder = BLACK_SCREEN_DISPLAY_ORDER or 9998,
-			zIndexBehavior = Enum.ZIndexBehavior.Sibling,
-			recreateToken = "black",
-		})
-		PERF.blackOverlayGui = gui
-		PERF.blackOverlayFrame = frame
-		PERF.blackOverlayLabel = label
+	gui = SNH.mountSecureGui(gui, {
+		displayOrder = LOADING_OVERLAY_DISPLAY_ORDER or BLACK_SCREEN_DISPLAY_ORDER or 9998,
+		zIndexBehavior = Enum.ZIndexBehavior.Sibling,
+		recreateToken = "black",
+	})
+	PERF.blackOverlayGui = gui
+	PERF.blackOverlayFrame = frame
+	PERF.blackOverlayLabel = label
+end
+
+SNH.showStartupLoading = function()
+	PERF.startupLoadingShown = true
+	PERF.blackOverlayVisible = true
+	pcall(function()
+		SNH.ensureBlackOverlayGui()
+		if not PERF.blackOverlayFrame then return end
+		PERF.blackOverlayFrame.Visible = true
+		if PERF.blackOverlayLabel then
+			PERF.blackOverlayLabel.Visible = false
+		end
+		local loading = PERF.loadingOverlayLabel
+		if not loading or not loading.Parent then
+			loading = Instance.new("TextLabel")
+			loading.Name = "LoadingText"
+			loading.AnchorPoint = Vector2.new(0.5, 0.5)
+			loading.Position = UDim2.fromScale(0.5, 0.5)
+			loading.Size = UDim2.new(0.85, 0, 0.18, 0)
+			loading.BackgroundTransparency = 1
+			loading.Text = "LOADING SCRIPT"
+			loading.TextColor3 = Color3.fromRGB(255, 255, 255)
+			loading.TextStrokeTransparency = 0.35
+			loading.Font = Enum.Font.GothamBold
+			loading.TextScaled = true
+			loading.ZIndex = (PERF.blackOverlayFrame.ZIndex or 1) + 2
+			loading.Parent = PERF.blackOverlayFrame
+			PERF.loadingOverlayLabel = loading
+		end
+		loading.Visible = true
+		loading.Text = "LOADING SCRIPT"
+	end)
+end
+
+SNH.hideStartupLoadingText = function()
+	PERF.startupLoadingShown = false
+	pcall(function()
+		if PERF.loadingOverlayLabel then
+			PERF.loadingOverlayLabel:Destroy()
+			PERF.loadingOverlayLabel = nil
+		end
+		if not PERF.blackScreen and PERF.blackOverlayFrame then
+			PERF.blackOverlayFrame.Visible = false
+			PERF.blackOverlayVisible = false
+		elseif PERF.blackOverlayFrame then
+			PERF.blackOverlayFrame.Visible = PERF.blackOverlayVisible ~= false
+		end
+		if PERF.blackOverlayGui then
+			PERF.blackOverlayGui.DisplayOrder = BLACK_SCREEN_DISPLAY_ORDER or 9998
+		end
+	end)
+	SNH.updateBlackOverlay()
+end
+
+SNH.updateBlackOverlay = function()
+	task.defer(function()
+		pcall(function()
+			if not PERF.blackOverlayFrame then return end
+			PERF.blackOverlayFrame.Visible = PERF.blackOverlayVisible
+			if PERF.blackOverlayLabel then
+				local showHint = not PERF.startupLoadingShown
+				PERF.blackOverlayLabel.Visible = showHint
+				if showHint then
+					PERF.blackOverlayLabel.Text = PERF.blackOverlayVisible
+						and "BLACK SCREEN ON - DOUBLE CLICK TO VIEW GAME"
+						or "BLACK SCREEN OFF - DOUBLE CLICK TO HIDE GAME"
+				end
+			end
+		end)
+	end)
+end
+
+SNH.setupBlackScreenToggle = function()
+	if not PERF.blackScreen then return end
+	SNH.ensureBlackOverlayGui()
+	if PERF.blackOverlayGui and PERF.blackOverlayGui.Parent then
+		pcall(function()
+			PERF.blackOverlayGui.DisplayOrder = BLACK_SCREEN_DISPLAY_ORDER or 9998
+		end)
+		SNH.updateBlackOverlay()
+	else
+		return
 	end
 
 	PERF.blackOverlayVisible = true
@@ -10308,10 +10007,6 @@ SNH.shortHopTo = function(goal, floatHeight, opts)
 end
 
 -- Alias: all movement fallbacks use short slow hops (not fast long tweens).
-SNH.fallbackTweenTo = function(goal, floatHeight, opts)
-	return SNH.shortHopTo(goal, floatHeight, opts)
-end
-
 SNH.teleportToWithFallback = function(position, opts)
 	opts = opts or {}
 	local goal = SNH.normalizeTeleportGoal(position)
@@ -10322,7 +10017,7 @@ SNH.teleportToWithFallback = function(position, opts)
 	if SNH.isNearPosition(goal, radius) then return true end
 
 	if TELEPORT_AVOID_RAW_CFRAME ~= false then
-		return SNH.fallbackTweenTo(goal, floatHeight, opts)
+		return SNH.shortHopTo(goal, floatHeight, opts)
 	end
 
 	local tries = tonumber(opts.tries) or TP_FALLBACK_TRIES
@@ -10335,12 +10030,8 @@ SNH.teleportToWithFallback = function(position, opts)
 		task.wait(0.03)
 	end
 
-	if SNH.fallbackTweenTo(goal, floatHeight, opts) then return true end
+	if SNH.shortHopTo(goal, floatHeight, opts) then return true end
 	return SNH.isNearPosition(goal, radius + 8)
-end
-
-SNH.teleportRootTo = function(position, opts)
-	return SNH.safeTeleport(position, opts)
 end
 
 -- ===== Safe teleport (game-allowed methods from g2 decompile) =====
@@ -10646,19 +10337,16 @@ SNH.safeTeleport = function(position, opts)
 	return finish(SNH.isNearPosition(goal, radius + 8))
 end
 
-SNH.teleportTo = SNH.safeTeleport
-
 SNH.stealPause = function(seconds)
 	seconds = tonumber(seconds) or 0
 	if seconds <= 0 then
-		RunService.Heartbeat:Wait()
+		task.wait()
 		return
 	end
-	local deadline = tick() + seconds
-	while tick() < deadline do
-		RunService.Heartbeat:Wait()
-	end
+	task.wait(seconds)
 end
+
+SNH.waitWallClock = SNH.stealPause
 
 SNH.teleportRootToSteal = function(position, opts)
 	opts = opts or {}
@@ -10698,16 +10386,6 @@ SNH.teleportRootToSteal = function(position, opts)
 	return SNH.safeTeleport(position, { button = false, allowFast = true, float = true, safe = opts.safe })
 end
 
-SNH.waitForIsInOwnGarden = function(timeout)
-	timeout = tonumber(timeout) or 2.5
-	local deadline = tick() + timeout
-	while tick() < deadline do
-		if API.isInOwnGarden(LocalPlayer) then return true end
-		task.wait(0.05)
-	end
-	return API.isInOwnGarden(LocalPlayer)
-end
-
 SNH.getPlotHarvestStandPosition = function(plot)
 	plot = plot or API.getPlayerPlot()
 	if not plot then return nil end
@@ -10725,28 +10403,11 @@ SNH.teleportToPlotCenter = function(plot)
 	return SNH.safeTeleport(pos, { button = true })
 end
 
-SNH.teleportToPlotSpawn = SNH.teleportToPlotCenter
-
 SNH.canHarvestFromPlot = function(plot)
 	plot = plot or API.getPlayerPlot()
 	if not plot or not API.isLocalPlot(plot) then return false end
 	if API.isInOwnGarden(LocalPlayer) then return true end
 	if API.isPlayerInsidePlot(LocalPlayer, plot) then return true end
-	local root = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-	if not root then return false end
-	local center = SNH.getPlotHarvestStandPosition(plot)
-	if center and (root.Position - center).Magnitude <= 120 then return true end
-	for _, part in SNH.getPlantAreasInPlot(plot) do
-		if part:IsA("BasePart") then
-			local localPos = part.CFrame:PointToObjectSpace(root.Position)
-			local half = part.Size * 0.5
-			if math.abs(localPos.X) <= half.X + 8
-				and math.abs(localPos.Y) <= half.Y + 20
-				and math.abs(localPos.Z) <= half.Z + 8 then
-				return true
-			end
-		end
-	end
 	return false
 end
 
@@ -10827,7 +10488,8 @@ SNH.isAwayForGardenStay = function()
 	if activeTeleportDepth > 0 then return true end
 	if wildPetBuying then return true end
 	if seedSnipeActive then return true end
-	if stealActive or stealInVictimGarden then return true end
+	if stealActive then return true end
+	if API.canStealNow() and stealInVictimGarden then return true end
 	if SNH.isStealCarryActive() then return true end
 	return false
 end
@@ -10910,8 +10572,8 @@ SNH.getPlotFromModel = function(model)
 	return nil
 end
 end
-teleportRootTo = SNH.teleportRootTo
-teleportTo = SNH.teleportTo
+teleportRootTo = SNH.safeTeleport
+teleportTo = SNH.safeTeleport
 safeTeleport = SNH.safeTeleport
 teleportRootToSteal = SNH.teleportRootToSteal
 getGardenInteriorPosition = SNH.getGardenInteriorPosition
@@ -11013,21 +10675,43 @@ SNH.isStealPrompt = function(prompt)
 	return prompt.Name == "StealPrompt" or CollectionService:HasTag(prompt, "StealPrompt")
 end
 
-SNH.clampPromptRange = function(prompt, range)
+SNH.getHarvestPromptRange = function()
+	return math.min(tonumber(HARVEST_PROMPT_RANGE) or 10000, PROMPT_RANGE_MAX or 10000)
+end
+
+-- Force full-map collect radius on your own plot (game resets MaxActivationDistance to 10).
+SNH.applyFullMapHarvestPrompt = function(prompt)
 	if not prompt or not prompt:IsA("ProximityPrompt") then return end
-	local cap = math.min(tonumber(range) or HARVEST_PROMPT_RANGE, PROMPT_RANGE_MAX)
-	if prompt.MaxActivationDistance > cap then
-		prompt.MaxActivationDistance = cap
+	if not SNH.isHarvestPrompt(prompt) then return end
+	if not SNH.isPromptOnLocalPlot(prompt) then return end
+	local want = SNH.getHarvestPromptRange()
+	prompt.HoldDuration = 0
+	prompt.RequiresLineOfSight = false
+	prompt.Enabled = true
+	if prompt.MaxActivationDistance ~= want then
+		prompt.MaxActivationDistance = want
 	end
 end
 
-SNH.boostHarvestPromptRange = function(prompt)
+SNH.lockHarvestPromptRange = function(prompt)
 	if not prompt or not prompt:IsA("ProximityPrompt") then return end
-	if not SNH.isPromptOnLocalPlot(prompt) then return end
-	prompt.HoldDuration = 0
-	prompt.RequiresLineOfSight = false
-	local want = math.min(tonumber(HARVEST_PROMPT_RANGE) or 150, PROMPT_RANGE_MAX)
-	prompt.MaxActivationDistance = math.max(prompt.MaxActivationDistance, want)
+	if not SNH.isHarvestPrompt(prompt) or not SNH.isPromptOnLocalPlot(prompt) then return end
+	SNH.applyFullMapHarvestPrompt(prompt)
+	if harvestPromptRangeHooked[prompt] then return end
+	harvestPromptRangeHooked[prompt] = true
+	SNH.trackConn(prompt:GetPropertyChangedSignal("MaxActivationDistance"):Connect(function()
+		if prompt.Parent and SNH.isPromptOnLocalPlot(prompt) then
+			SNH.applyFullMapHarvestPrompt(prompt)
+		end
+	end), "harvest_prompt_range")
+	prompt.Destroying:Once(function()
+		harvestPromptRangeHooked[prompt] = nil
+	end)
+end
+
+SNH.boostHarvestPromptRange = function(prompt)
+	SNH.applyFullMapHarvestPrompt(prompt)
+	SNH.lockHarvestPromptRange(prompt)
 end
 
 SNH.boostPromptRange = function(prompt, range)
@@ -11055,7 +10739,7 @@ SNH.maintainLocalHarvestPrompts = function()
 	if not plot then return end
 	for _, inst in plot:GetDescendants() do
 		if inst:IsA("ProximityPrompt") and SNH.isHarvestPrompt(inst) then
-			SNH.boostHarvestPromptRange(inst)
+			SNH.lockHarvestPromptRange(inst)
 		end
 	end
 end
@@ -11097,28 +10781,39 @@ SNH.setupInstantPromptHooks = function()
 	end), "instant_prompt")
 end
 
--- HarvestPromptController perform(): CollectFruit:Fire(plantId, fruitId or "")
-SNH.performHarvestCollect = function(prompt)
-	if not prompt or not prompt:IsDescendantOf(workspace) then return false end
+-- Collect fruit via ProximityPrompt on own plot (full-map range, HoldDuration 0).
+SNH.collectHarvestPrompt = function(prompt)
+	if not prompt or not prompt:IsA("ProximityPrompt") then return false end
 	if not SNH.isHarvestPrompt(prompt) then return false end
+	if not SNH.isPromptOnLocalPlot(prompt) then return false end
+	if not prompt:IsDescendantOf(workspace) then return false end
 	if not prompt.Enabled or prompt:GetAttribute("Collected") then return false end
-	local plantId, fruitId = SNH.resolveHarvestIdsFromPrompt(prompt)
-	if not plantId then return false end
-	if not Networking then Networking = API.getNetworking() end
-	local remote = Networking and Networking.Garden and Networking.Garden.CollectFruit
-	if not remote then return false end
-	prompt:SetAttribute("Collected", true)
-	local restoreDelay = math.max(0.09, (tonumber(prompt.HoldDuration) or 0) + 0.1)
-	task.delay(restoreDelay, function()
-		if prompt and prompt:IsDescendantOf(workspace) then
-			prompt:SetAttribute("Collected", nil)
-		end
-	end)
-	local ok = pcall(function()
-		remote:Fire(tostring(plantId), tostring(fruitId or ""))
-	end)
-	return ok
+
+	SNH.boostHarvestPromptRange(prompt)
+	local before = SNH.countFruitInInventory()
+	local plantId = select(1, SNH.resolveHarvestIdsFromPrompt(prompt))
+	local fruitId = select(2, SNH.resolveHarvestIdsFromPrompt(prompt))
+
+	local function collectedOk()
+		if SNH.countFruitInInventory() > before then return true end
+		if not prompt.Parent then return true end
+		if prompt:GetAttribute("Collected") or not prompt.Enabled then return true end
+		if plantId and SNH.harvestTargetCollected(API.getPlayerPlot(), plantId, fruitId) then return true end
+		return false
+	end
+
+	if not SNH.triggerHarvestPrompt(prompt) then return false end
+
+	local verifyWait = tonumber(COLLECT_VERIFY_WAIT) or 0.08
+	local deadline = tick() + verifyWait
+	while tick() < deadline do
+		if collectedOk() then return true end
+		task.wait(0.03)
+	end
+	return collectedOk()
 end
+
+SNH.performHarvestCollect = SNH.collectHarvestPrompt
 
 -- HarvestPromptController triggerPromptProgrammatically (u10)
 SNH.triggerHarvestPrompt = function(prompt)
@@ -11142,7 +10837,7 @@ SNH.triggerHarvestPrompt = function(prompt)
 	return ok
 end
 
--- Collect uses CollectFruit remote; widen prompt on own plot for fallback trigger.
+-- Widen harvest prompt range on own plot so full-map proximity collect works.
 SNH.boostHarvestPrompt = function(prompt)
 	if not prompt or not SNH.isHarvestPrompt(prompt) then return end
 	SNH.boostHarvestPromptRange(prompt)
@@ -11192,12 +10887,76 @@ SNH.getHarvestBackpackRoom = function(forceFresh)
 	return math.max(0, maxCap - SNH.getCachedFruitCount())
 end
 
-SNH.clearHarvestTargetsCache = function()
-	harvestTargetsCache.time = 0
-	harvestTargetsCache.plot = nil
-	if harvestTargetsCache.targets then
-		table.clear(harvestTargetsCache.targets)
+SNH.clearHarvestTargetsCache = function() end
+
+SNH.gatherAllHarvestTargets = function(plot, ownerUserId)
+	return SNH.gatherReadyHarvestTargets(plot, ownerUserId)
+end
+
+SNH.ensureReadyToHarvest = function(plot)
+	plot = plot or API.getPlayerPlot()
+	if not plot then return false end
+	if not API.canStealNow() then
+		stealInVictimGarden = false
 	end
+	if API.isInOwnGarden(LocalPlayer) and SNH.canHarvestFromPlot(plot) then
+		return true
+	end
+	if SNH.isHarvestBlocked() then return false end
+	SNH.clearHarvestTargetsCache()
+	SNH.setStatus("Moving to garden for harvest...")
+	if not SNH.ensureInsideOwnPlotForHarvest() then return false end
+	local deadline = tick() + 2.5
+	while tick() < deadline do
+		if API.isInOwnGarden(LocalPlayer) and SNH.canHarvestFromPlot(plot) then
+			return true
+		end
+		task.wait(0.1)
+	end
+	return SNH.canHarvestFromPlot(plot)
+end
+
+SNH.onActivePhaseChanged = function(phase, prevPhase)
+	SNH.clearHarvestTargetsCache()
+	harvestFailStreak = 0
+	if phase ~= "Night" then
+		stealInVictimGarden = false
+		if not stealActive then
+			SNH.setStealFloat(false)
+		end
+	end
+	if phase == "Day" and AUTO_COLLECT then
+		task.defer(function()
+			task.wait(0.3)
+			if not API.canStealNow() then
+				stealInVictimGarden = false
+			end
+			SNH.ensureReadyToHarvest()
+		end)
+	end
+end
+
+SNH.setupHarvestPhaseReset = function()
+	if harvestPhaseHooked then return end
+	harvestPhaseHooked = true
+	local lastPhase = workspace:GetAttribute("ActivePhase")
+	SNH.trackConn(workspace:GetAttributeChangedSignal("ActivePhase"):Connect(function()
+		local phase = workspace:GetAttribute("ActivePhase")
+		if phase == lastPhase then return end
+		local prev = lastPhase
+		lastPhase = phase
+		SNH.onActivePhaseChanged(phase, prev)
+	end), "harvest_phase")
+	pcall(function()
+		local nightVal = ReplicatedStorage:FindFirstChild("Night")
+		if nightVal and nightVal:IsA("BoolValue") then
+			SNH.trackConn(nightVal:GetPropertyChangedSignal("Value"):Connect(function()
+				if nightVal.Value then return end
+				local phase = workspace:GetAttribute("ActivePhase") or "Day"
+				SNH.onActivePhaseChanged(phase, "Night")
+			end), "harvest_phase_night")
+		end
+	end)
 end
 
 SNH.packHarvestTarget = function(entry)
@@ -11284,58 +11043,14 @@ SNH.triggerProximityPrompt = function(prompt)
 end
 
 SNH.collectHarvestTarget = function(plot, target)
-	if not target or not target.plantId then return false end
-	if not Networking then Networking = API.getNetworking() end
-	local remote = Networking and Networking.Garden and Networking.Garden.CollectFruit
-	if not remote then return false end
+	if not target then return false end
 	plot = plot or API.getPlayerPlot()
-	if not plot then return false end
-	SNH.maintainLocalHarvestPrompts()
-
-	local prompt = target.prompt or SNH.findHarvestPromptForTarget(plot, target.plantId, target.fruitId)
-	local plantId, fruitId
-	if prompt then
-		plantId, fruitId = SNH.resolveHarvestIdsFromPrompt(prompt)
+	local prompt = target.prompt
+	if not prompt and target.plantId then
+		prompt = SNH.findHarvestPromptForTarget(plot, target.plantId, target.fruitId)
 	end
-	plantId = plantId or target.plantId
-	fruitId = fruitId or target.fruitId or ""
-	plantId = tostring(plantId)
-	fruitId = tostring(fruitId or "")
-
-	local before = SNH.countFruitInInventory()
-
-	local function collectedOk()
-		if SNH.countFruitInInventory() > before then return true end
-		return SNH.harvestTargetCollected(plot, plantId, fruitId)
-	end
-
-	if prompt then
-		SNH.boostHarvestPrompt(prompt)
-		SNH.performHarvestCollect(prompt)
-		task.wait(0.06)
-		if collectedOk() then return true end
-		SNH.triggerHarvestPrompt(prompt)
-		task.wait(0.06)
-		if collectedOk() then return true end
-	end
-
-	pcall(function()
-		remote:Fire(plantId, fruitId)
-	end)
-
-	local verifyWait = tonumber(COLLECT_VERIFY_WAIT) or 0.2
-	local deadline = tick() + verifyWait
-	while tick() < deadline do
-		if collectedOk() then return true end
-		task.wait(0.05)
-	end
-
-	if prompt then
-		SNH.performHarvestCollect(prompt)
-		task.wait(0.08)
-	end
-
-	return collectedOk()
+	if not prompt then return false end
+	return SNH.collectHarvestPrompt(prompt)
 end
 
 SNH.gatherReadyHarvestTargets = function(plot, ownerUserId)
@@ -11381,121 +11096,6 @@ SNH.isHarvestablePlant = function(model)
 	local maxAge = tonumber(model:GetAttribute("MaxAge"))
 	if age and maxAge and age >= maxAge then return true end
 	return false
-end
-
-SNH.gatherAllHarvestTargets = function(plot, ownerUserId, forceRefresh)
-	if not plot then return {} end
-	local now = tick()
-	if not forceRefresh
-		and harvestTargetsCache.plot == plot
-		and now - harvestTargetsCache.time < (tonumber(HARVEST_TARGETS_CACHE_TTL) or 1.5)
-		and #harvestTargetsCache.targets > 0 then
-		return harvestTargetsCache.targets
-	end
-
-	local targets, seen = {}, {}
-	local function addTarget(entry)
-		if not entry or not entry.plantId then return end
-		local key = tostring(entry.plantId) .. "|" .. tostring(entry.fruitId or "")
-		if seen[key] then return end
-		seen[key] = true
-		table.insert(targets, {
-			plantId = entry.plantId,
-			fruitId = entry.fruitId,
-			seedName = entry.seedName,
-			value = tonumber(entry.value) or 0,
-		})
-	end
-	local function addFromModel(model, prompt)
-		if not model then return end
-		if not SNH.modelOwnedByUser(model, ownerUserId, plot) then return end
-		local plantId, fruitId
-		if prompt then
-			plantId, fruitId = SNH.resolveHarvestIdsFromPrompt(prompt)
-		end
-		if not plantId then
-			plantId, fruitId = SNH.resolveHarvestIds(model)
-		end
-		if not plantId then return end
-		prompt = prompt or model:FindFirstChild("HarvestPrompt", true)
-		addTarget({
-			plantId = plantId,
-			fruitId = fruitId,
-			seedName = model:GetAttribute("SeedName") or model:GetAttribute("CorePartName"),
-			value = COLLECT_FAST_GATHER ~= false
-				and SNH.getHarvestTargetValueFast(model)
-				or SNH.getHarvestTargetValue(model, plantId, fruitId),
-			model = model,
-			prompt = prompt,
-		})
-	end
-	local plants = plot:FindFirstChild("Plants")
-	if plants then
-		for _, inst in plants:GetDescendants() do
-			if inst:IsA("ProximityPrompt") and SNH.isHarvestPrompt(inst) then
-				if not SNH.isReadyHarvestPrompt(inst, plot, ownerUserId) then continue end
-				local model = SNH.getModelFromPrompt(inst)
-				if model then addFromModel(model, inst) end
-			end
-		end
-		for _, child in plants:GetChildren() do
-			if not child:IsA("Model") then continue end
-			if not SNH.modelOwnedByUser(child, ownerUserId, plot) then continue end
-			local prompt = child:FindFirstChild("HarvestPrompt", true)
-			if prompt and prompt:GetAttribute("Collected") then continue end
-			if SNH.isHarvestablePlant(child) or child:GetAttribute("FruitId") then
-				addFromModel(child, prompt)
-			end
-			local fruits = child:FindFirstChild("Fruits")
-			if fruits then
-				for _, fruit in fruits:GetChildren() do
-					if not fruit:IsA("Model") or not fruit:GetAttribute("FruitId") then continue end
-					local fp = fruit:FindFirstChild("HarvestPrompt", true)
-					if fp and fp:GetAttribute("Collected") then continue end
-					if fp or SNH.isHarvestablePlant(fruit) then
-						addFromModel(fruit, fp)
-					end
-				end
-			end
-		end
-	else
-		for _, inst in plot:GetDescendants() do
-			if inst:IsA("ProximityPrompt") and SNH.isHarvestPrompt(inst) then
-				if not SNH.isReadyHarvestPrompt(inst, plot, ownerUserId) then continue end
-				local model = SNH.getModelFromPrompt(inst)
-				if model then addFromModel(model, inst) end
-			elseif inst:IsA("Model") then
-				if not SNH.modelOwnedByUser(inst, ownerUserId, plot) then continue end
-				local plantId = select(1, SNH.resolveHarvestIds(inst))
-				if not plantId then continue end
-				local prompt = inst:FindFirstChild("HarvestPrompt", true)
-				if prompt and prompt:GetAttribute("Collected") then continue end
-				if SNH.isHarvestablePlant(inst) or prompt or inst:GetAttribute("FruitId") then
-					addFromModel(inst, prompt)
-				end
-			end
-		end
-	end
-	if COLLECT_SORT_BY_VALUE then
-		SNH.sortHarvestTargetsByValue(targets)
-	end
-	local cacheMax = tonumber(HARVEST_TARGET_CACHE_MAX) or 600
-	if #targets > cacheMax then
-		while #targets > cacheMax do
-			table.remove(targets)
-		end
-	end
-	harvestTargetsCache.plot = plot
-	harvestTargetsCache.time = now
-	if not harvestTargetsCache.targets then
-		harvestTargetsCache.targets = {}
-	else
-		table.clear(harvestTargetsCache.targets)
-	end
-	for i, entry in targets do
-		harvestTargetsCache.targets[i] = entry
-	end
-	return targets
 end
 end
 
@@ -11564,10 +11164,6 @@ SNH.getRandomPlantPosition = function(plot)
 	return pos
 end
 
-SNH.randomPlantPos = function(plot)
-	return SNH.getRandomPlantPosition(plot)
-end
-
 SNH.findSeedTool = function(seedName)
 	for _, bag in { LocalPlayer.Character, LocalPlayer.Backpack } do
 		if not bag then continue end
@@ -11620,10 +11216,6 @@ SNH.firePlantRemote = function(pos, seedName, tool)
 	end)
 	if ok then lastPlantRemoteAt = tick() end
 	return ok
-end
-
-SNH.canPlantNow = function()
-	return SNH.canRunPlantWorker()
 end
 
 SNH.buildPlantWorkQueue = function(plot, onlySeedName)
@@ -11861,10 +11453,6 @@ SNH.gatherOwnedGardenPlants = function(plot)
 	return results
 end
 
-SNH.getLowestValueGardenPlant = function(plot)
-	return SNH.getRemovableUpgradeTarget(plot, math.huge)
-end
-
 SNH.countGardenPlantsBySeed = function(plot)
 	local counts = {}
 	for _, plant in SNH.gatherOwnedGardenPlants(plot) do
@@ -11900,10 +11488,6 @@ SNH.getRemovableUpgradeTarget = function(plot, maxRemovePrice)
 		end
 	end
 	return nil
-end
-
-SNH.getBestUpgradeSeedEntry = function(plot)
-	return SNH.resolveBestUpgradeCandidate(plot)
 end
 
 SNH.findShovelTool = function()
@@ -11993,7 +11577,6 @@ SNH.runSinglePlantUpgrade = function(plot, bestSeed, lowest, shovel)
 	end
 
 	SNH.invalidatePlotScanCaches(plot)
-	harvestTargetsCache.time = 0
 	print(("[So Nach Hup] Plant upgrade: %s (%s) -> %s (%s) | garden %d/%d"):format(
 		lowest.seedName, SNH.formatAbbrev(lowest.price),
 		bestSeed.seedName, SNH.formatAbbrev(bestSeed.price),
@@ -12031,7 +11614,7 @@ SNH.tryUpgradeGardenPlant = function(force)
 		end
 
 		for _ = 1, burstLimit do
-			local bestSeed, lowest = SNH.getBestUpgradeSeedEntry(plot)
+			local bestSeed, lowest = SNH.resolveBestUpgradeCandidate(plot)
 			if not bestSeed or not lowest or bestSeed.price <= lowest.price then break end
 			if not bestSeed.tool then
 				if SNH.tryBuyUpgradeSeed(plot) > 0 then
@@ -12065,7 +11648,7 @@ SNH.debugPlantStatus = function(plot)
 	if not plot then return "no plot" end
 	local status = SNH.getPlantSlotStatus(plot, true)
 	if status.atCap then
-		local best, target = SNH.getBestUpgradeSeedEntry(plot)
+		local best, target = SNH.resolveBestUpgradeCandidate(plot)
 		if AUTO_PLANT_UPGRADE and best and target then
 			if best.tool then
 				return ("cap %d/%d (exp %d) upgrade: %s -> %s"):format(
@@ -12121,222 +11704,69 @@ end
 end
 
 do --[[ SNH: HarvestBurst ]]
-SNH.getHarvestTargetSeedName = function(target)
-	if not target then return "Unknown" end
-	local seed = target.seedName
-	if type(seed) == "string" and seed ~= "" then return seed end
-	return "Unknown"
-end
-
-SNH.buildHarvestTypeOrder = function(targets)
-	local byType = {}
-	for _, target in targets do
-		local seedName = SNH.getHarvestTargetSeedName(target)
-		local val = tonumber(target.value) or 0
-		local bucket = byType[seedName]
-		if not bucket then
-			bucket = { seedName = seedName, typeValue = val, count = 0 }
-			byType[seedName] = bucket
-		end
-		bucket.count += 1
-		if val > bucket.typeValue then bucket.typeValue = val end
-	end
-	local ranked = {}
-	for _, info in byType do
-		if info.typeValue <= 0 then
-			info.typeValue = tonumber(API.getSellValue(info.seedName)) or 0
-		end
-		table.insert(ranked, info)
-	end
-	table.sort(ranked, function(a, b)
-		if a.typeValue ~= b.typeValue then return a.typeValue > b.typeValue end
-		return a.seedName < b.seedName
-	end)
-	local order = {}
-	for _, info in ranked do
-		table.insert(order, info.seedName)
-	end
-	return order
-end
-
-SNH.filterHarvestTargetsBySeed = function(targets, seedName)
-	local filtered = {}
-	for _, target in targets do
-		if SNH.getHarvestTargetSeedName(target) == seedName then
-			table.insert(filtered, target)
-		end
-	end
-	if COLLECT_SORT_BY_VALUE then
-		SNH.sortHarvestTargetsByValue(filtered)
-	end
-	return filtered
-end
-
-SNH.countHarvestTargetsForSeed = function(targets, seedName)
-	local n = 0
-	for _, target in targets do
-		if SNH.getHarvestTargetSeedName(target) == seedName then
-			n += 1
-		end
-	end
-	return n
-end
-
-SNH.syncHarvestTypeCycle = function(targets)
-	local order = SNH.buildHarvestTypeOrder(targets)
-	if #order == 0 then
-		harvestTypeCycleState.order = {}
-		harvestTypeCycleState.index = 1
-		harvestTypeCycleState.activeSeed = nil
-		return nil
-	end
-	harvestTypeCycleState.order = order
-	if harvestTypeCycleState.index > #order then
-		harvestTypeCycleState.index = 1
-	end
-	local tries = 0
-	while tries < #order do
-		local active = order[harvestTypeCycleState.index]
-		if SNH.countHarvestTargetsForSeed(targets, active) > 0 then
-			harvestTypeCycleState.activeSeed = active
-			return active
-		end
-		harvestTypeCycleState.index += 1
-		if harvestTypeCycleState.index > #order then
-			harvestTypeCycleState.index = 1
-		end
-		tries += 1
-	end
-	harvestTypeCycleState.activeSeed = order[1]
-	harvestTypeCycleState.index = 1
-	return harvestTypeCycleState.activeSeed
-end
-
-SNH.advanceHarvestTypeCycle = function()
-	local order = harvestTypeCycleState.order
-	if #order == 0 then return end
-	harvestTypeCycleState.index += 1
-	if harvestTypeCycleState.index > #order then
-		harvestTypeCycleState.index = 1
-	end
-	harvestTypeCycleState.activeSeed = order[harvestTypeCycleState.index]
-end
-
-SNH.burstFireHarvestTargets = function(remote, targets, limit, startIndex)
-	if not remote or not targets or #targets == 0 then return 0 end
-	startIndex = math.max(1, tonumber(startIndex) or 1)
-	limit = math.max(1, math.min(#targets - startIndex + 1, tonumber(limit) or #targets))
-	local chunk = math.max(1, tonumber(COLLECT_FIRE_CHUNK) or 32)
-	local fired = 0
-	local endIndex = startIndex + limit - 1
-	for i = startIndex, endIndex do
-		local target = targets[i]
-		if target and target.plantId then
-			pcall(function()
-				remote:Fire(tostring(target.plantId), tostring(target.fruitId or ""))
-			end)
-			fired += 1
-			if fired % chunk == 0 and i < endIndex then
-				RunService.Heartbeat:Wait()
-			end
-		end
-	end
-	return fired
-end
-
 SNH.runHarvestBurstOnce = function()
-	if not AUTO_COLLECT or not Networking then return 0 end
+	if not AUTO_COLLECT then return 0 end
 	if SNH.isHarvestBlocked() then return 0 end
 	if COLLECT_MUTATION_SEEDS ~= false and AUTO_SNIPE_MUTATION_SEEDS and SNH.tryAutoCollectMutationSpawns then
-		if SNH.tryAutoCollectMutationSpawns() then return 0 end
+		pcall(SNH.tryAutoCollectMutationSpawns)
 	end
 	if SNH.isActionPausedForSeedSnipe() then return 0 end
+	local _, plot = API.getLocalPlot()
+	if not plot then return 0 end
 	if SNH.shouldStayInOwnGardenAtDay() and not SNH.isAwayForGardenStay() then
 		if not SNH.ensureInsideOwnGardenAtDay() then return 0 end
 	end
-	local _, plot = API.getLocalPlot()
-	if not plot then return 0 end
-	if not collectFireRemote then
-		collectFireRemote = Networking.Garden and Networking.Garden.CollectFruit
-		if not collectFireRemote then return 0 end
-	end
-	API.init()
+	if not SNH.ensureReadyToHarvest(plot) then return 0 end
+
+	SNH.maintainLocalHarvestPrompts()
 	local uid = LocalPlayer.UserId
+	local room = SNH.getHarvestBackpackRoom(true)
+	if room <= 0 then return 0 end
+
 	fruitCountCache.time = 0
 	local startCount = SNH.countFruitInInventory()
-	local totalFired = 0
-	local targets
-	local passes = math.max(1, math.floor(tonumber(COLLECT_MAX_PASSES) or tonumber(COLLECT_WAVES) or 2))
-
-	for pass = 1, passes do
-		local room = SNH.getHarvestBackpackRoom(true)
-		if room <= 0 then break end
-		targets = SNH.gatherAllHarvestTargets(plot, uid, pass > 1)
-		if #targets == 0 then break end
-		if COLLECT_SORT_BY_VALUE then
-			SNH.sortHarvestTargetsByValue(targets)
-		end
-		local batchCap = tonumber(COLLECT_BATCH_SIZE) or 0
-		local batchLimit = batchCap > 0 and math.min(room, batchCap, #targets) or math.min(room, #targets)
-		if batchLimit <= 0 then break end
-		totalFired += SNH.burstFireHarvestTargets(collectFireRemote, targets, batchLimit, 1)
-		if pass < passes then
-			RunService.Heartbeat:Wait()
-		end
+	local targets = SNH.gatherReadyHarvestTargets(plot, uid)
+	if #targets == 0 then return 0 end
+	if COLLECT_SORT_BY_VALUE then
+		SNH.sortHarvestTargetsByValue(targets)
 	end
 
-	if totalFired <= 0 then return 0 end
+	local batchCap = tonumber(COLLECT_BATCH_SIZE) or 0
+	local batchLimit = batchCap > 0 and math.min(room, batchCap, #targets) or math.min(room, #targets)
+	local gained = 0
+	local topCollected = targets[1]
 
-	local verifyWait = tonumber(COLLECT_VERIFY_WAIT) or 0.04
-	if verifyWait > 0 then task.wait(verifyWait) end
+	for i = 1, batchLimit do
+		local target = targets[i]
+		if not target then break end
+		local prompt = target.prompt
+		if not prompt and target.plantId then
+			prompt = SNH.findHarvestPromptForTarget(plot, target.plantId, target.fruitId)
+		end
+		if prompt and SNH.collectHarvestPrompt(prompt) then
+			gained += 1
+			topCollected = target
+		end
+		if SNH.getHarvestBackpackRoom(true) <= 0 then break end
+		if i < batchLimit then
+			task.wait()
+		end
+	end
 
 	fruitCountCache.time = 0
-	local collectedCount = math.max(0, SNH.countFruitInInventory() - startCount)
-	local roomAtStart = SNH.getMaxFruitCapacity() - startCount
-	local batchLimit = math.min(roomAtStart, targets and #targets or 0)
-	if tonumber(COLLECT_BATCH_SIZE) and tonumber(COLLECT_BATCH_SIZE) > 0 then
-		batchLimit = math.min(batchLimit, tonumber(COLLECT_BATCH_SIZE))
-	end
-
-	if collectedCount < batchLimit and COLLECT_REMOTE_ONLY ~= true and targets then
-		local fallbackMax = math.min(tonumber(COLLECT_FALLBACK_MAX) or 1, batchLimit - collectedCount)
-		for i = 1, fallbackMax do
-			local target = targets[i]
-			if not target or not target.plantId then continue end
-			local before = SNH.countFruitInInventory()
-			if SNH.collectHarvestTarget(plot, target) or SNH.countFruitInInventory() > before then
-				collectedCount += 1
-			end
-			if SNH.countFruitInInventory() - startCount >= batchLimit then break end
-			RunService.Heartbeat:Wait()
-		end
-	elseif collectedCount < batchLimit and COLLECT_REMOTE_ONLY == true and targets then
-		local fallbackMax = math.min(tonumber(COLLECT_FALLBACK_MAX) or 1, batchLimit - collectedCount)
-		for i = 1, fallbackMax do
-			local target = targets[i]
-			if not target or not target.plantId then continue end
-			pcall(function()
-				collectFireRemote:Fire(tostring(target.plantId), tostring(target.fruitId or ""))
-			end)
-		end
-		if fallbackMax > 0 and verifyWait > 0 then task.wait(verifyWait) end
-		fruitCountCache.time = 0
-		collectedCount = math.max(collectedCount, math.max(0, SNH.countFruitInInventory() - startCount))
-	end
-
-	SNH.clearHarvestTargetsCache()
-	local gained = math.max(collectedCount, math.max(0, SNH.countFruitInInventory() - startCount))
+	gained = math.max(gained, math.max(0, SNH.countFruitInInventory() - startCount))
 	hudStatsCache.time = 0
-	fruitCountCache.time = 0
 	plantCountCache.time = 0
+
 	if gained > 0 then
+		harvestFailStreak = 0
 		lastHarvestAt = tick()
-		local top = targets and targets[1]
 		SNH.setStatus(("Harvested %d | top %s (%s)"):format(
 			gained,
-			top and top.seedName or "?",
-			SNH.formatAbbrev(top and top.value or 0)))
-	elseif targets and targets[1] then
+			topCollected and topCollected.seedName or "?",
+			SNH.formatAbbrev(topCollected and topCollected.value or 0)))
+	else
+		harvestFailStreak = (harvestFailStreak or 0) + 1
 		local topTarget = targets[1]
 		SNH.setStatus(("Harvest retry | %s (%s)"):format(
 			topTarget.seedName or "?",
@@ -12354,14 +11784,14 @@ SNH.runHarvestBurst = function()
 		if gained <= 0 then break end
 		if SNH.getHarvestBackpackRoom(true) <= 0 then break end
 		if loop < drainLoops then
-			RunService.Heartbeat:Wait()
+			task.wait()
 		end
 	end
 	return totalGained
 end
 
 SNH.burstHarvestAll = function(force)
-	if not AUTO_COLLECT or not Networking then return 0 end
+	if not AUTO_COLLECT then return 0 end
 	local now = tick()
 	if not force and now - lastCollectAt < COLLECT_GAP then return 0 end
 	local gained = SNH.runHarvestBurst()
@@ -12372,7 +11802,7 @@ SNH.burstHarvestAll = function(force)
 end
 
 SNH.tickHarvestLoop = function()
-	if harvestWorkerRunning or not AUTO_COLLECT or not Networking then return end
+	if harvestWorkerRunning or not AUTO_COLLECT then return end
 	if SNH.isHarvestBlocked() then return end
 	if SNH.isActionPausedForSeedSnipe() then return end
 	local now = tick()
@@ -12380,8 +11810,7 @@ SNH.tickHarvestLoop = function()
 	harvestWorkerRunning = true
 	task.spawn(function()
 		pcall(function()
-			SNH.ensureNetworking()
-			if AUTO_COLLECT and Networking and not SNH.isHarvestBlocked() then
+			if AUTO_COLLECT and not SNH.isHarvestBlocked() then
 				local gained = SNH.runHarvestBurst()
 				if gained >= 0 then
 					lastCollectAt = tick()
@@ -12394,7 +11823,7 @@ end
 end
 burstHarvestAll = SNH.burstHarvestAll
 setupInstantPromptHooks = SNH.setupInstantPromptHooks
-randomPlantPos = SNH.randomPlantPos
+randomPlantPos = SNH.getRandomPlantPosition
 getSeedTools = SNH.getSeedTools
 
 do --[[ SNH: StealTargets ]]
@@ -12607,7 +12036,6 @@ SNH.gatherStealTargets = function(plot, ownerUserId)
 		if not API.isPlantStealable(seedName) then return end
 		prompt = prompt or SNH.findStealPrompt(model)
 		if prompt and (not prompt.Enabled or prompt:GetAttribute("Collected")) then return end
-		if not HAZARD_IMMUNITY and SNH.isHazardStealTarget({ seedName = seedName, model = model }) then return end
 		seen[key] = true
 		table.insert(targets, {
 			plantId = plantId,
@@ -12895,7 +12323,6 @@ end
 SNH.isSpawnClaimSuccess = function(part, kind, packName, before)
 	if before and SNH.didGainSpawnReward(kind, packName, before) then return true end
 	if not part or not part.Parent then return true end
-	if tick() - lastSpawnClaimSuccessAt < 1.5 then return true end
 	return false
 end
 
@@ -12939,7 +12366,7 @@ SNH.touchSpawnAtPosition = function(root, charParts, touchParts, pos)
 		for i = 1, steps do
 			local alpha = i / steps
 			root.CFrame = CFrame.new(start:Lerp(pos, alpha))
-			if i < steps then RunService.Heartbeat:Wait() end
+			if i < steps then task.wait(0.02) end
 		end
 	end
 	root.AssemblyLinearVelocity = Vector3.zero
@@ -12985,10 +12412,7 @@ SNH.fastTweenTeleportTo = function(position, floatHeight)
 	local goal = SNH.normalizeTeleportGoal(position)
 	if not goal then return false end
 	if floatHeight == nil then floatHeight = SEED_SNIPE_FLOAT or 2.5 end
-	if SNH.fallbackTweenTo then
-		return SNH.fallbackTweenTo(goal, floatHeight)
-	end
-	return false
+	return SNH.shortHopTo(goal, floatHeight)
 end
 
 SNH.fastTeleportToSpawn = function(part)
@@ -13177,19 +12601,42 @@ SNH.getPendingMutationSpawn = function()
 	return bestPart, bestKind
 end
 
-SNH.longRangeCollectSpawn = function(part)
+SNH.instantCollectMutationSpawn = function(part)
+	if not part or not part.Parent then return false end
+	local kind, packName = SNH.getMutationSpawnTarget(part)
+	if not kind or not SNH.shouldSnipeMutationKind(kind) then return false end
 	local character = LocalPlayer.Character
 	local root = character and character:FindFirstChild("HumanoidRootPart")
-	if not (root and part and part.Parent) then return false end
-	local kind, packName = SNH.getMutationSpawnTarget(part)
+	if not root then return false end
+
+	SNH.hookSpawnClaimEvents()
+	SNH.zeroSpawnSeedPrompts(part)
 	local before = SNH.snapshotSpawnInventory(kind, packName)
+	local charParts = SNH.getCharacterTouchParts(character)
+	local touchParts = SNH.getSpawnTouchParts(part)
+	local burst = math.max(8, tonumber(SEED_SNIPE_LONG_RANGE_BURST) or 20)
+	local rounds = math.max(3, tonumber(SEED_SNIPE_INSTANT_COLLECT_ROUNDS) or 6)
+	local pause = math.max(0.03, tonumber(SEED_SNIPE_CLAIM_WAIT) or 0.05)
+
+	SNH.fastTeleportToSpawn(part)
 	SNH.tryRemoteCollectSpawn(part)
-	SNH.burstTouchInterest(
-		SNH.getCharacterTouchParts(character),
-		SNH.getSpawnTouchParts(part),
-		SEED_SNIPE_LONG_RANGE_BURST
-	)
+	SNH.burstTouchInterest(charParts, touchParts, burst)
+	if SNH.isSpawnClaimSuccess(part, kind, packName, before) then return true end
+
+	for i = 1, rounds do
+		if SNH.isSpawnClaimSuccess(part, kind, packName, before) then return true end
+		if not part.Parent then return true end
+		local pos = part.Position + Vector3.new(0, 2.5, 0)
+		SNH.touchSpawnAtPosition(root, charParts, touchParts, pos)
+		SNH.tryRemoteCollectSpawn(part)
+		SNH.burstTouchInterest(charParts, touchParts, 4)
+		if pause > 0 then task.wait(pause) end
+	end
 	return SNH.isSpawnClaimSuccess(part, kind, packName, before)
+end
+
+SNH.longRangeCollectSpawn = function(part)
+	return SNH.instantCollectMutationSpawn(part)
 end
 
 SNH.touchCollectSpawn = function(part, kind, packName)
@@ -13272,7 +12719,15 @@ SNH.tryCollectMutationSpawn = function(part, opts)
 	else
 		SNH.fastTeleportToSpawn(part)
 	end
-	local claimed = SNH.touchCollectSpawn(part, kind, packName)
+	local claimed
+	if viaCollect then
+		claimed = SNH.instantCollectMutationSpawn(part)
+		if not claimed then
+			claimed = SNH.touchCollectSpawn(part, kind, packName)
+		end
+	else
+		claimed = SNH.touchCollectSpawn(part, kind, packName)
+	end
 	if viaCollect then
 		print(claimed and ("[So Nach Hup] Collected %s (auto collect)"):format(label)
 			or ("[So Nach Hup] Failed to collect %s (auto collect)"):format(label))
@@ -13324,12 +12779,14 @@ SNH.tryAutoCollectMutationSpawns = function()
 	end
 	local part = SNH.getPendingMutationSpawn()
 	if part then
+		if SNH.instantCollectMutationSpawn(part) then return true end
 		return SNH.tryCollectMutationSpawn(part, { viaAutoCollect = true })
 	end
 	for _, child in seedSpawnFolder:GetChildren() do
 		if child:IsA("BasePart") and not claimedMutationSpawns[child] and child.Parent then
 			local kind = SNH.getMutationSpawnTarget(child)
 			if kind and SNH.shouldSnipeMutationKind(kind) then
+				if SNH.instantCollectMutationSpawn(child) then return true end
 				return SNH.tryCollectMutationSpawn(child, { viaAutoCollect = true })
 			end
 		end
@@ -13342,9 +12799,9 @@ SNH.pokeLongRangeMutationSpawns = function()
 	for _, part in seedSpawnFolder:GetChildren() do
 		if part:IsA("BasePart") and not claimedMutationSpawns[part] and part.Parent then
 			local kind, label = SNH.getMutationSpawnTarget(part)
-			if kind and SNH.shouldSnipeMutationKind(kind) and SNH.longRangeCollectSpawn(part) then
+			if kind and SNH.shouldSnipeMutationKind(kind) and SNH.instantCollectMutationSpawn(part) then
 				claimedMutationSpawns[part] = true
-				print(("[So Nach Hup] Long-range collected %s"):format(label))
+				print(("[So Nach Hup] Instant collected %s"):format(label))
 				task.delay(1.5, function() claimedMutationSpawns[part] = nil end)
 				pcall(function()
 					part.Destroying:Once(function() claimedMutationSpawns[part] = nil end)
@@ -13362,9 +12819,9 @@ SNH.scanMutationSpawns = function()
 		if part:IsA("BasePart") and not claimedMutationSpawns[part] then
 			local kind, label = SNH.getMutationSpawnTarget(part)
 			if kind and SNH.shouldSnipeMutationKind(kind) then
-				if SEED_SNIPE_RANGE_POKE and SNH.longRangeCollectSpawn(part) then
+				if SNH.instantCollectMutationSpawn(part) then
 					claimedMutationSpawns[part] = true
-					print(("[So Nach Hup] Long-range collected %s"):format(label))
+					print(("[So Nach Hup] Instant collected %s"):format(label))
 					task.delay(1.5, function() claimedMutationSpawns[part] = nil end)
 					pcall(function()
 						part.Destroying:Once(function() claimedMutationSpawns[part] = nil end)
@@ -13574,7 +13031,7 @@ SNH.instaStealAll = function()
 			SNH.instaStealFruit(uid, target.plantId, target.fruitId)
 			fired += 1
 			if not SNH.fruitStillThere(target) then stolen += 1 end
-			if fired % 10 == 0 then RunService.Heartbeat:Wait() end
+			if fired % 10 == 0 then task.wait() end
 		end
 	end
 	print(("[So Nach Hup] InstaStealAll: fired %d, confirmed %d stolen"):format(fired, stolen))
@@ -13638,7 +13095,7 @@ SNH.tryInstaStealTarget = function(target, ownerUserId)
 		for _ = 1, fires do
 			SNH.instaStealFruit(uid, plantId, fruitId)
 		end
-		SNH.stealPause(0.04)
+		SNH.stealPause(0.02)
 		if not SNH.fruitStillThere(target) or SNH.isStealCarryActive() then
 			return true
 		end
@@ -13849,7 +13306,7 @@ SNH.noteStealGardenEntryCooldown = function(text, extraSec)
 		or tonumber(STEAL_GARDEN_ENTRY_COOLDOWN_SEC)
 		or 5
 	stealGardenEntryCooldownUntil = math.max(stealGardenEntryCooldownUntil, tick() + sec)
-	SNH.setStatus(("Steal garden cooldown %.1fs"):format(sec))
+	SNH.setStatus(("WAIT FOR GARDEN CD OF PLAYER END | %d SECONDS LEFT"):format(math.ceil(sec)))
 end
 
 SNH.setupStealNotificationHook = function()
@@ -13917,10 +13374,6 @@ SNH.maintainStealCooldownHover = function(plot)
 		if tpFn then tpFn(hover) end
 		root, hum = SNH.getTeleportRoot()
 		if root and hum then SNH.stabilizeFloatRoot(root, hum, hover) end
-	end
-	if HAZARD_IMMUNITY then
-		SNH.neutralizeForeignHazardVfx()
-		SNH.protectHazardHealth()
 	end
 end
 
@@ -14051,8 +13504,18 @@ SNH.waitForStealGardenReady = function(pack)
 			stealInVictimGarden = false
 			return true, reason
 		end
-		if remain < math.huge and tick() - lastStatusAt >= 0.45 then
-			SNH.setStatus(("Steal wait (%s) %.1fs — hovering safe"):format(reason or "cooldown", remain))
+		if remain < math.huge and tick() - lastStatusAt >= 0.35 then
+			if reason == "garden entry cooldown" then
+				SNH.setStatus(("WAIT FOR GARDEN CD OF PLAYER END | %d SECONDS LEFT"):format(math.ceil(remain)))
+			elseif reason == "safe zone" then
+				SNH.setStatus("Waiting for safe zone to clear before stealing")
+			elseif reason == "entering garden" then
+				SNH.setStatus("Entering target garden...")
+			elseif reason == "waiting prompts" then
+				SNH.setStatus("Waiting for steal prompts to appear")
+			else
+				SNH.setStatus(("Steal wait (%s) %.1fs — hovering safe"):format(reason or "cooldown", remain))
+			end
 			lastStatusAt = tick()
 		elseif remain >= math.huge and tick() - lastStatusAt >= 1.2 then
 			SNH.setStatus(("Steal wait (%s) — hovering safe"):format(reason or "locked"))
@@ -14156,16 +13619,44 @@ end
 SNH.shouldReturnStealForInventory = function()
 	local count = SNH.getCurrentFruitCount()
 	local maxCap = SNH.getMaxFruitCapacity()
-	local at = tonumber(STEAL_RETURN_AT_FRUITS) or 20
 	local hardMax = tonumber(STEAL_RETURN_FRUIT_MAX) or 50
-	if count >= at then return true, ("fruits %d/%d"):format(count, maxCap) end
-	if count >= hardMax then return true, ("fruits %d cap"):format(count) end
-	local ratio = tonumber(STEAL_RETURN_FRUIT_RATIO)
-	if ratio and maxCap > 0 and (count / maxCap) >= ratio then
+	local ratio = tonumber(STEAL_RETURN_FRUIT_RATIO) or 0.5
+	local softAt = tonumber(STEAL_RETURN_AT_FRUITS) or hardMax
+	if count >= hardMax then
+		return true, ("fruits %d/%d max"):format(count, maxCap)
+	end
+	if count >= softAt then
 		return true, ("fruits %d/%d"):format(count, maxCap)
 	end
-	if SNH.getFruitInventoryRoom() <= 0 then return true, "inventory full" end
+	if maxCap > 0 and ratio > 0 and (count / maxCap) >= ratio then
+		return true, ("fruits %d/%d (%.0f%%)"):format(count, maxCap, ratio * 100)
+	end
+	if SNH.getFruitInventoryRoom() <= 0 then
+		return true, "inventory full"
+	end
 	return false
+end
+
+SNH.shouldEndStealTrip = function(pack)
+	if SNH.shouldFleeSteal(pack) then
+		return true, "owner returned"
+	end
+	if SNH.shouldFleeStealLowHealth() then
+		return true, "low health"
+	end
+	local shouldReturn, why = SNH.shouldReturnStealForInventory()
+	if shouldReturn then
+		return true, why
+	end
+	return false
+end
+
+SNH.getStealDrainMaxRounds = function(victimPlot, ownerUserId)
+	local base = math.max(1, tonumber(STEAL_GARDEN_MAX_ROUNDS) or 200)
+	if not victimPlot or not ownerUserId then return base end
+	local count = #(SNH.gatherStealTargets(victimPlot, ownerUserId))
+	if count <= 0 then return base end
+	return math.max(base, math.ceil(count * 1.5))
 end
 
 SNH.returnStealHomeAndFlush = function(homePos, tpFn, reason)
@@ -14221,7 +13712,7 @@ SNH.stealSingleTarget = function(target, pack, ownerUserId, homePos, tpFn)
 	local victimPlot = pack.garden and pack.garden.plot
 
 	SNH.tryInstaStealTarget(target, uid)
-	task.wait(0.04)
+	task.wait(0.02)
 
 	if SNH.fruitStillThere(target) and not SNH.isStealCarryActive() then
 		local sinceEntry = victimPlot and lastStealGardenEntryAt[victimPlot.Name]
@@ -14249,6 +13740,12 @@ SNH.stealSingleTarget = function(target, pack, ownerUserId, homePos, tpFn)
 	end
 	if SNH.isStealCarryActive() then
 		SNH.returnStealHomeAndFlush(homePos, tpFn, "carrying")
+		if STEAL_REENTER_AFTER_FLUSH ~= false then
+			local endTrip = SNH.shouldEndStealTrip(pack)
+			if not endTrip then
+				return false, "reenter"
+			end
+		end
 		return false, "carrying"
 	end
 	if not SNH.fruitStillThere(target) then
@@ -14268,9 +13765,16 @@ SNH.runStealGardenDrain = function(pack)
 	local tpFn = SNH.getStealTpFn()
 	local victimPlot = pack.garden.plot
 	local totalStolen = 0
-	local maxRounds = math.max(1, tonumber(STEAL_GARDEN_MAX_ROUNDS) or 20)
+	local maxRounds = SNH.getStealDrainMaxRounds(victimPlot, ownerUserId)
 
 	for round = 1, maxRounds do
+		local endTrip, endWhy = SNH.shouldEndStealTrip(pack)
+		if endTrip and endWhy ~= "owner returned" then
+			if endWhy == "low health" or endWhy:find("fruit") or endWhy == "inventory full" then
+				SNH.returnStealHomeAndFlush(homePos, tpFn, endWhy)
+			end
+			break
+		end
 		if SNH.shouldFleeSteal(pack) then
 			SNH.fleeStealToHome("owner returned")
 			break
@@ -14310,9 +13814,17 @@ SNH.runStealGardenDrain = function(pack)
 			if ok then
 				stolenThisRound += 1
 				totalStolen += 1
-			elseif stopReason == "inventory" or stopReason == "low health" or stopReason == "carrying" then
-				needReenter = STEAL_REENTER_AFTER_FLUSH ~= false
+			elseif stopReason == "inventory" or stopReason == "low health" then
+				needReenter = false
 				break
+			elseif stopReason == "carrying" or stopReason == "reenter" then
+				needReenter = STEAL_REENTER_AFTER_FLUSH ~= false
+				if stopReason == "carrying" and not needReenter then
+					break
+				end
+				if needReenter then
+					break
+				end
 			elseif stopReason == "flee" or stopReason == "blocked" then
 				break
 			end
@@ -14386,16 +13898,32 @@ SNH.burstStealTargetsBatch = function(pack, batch, ownerUserId, homePos, tpFn)
 	stealInVictimGarden = victimPlot ~= nil
 	for _, target in batch do
 		if SNH.shouldFleeSteal(pack) then break end
+		local shouldReturn, returnWhy = SNH.shouldReturnStealForInventory()
+		if shouldReturn then
+			SNH.returnStealHomeAndFlush(homePos, tpFn, returnWhy or "inventory")
+			break
+		end
 		if SNH.tryFleeStealLowHealth(homePos, tpFn, "low health") then break end
 		if SNH.isStealCarryActive() then
-			if homePos and tpFn then tpFn(homePos) end
-			SNH.completeStealAtHome(STEAL_SPAM_COUNT)
-			break
+			SNH.returnStealHomeAndFlush(homePos, tpFn, "carrying")
+			local endTrip = SNH.shouldEndStealTrip(pack)
+			if endTrip then break end
+			if STEAL_REENTER_AFTER_FLUSH == false then break end
+			if victimPlot and tpFn then
+				local plotPos = SNH.getGardenInteriorPosition(victimPlot)
+				if plotPos then
+					tpFn(plotPos)
+					SNH.markStealGardenEntry(victimPlot)
+					SNH.prepareVictimGardenForSteal(victimPlot)
+					SNH.stealPause(tonumber(STEAL_TP_SETTLE) or 0.03)
+				end
+			end
+			continue
 		end
 		if not SNH.fruitStillThere(target) then continue end
 		local uid = tonumber(target.ownerUserId) or ownerUserId
 		SNH.tryInstaStealTarget(target, uid)
-		task.wait(0.04)
+		task.wait(0.02)
 		if SNH.fruitStillThere(target) and not SNH.isStealCarryActive() then
 			local sinceEntry = victimPlot and lastStealGardenEntryAt[victimPlot.Name]
 			if sinceEntry and tick() - sinceEntry < 8 then
@@ -14416,12 +13944,23 @@ SNH.burstStealTargetsBatch = function(pack, batch, ownerUserId, homePos, tpFn)
 		SNH.tryInstaStealTarget(target, uid)
 		if SNH.tryFleeStealLowHealth(homePos, tpFn, "low health") then break end
 		if SNH.isStealCarryActive() then
-			if homePos and tpFn then tpFn(homePos) end
-			SNH.completeStealAtHome(STEAL_SPAM_COUNT)
+			SNH.returnStealHomeAndFlush(homePos, tpFn, "carrying")
+			local endTrip = SNH.shouldEndStealTrip(pack)
+			if endTrip then break end
 			if not SNH.fruitStillThere(target) or not SNH.isStealCarryActive() then
 				stolen += 1
 			end
-			break
+			if STEAL_REENTER_AFTER_FLUSH == false then break end
+			if victimPlot and tpFn then
+				local plotPos = SNH.getGardenInteriorPosition(victimPlot)
+				if plotPos then
+					tpFn(plotPos)
+					SNH.markStealGardenEntry(victimPlot)
+					SNH.prepareVictimGardenForSteal(victimPlot)
+					SNH.stealPause(tonumber(STEAL_TP_SETTLE) or 0.03)
+				end
+			end
+			continue
 		elseif not SNH.fruitStillThere(target) then
 			stolen += 1
 		end
@@ -14457,16 +13996,23 @@ SNH.burstStealGarden = function(pack)
 		if #fresh > 0 then
 			pack.targets = fresh
 		end
-		table.sort(pack.targets, function(a, b)
-			return (a.value or 0) > (b.value or 0)
-		end)
-		local treeLabel = pack.targets[1] and pack.targets[1].seedName or "fruit"
-		local treeValue = pack.targets[1] and pack.targets[1].value or 0
-		SNH.setStatus(("Steal drain @ %s | top %s (%s) | %d fruits"):format(
-			ownerLabel, treeLabel, SNH.formatAbbrev(treeValue), #pack.targets))
-		local totalStolen = SNH.runStealGardenDrain(pack)
-		SNH.setStealFloat(false)
-		return totalStolen
+		if #pack.targets == 0 then
+			SNH.setStealFloat(false)
+			return 0
+		end
+		local minDrain = math.max(1, tonumber(STEAL_DRAIN_MIN_FRUITS) or 2)
+		if #fresh >= minDrain then
+			table.sort(pack.targets, function(a, b)
+				return (a.value or 0) > (b.value or 0)
+			end)
+			local treeLabel = pack.targets[1] and pack.targets[1].seedName or "fruit"
+			local treeValue = pack.targets[1] and pack.targets[1].value or 0
+			SNH.setStatus(("STEALING HIGHEST FRUIT (%s VALUE) FROM %s | %d targets"):format(
+				SNH.formatAbbrev(treeValue), ownerLabel, #pack.targets))
+			local totalStolen = SNH.runStealGardenDrain(pack)
+			SNH.setStealFloat(false)
+			return totalStolen
+		end
 	end
 
 	local _, ownPlot = API.getLocalPlot()
@@ -14508,8 +14054,8 @@ SNH.burstStealGarden = function(pack)
 	for i = 1, batchCap do
 		table.insert(batch, pending[i])
 	end
-	SNH.setStatus(("Steal %d @ %s | top %s (%s)"):format(
-		#batch, ownerLabel, treeLabel, SNH.formatAbbrev(treeValue)))
+	SNH.setStatus(("STEALING HIGHEST FRUIT (%s VALUE) FROM %s | %d targets"):format(
+		SNH.formatAbbrev(treeValue), ownerLabel, #batch))
 	local totalStolen = SNH.burstStealTargetsBatch(pack, batch, ownerUserId, homePos, tpFn)
 	SNH.setStealFloat(false)
 	return totalStolen
@@ -14562,7 +14108,7 @@ end
 
 do --[[ SNH: StealRun ]]
 SNH.tryNightSteal = function()
-	if not AUTO_STEAL or not API.canStealNow() or not Networking or stealActive or SNH.isActionPausedForSeedSnipe() then
+	if not SNH.isStealAllowed() or not Networking or stealActive or SNH.isActionPausedForSeedSnipe() then
 		return false
 	end
 	SNH.ensureInsideOwnGardenAtNight()
@@ -14613,8 +14159,8 @@ SNH.tryNightSteal = function()
 			or ("User " .. tostring(pack.ownerUserId))
 		local treeLabel = pack.bestTreeSeed or (pack.targets[1] and pack.targets[1].seedName) or "tree"
 		local treeValue = pack.bestTreeValue or score or pack.totalValue or 0
-		SNH.setStatus(("Steal trip @ %s | top %s (%s)"):format(
-			ownerLabel, treeLabel, SNH.formatAbbrev(treeValue)))
+		SNH.setStatus(("STEALING HIGHEST FRUIT (%s VALUE) FROM %s..."):format(
+			SNH.formatAbbrev(treeValue), ownerLabel))
 
 		local got = SNH.burstStealGarden(pack)
 		if got > 0 then
@@ -14649,10 +14195,16 @@ SNH.tryNightSteal = function()
 	local _, ownPlot = API.getLocalPlot()
 	local homePos = ownPlot and SNH.getGardenInteriorPosition(ownPlot)
 	local tpFn = SNH.getStealTpFn()
-	if homePos and tpFn then tpFn(homePos) end
-	SNH.setStealFloat(false)
+	local shouldHome, homeWhy = SNH.shouldReturnStealForInventory()
+	if SNH.isStealCarryActive() or shouldHome or SNH.shouldFleeStealLowHealth() then
+		if homePos and tpFn then tpFn(homePos) end
+		SNH.flushInProgressStealAtHome()
+	elseif not stealInVictimGarden then
+		SNH.ensureInsideOwnGardenAtNight()
+	end
 	stealActive = false
-	SNH.debugLog("STEAL", ("loop done stolen=%d elapsed=%.2fs"):format(stolen, tick() - loopStart), "force")
+	SNH.debugLog("STEAL", ("loop done stolen=%d elapsed=%.2fs home=%s"):format(
+		stolen, tick() - loopStart, tostring(homeWhy or "stay")), "force")
 	return stolen > 0
 end
 end
@@ -14828,8 +14380,6 @@ SNH.plantBurst = function(force, onlySeedName, burstLimitOverride)
 	return planted
 end
 
-SNH.plantSeeds = SNH.plantBurst
-
 SNH.startPlantLoop = function()
 	if USE_UNIFIED_SCHEDULER then return end
 	local lastPlantDebugAt = 0
@@ -14927,8 +14477,6 @@ SNH.startSeedSnipePriorityLoop = function()
 	end)
 end
 
-SNH.startMutationSnipeLoop = SNH.startSeedSnipePriorityLoop
-
 SNH.startPetUnequipWeakLoop = function()
 	task.spawn(function()
 		while running do
@@ -15012,10 +14560,6 @@ SNH.startWildPetLoop = function()
 			task.wait(math.max(0.25, WILD_PET_BUY_GAP or 0.5))
 		end
 	end)
-end
-
-SNH.sellInventory = function()
-	return SNH.trySellInventory()
 end
 
 SNH.tickPlantLoop = function()
@@ -15164,12 +14708,12 @@ SNH.initUnifiedScheduler = function()
 	SNH.registerSchedulerJob("BuyPetSlot", function()
 		return math.max(15, tonumber(PET_SLOT_BUY_GAP) or 45)
 	end, function()
-		if AUTO_BUY_PET_SLOT then SNH.loopBuyPetSlot() end
+		if AUTO_BUY_PET_SLOT then SNH.tryBuyPetSlot() end
 	end, { when = function() return ENABLED and API.ready end })
 	SNH.registerSchedulerJob("AutoMail", function()
 		return math.max(3, tonumber(autoMailState.gap) or 20)
 	end, function()
-		if AUTO_MAIL_SEND then SNH.loopAutoMailSend() end
+		if AUTO_MAIL_SEND then SNH.tryAutoMailSend() end
 	end, { when = function() return ENABLED and API.ready end })
 	SNH.registerSchedulerJob("Expand", function()
 		return math.max(5, tonumber(EXPAND_CHECK_GAP) or 30)
@@ -15194,20 +14738,15 @@ SNH.initUnifiedScheduler = function()
 		return ENABLED and API.ready and SNH.shouldStayInOwnGardenAtDay()
 	end })
 	SNH.registerSchedulerJob("NightGardenTP", function() return 0.5 end, function()
-		if AUTO_STEAL and API.canStealNow() then
+		if SNH.isStealAllowed() then
 			SNH.ensureInsideOwnGardenAtNight()
 		end
 	end, { when = function() return ENABLED end, allowDuringSnipe = true })
 	SNH.registerSchedulerJob("NightSteal", function()
-		return API.canStealNow() and STEAL_GAP or 1
+		return SNH.isStealAllowed() and STEAL_GAP or 1
 	end, function()
-		if AUTO_STEAL and API.canStealNow() then SNH.loopNightSteal() end
+		if SNH.isStealAllowed() then SNH.loopNightSteal() end
 	end, { when = function() return ENABLED and API.ready end, allowDuringSnipe = true })
-	SNH.registerSchedulerJob("Hazard", function()
-		return math.max(0.2, tonumber(HAZARD_IMMUNITY_GAP) or 0.5)
-	end, function()
-		SNH.loopHazardImmunity()
-	end, { when = function() return HAZARD_IMMUNITY end, allowDuringSnipe = true })
 	SNH.registerSchedulerJob("DisableAllEffects", function()
 		local gap = tonumber(DISABLE_ALL_EFFECTS_GAP) or 0
 		return gap > 0 and math.max(5, gap) or 999999
@@ -15311,10 +14850,6 @@ SNH.loopBuyWildPet = function()
 	end)
 end
 
-SNH.loopEquipBestPets = function()
-	SNH.ensureBestPetsEquipped()
-end
-
 SNH.loopExpand = function()
 	SNH.tryExpandPlot()
 end
@@ -15330,15 +14865,6 @@ SNH.startHarvestLoop = function()
 			task.wait(math.max(0.1, tonumber(COLLECT_GAP) or 0.5))
 		end
 	end)
-end
-
-SNH.loopHarvest = function()
-	if not Networking or SNH.isHarvestBlocked() then return end
-	SNH.burstHarvestAll()
-end
-
-SNH.loopMutationSnipe = function()
-	SNH.scanMutationSpawns()
 end
 
 SNH.loopNightSteal = function()
@@ -15364,8 +14890,8 @@ SNH.startLagProbeLoop = function()
 	end)
 end
 end
-plantSeeds = SNH.plantSeeds
-sellInventory = SNH.sellInventory
+plantSeeds = SNH.plantBurst
+sellInventory = SNH.trySellInventory
 tryExpandPlot = SNH.tryExpandPlot
 safeLoop = SNH.safeLoop
 
@@ -15459,17 +14985,21 @@ end
 do --[[ SNH: Start ]]
 -- ===== Start =====
 local function runStartup()
+SNH.showStartupLoading()
+SNH.setStatus("LOADING SCRIPT")
 print(("[%s] Loading..."):format(SCRIPT_NAME))
 
 if BOOT.autoWaitGameLoad then
 	SNH.setStatus("Waiting for game load...")
 	local loaded = SNH.waitForInitialLoad(BOOT.gameLoadTimeout)
+	SNH.hideStartupLoadingText()
 	if loaded then
 		print("[So Nach Hup] Game load complete — starting script")
 	else
 		warn("[So Nach Hup] Game load timeout")
 		if BOOT.requireFullLoad then
 			SNH.setStatus("Blocked — game not fully loaded")
+			SNH.hideStartupLoadingText()
 			warn("[So Nach Hup] Startup blocked (RequireFullLoad=true). Increase GameLoadTimeout or set RequireFullLoad=false.")
 			return
 		end
@@ -15479,6 +15009,7 @@ else
 	API.init(30)
 	SNH.loadShopCatalog()
 	SNH.loadPetCatalog()
+	SNH.hideStartupLoadingText()
 end
 
 if not API.ready then
@@ -15516,6 +15047,7 @@ SNH.setupGiftListener()
 	SNH.setupMutationSeedWatcher()
 	SNH.setupStealNotificationHook()
 	SNH.setupTeleportBackHook()
+	SNH.setupHarvestPhaseReset()
 	task.defer(function()
 		task.wait(0.5)
 		SNH.setupHud()
@@ -15552,6 +15084,10 @@ print(("[So Nach Hup] Wild pet | AutoBuy=%s config=%s loop=%.2fs"):format(
 	tostring(SNH.configHasBuyEntries(BuyPetsConfig)),
 	WILD_PET_BUY_GAP or 0.5))
 
+print(("[So Nach Hup] Server: %s | AutoSteal=%s"):format(
+	SERVER_KIND or API.getServerKind(),
+	tostring(AUTO_STEAL)))
+
 print("[So Nach Hup] Ready")
 
 -- Each subsystem as a discrete stage so staged-debug can activate them one-by-one.
@@ -15564,19 +15100,16 @@ local startupStages = {
 		if DISABLE_ALL_EFFECTS then
 			SNH.setupDisableAllEffects()
 		end
-		if HAZARD_IMMUNITY then
-			SNH.setupHazardImmunity()
-		end
 		if AUTO_INSTANT_PROMPTS then
 			SNH.setupInstantPromptHooks()
 		end
+		pcall(SNH.setupClientVisualOptimize)
 	end },
 	{ name = "UnifiedScheduler", start = function()
 		if USE_UNIFIED_SCHEDULER then
 			SNH.startUnifiedScheduler()
 			return
 		end
-		if HAZARD_IMMUNITY then SNH.startHazardImmunityLoop() end
 		if DISABLE_ALL_EFFECTS and (tonumber(DISABLE_ALL_EFFECTS_GAP) or 0) > 0 then
 			SNH.safeLoop("DisableAllEffects", function()
 				return math.max(5, tonumber(DISABLE_ALL_EFFECTS_GAP) or 5)
@@ -15597,7 +15130,7 @@ local startupStages = {
 		SNH.safeLoop("BuyPetSlot", function()
 			return math.max(15, tonumber(PET_SLOT_BUY_GAP) or 45)
 		end, function()
-			if AUTO_BUY_PET_SLOT and Networking then SNH.loopBuyPetSlot() end
+			if AUTO_BUY_PET_SLOT and Networking then SNH.tryBuyPetSlot() end
 		end)
 		SNH.safeLoop("BuySeed", SHOP_BUY_GAP, function()
 			if AUTO_BUY_SEED and Networking then SNH.loopBuySeeds() end
@@ -15608,14 +15141,14 @@ local startupStages = {
 		SNH.safeLoop("AutoMailSend", function()
 			return math.max(3, tonumber(autoMailState.gap) or 20)
 		end, function()
-			if AUTO_MAIL_SEND and Networking then SNH.loopAutoMailSend() end
+			if AUTO_MAIL_SEND and Networking then SNH.tryAutoMailSend() end
 		end)
 		SNH.safeLoop("UseGear", GEAR_USE_GAP, function()
 			if AUTO_USE_GEAR then SNH.loopUseGear() end
 		end)
 		SNH.startPlantLoop()
 		SNH.startSellLoop()
-		SNH.startMutationSnipeLoop()
+		SNH.startSeedSnipePriorityLoop()
 		SNH.startHarvestLoop()
 		SNH.safeLoop("Expand", EXPAND_CHECK_GAP, function()
 			if AUTO_EXPAND then SNH.loopExpand() end
@@ -15626,14 +15159,14 @@ local startupStages = {
 			SNH.loopDayGardenStay()
 		end)
 		SNH.safeLoop("NightGardenTP", 0.5, function()
-			if AUTO_STEAL and API.canStealNow() then
+			if SNH.isStealAllowed() then
 				SNH.ensureInsideOwnGardenAtNight()
 			end
 		end)
 		SNH.safeLoop("NightSteal", function()
-			return API.canStealNow() and STEAL_GAP or 1
+			return SNH.isStealAllowed() and STEAL_GAP or 1
 		end, function()
-			if AUTO_STEAL and API.canStealNow() and Networking then SNH.loopNightSteal() end
+			if SNH.isStealAllowed() and Networking then SNH.loopNightSteal() end
 		end)
 	end },
 }
@@ -15717,7 +15250,17 @@ _G.SoNachHup = {
 		end
 		if key == "AutoMailbox" then AUTO_MAILBOX = value end
 		if key == "AutoGift" then AUTO_GIFT = value end
-		if key == "AutoSteal" then AUTO_STEAL = value end
+		if key == "AutoSteal" then
+			AUTO_STEAL = value == true
+			if AUTO_STEAL and not ALLOW_STEAL_ON_PRIVATE_SERVER and SERVER_KIND ~= "Standard" then
+				AUTO_STEAL = false
+				warn(("[So Nach Hup] Auto steal blocked on %s server"):format(SERVER_KIND))
+			end
+		end
+		if key == "AllowStealOnPrivateServer" then
+			ALLOW_STEAL_ON_PRIVATE_SERVER = value == true
+			if not ALLOW_STEAL_ON_PRIVATE_SERVER then SNH.applyServerKindRules() end
+		end
 		if key == "AutoHarvest" or key == "Auto Harvest" then AUTO_COLLECT = value ~= false end
 		if key == "AutoStayInGardenDay" or key == "StayInGardenDay" then
 			AUTO_STAY_IN_GARDEN_DAY = value ~= false
@@ -15739,9 +15282,12 @@ _G.SoNachHup = {
 		if key == "RequireFullLoad" or key == "Require Full Load" then BOOT.requireFullLoad = value ~= false end
 		if key == "UnifiedScheduler" or key == "UseUnifiedScheduler" then USE_UNIFIED_SCHEDULER = value ~= false end
 		if key == "UltimateOptimize" then
-			-- Optimize system removed; this toggle is a no-op now.
-			PERF.ultimateOptimize = false
-			print("[So Nach Hup] UltimateOptimize was removed from this build (ignored)")
+			if value == true then
+				PERF.removeTextures = true
+				PERF.hideOtherPlayers = true
+				PERF.hideOtherBodyFace = true
+				pcall(SNH.setupClientVisualOptimize)
+			end
 		end
 		if key == "BlackScreen" or key == "BlackScreenVisible" then
 			PERF.blackScreen = value ~= false
@@ -15754,7 +15300,10 @@ _G.SoNachHup = {
 				SNH.updateBlackOverlay()
 			end
 		end
-		if key == "OptimizeRemoveTextures" then PERF.removeTextures = value ~= false end
+		if key == "OptimizeRemoveTextures" then
+			PERF.removeTextures = value ~= false
+			if PERF.removeTextures then pcall(SNH.setupClientVisualOptimize) end
+		end
 		if key == "OptimizeSimplifyMeshes" then PERF.simplifyMeshes = value ~= false end
 		if key == "OptimizeDisableEffects" then PERF.disableEffects = value ~= false end
 		if key == "OptimizeDisableSounds" then PERF.disableSounds = value ~= false end
@@ -15768,7 +15317,13 @@ _G.SoNachHup = {
 		if key == "HookOtherGardens" then PERF.hookOtherGardens = value == true end
 		if key == "OptimizeHideOtherPlots" then PERF.hideOtherPlots = value ~= false end
 		if key == "OptimizeHideOtherPlants" then PERF.hideOtherPlants = value ~= false end
-		if key == "OptimizeHideOtherPlayers" then PERF.hideOtherPlayers = value ~= false end
+		if key == "OptimizeHideOtherPlayers" then
+			PERF.hideOtherPlayers = value ~= false
+			if PERF.hideOtherPlayers then
+				PERF.hideOtherBodyFace = true
+				pcall(SNH.setupClientVisualOptimize)
+			end
+		end
 		if key == "OptimizeStripLocalPlayer" then PERF.stripLocalPlayer = value ~= false end
 		if key == "Reduce3DRendering" then
 			PERF.reduce3DRendering = value ~= false
@@ -15883,7 +15438,25 @@ _G.SoNachHup = {
 		if key == "PlantBurstGap" and tonumber(value) then PLANT_BURST_GAP = tonumber(value) end
 		if key == "PlantChunk" and tonumber(value) then PLANT_CHUNK = tonumber(value) end
 		if key == "PlantIndependent" then PLANT_INDEPENDENT = value ~= false end
-		if key == "HarvestPromptRange" and tonumber(value) then HARVEST_PROMPT_RANGE = tonumber(value) end
+		if key == "HarvestPromptRange" and tonumber(value) then
+			HARVEST_PROMPT_RANGE = tonumber(value)
+			PROMPT_RANGE_MAX = math.max(PROMPT_RANGE_MAX, HARVEST_PROMPT_RANGE)
+			pcall(SNH.maintainLocalHarvestPrompts)
+		end
+		if key == "HarvestPromptMaintain" then
+			HARVEST_PROMPT_MAINTAIN = value ~= false
+		end
+		if key == "RemoveTextures" or key == "Remove Textures" then
+			PERF.removeTextures = value ~= false
+			if PERF.removeTextures then pcall(SNH.setupClientVisualOptimize) end
+		end
+		if key == "HideOtherPlayers" or key == "Hide Other Players" then
+			PERF.hideOtherPlayers = value ~= false
+			if PERF.hideOtherPlayers then
+				PERF.hideOtherBodyFace = true
+				pcall(SNH.setupClientVisualOptimize)
+			end
+		end
 		if key == "PromptRangeMax" and tonumber(value) then PROMPT_RANGE_MAX = tonumber(value) end
 		if key == "StealPromptRange" and tonumber(value) then STEAL_PROMPT_RANGE = tonumber(value) end
 		if key == "PlantGap" and tonumber(value) then PLANT_GAP = tonumber(value) end
@@ -15909,6 +15482,7 @@ _G.SoNachHup = {
 		if key == "StealLowHealthFlee" then STEAL_LOW_HEALTH_FLEE = value ~= false end
 		if key == "StealLowHealthRatio" and tonumber(value) then STEAL_LOW_HEALTH_RATIO = tonumber(value) end
 		if key == "StealDrainGarden" then STEAL_DRAIN_GARDEN = value ~= false end
+		if key == "StealDrainMinFruits" and tonumber(value) then STEAL_DRAIN_MIN_FRUITS = tonumber(value) end
 		if key == "StealReenterAfterFlush" then STEAL_REENTER_AFTER_FLUSH = value ~= false end
 		if key == "StealGardenMaxRounds" and tonumber(value) then STEAL_GARDEN_MAX_ROUNDS = tonumber(value) end
 		if key == "StealReturnAtFruits" and tonumber(value) then STEAL_RETURN_AT_FRUITS = tonumber(value) end
@@ -15960,16 +15534,6 @@ _G.SoNachHup = {
 		if key == "DisableAllEffectsGap" or key == "Disable All Effects Gap" or key == "DISABLE_ALL_EFFECTS_GAP" then
 			if tonumber(value) ~= nil then DISABLE_ALL_EFFECTS_GAP = tonumber(value) end
 		end
-		if key == "HazardImmunity" or key == "Hazard Immunity" or key == "HAZARD_IMMUNITY" then
-			HAZARD_IMMUNITY = value ~= false
-			if HAZARD_IMMUNITY then SNH.setupHazardImmunity() end
-		end
-		if key == "HazardAvoidTeleport" or key == "Hazard Avoid Teleport" then
-			HAZARD_AVOID_TELEPORT = value ~= false
-		end
-		if key == "HazardAvoidRange" and tonumber(value) then
-			HAZARD_AVOID_RANGE = tonumber(value)
-		end
 	end,
 	PLANT_SEED = PlantSeedsConfig,
 	BUY_SEED = BuySeedsConfig,
@@ -15995,6 +15559,7 @@ _G.SoNachHup = {
 	HazardSeeds = HazardSeeds,
 	PetBuyOrder = PET_BUY_ORDER,
 	waitForInitialLoad = SNH.waitForInitialLoad,
+	setupClientVisualOptimize = SNH.setupClientVisualOptimize,
 	setupUltimateOptimization = SNH.setupUltimateOptimization,
 	refreshUltimateOptimization = SNH.refreshUltimateOptimization,
 	cleanupRuntime = SNH.cleanupRuntime,
@@ -16018,9 +15583,9 @@ _G.SoNachHup = {
 	useAllInventoryGearOnBestPlant = SNH.useAllInventoryGearOnBestPlant,
 	UseAllGearOnBestPlant = SNH.useAllInventoryGearOnBestPlant,
 	placeSprinklersOnPlant = SNH.placeSprinklersOnPlant,
-	placeSprinklersOnBestPlant = SNH.placeSprinklersOnBestPlant,
-	PlaceSprinklersOnBestPlant = SNH.placeSprinklersOnBestPlant,
-	PlaceSprinklersOnPineapple = SNH.placeSprinklersOnBestPlant,
+	placeSprinklersOnPlant = SNH.placeSprinklersOnPlant,
+	PlaceSprinklersOnBestPlant = SNH.placeSprinklersOnPlant,
+	PlaceSprinklersOnPineapple = SNH.placeSprinklersOnPlant,
 	getOwnedPetKeys = SNH.getOwnedPetKeys,
 	DumpGearDebug = function() SNH.dumpGearDebug() end,
 	DumpWildPetDebug = function() SNH.dumpWildPetDebug() end,
@@ -16029,14 +15594,15 @@ _G.SoNachHup = {
 	TrimOptimizeCaches = function(force) SNH.trimOptimizeCaches(force == true) end,
 	NextStage = function() SNH.nextStage() end,
 	StageStatus = function() SNH.stageStatus() end,
+	GetServerKind = function() return SERVER_KIND or API.getServerKind() end,
+	IsPrivateServer = function() return API.isPrivateServer() end,
+	IsStealAllowed = function() return SNH.isStealAllowed() end,
 	DisableControllers = function(names, force)
 		if type(names) == "string" then names = { names } end
 		return SNH.disableGameControllers(names or DISABLE_GAME_CONTROLLERS, force == true)
 	end,
 	SetupDisableAllEffects = function() return SNH.setupDisableAllEffects() end,
 	DisableAllEffects = function(force) return SNH.disableAllEffectsOnce(force == true) end,
-	SetupHazardImmunity = function() return SNH.setupHazardImmunity() end,
-	IsNearForeignHazard = function(range) return SNH.isNearForeignHazard(range) end,
 	InstaStealAll = function() return SNH.instaStealAll() end,
 	InstaSteal = function(ownerUserId, plantId, fruitId)
 		return SNH.instaStealFruit(ownerUserId, plantId, fruitId)
@@ -16067,8 +15633,8 @@ print(("[%s] Ready"):format(SCRIPT_NAME))
 if PLACE_SPRINKLERS_ON_BEST_PLANT then
 	task.spawn(function()
 		task.wait(2)
-		if SNH.placeSprinklersOnBestPlant then
-			SNH.placeSprinklersOnBestPlant({ gear = "Common Sprinkler", count = 3 })
+		if SNH.placeSprinklersOnPlant then
+			SNH.placeSprinklersOnPlant({ gear = "Common Sprinkler", count = 3 })
 		end
 	end)
 end
