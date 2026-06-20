@@ -348,9 +348,9 @@ local SIT_TRY_OFFSETS = {
 	CFrame.new(0, 0.4, 0.4),
 	CFrame.new(0, 0.4, -0.4),
 }
-local UI_WIDTH = 368
-local PREDICT_PANEL_W = 132
-local HUB_GAP = 8
+local UI_WIDTH = 440
+local PREDICT_PANEL_W = 160
+local HUB_GAP = 10
 local DROPDOWN_LIST_H = 130
 local TAB_BAR_Y = 24
 local TAB_BAR_H = 24
@@ -2378,32 +2378,23 @@ function getHubUiScale()
 	local vp = getViewportSize()
 	local shortSide = math.min(vp.X, vp.Y)
 	local touchPrimary = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
-	local compact = touchPrimary or shortSide <= 620 or isDeltaExecutor()
+	local compact = touchPrimary or shortSide <= 720 or isDeltaExecutor()
 
 	if compact then
-		local scale = shortSide / 920
-		if isDeltaExecutor() then
-			scale = scale * 0.82
-		end
-		if touchPrimary then
-			scale = scale * 0.92
-		end
-		return math.clamp(scale, 0.38, 0.58)
+		-- Mobile / LDPlayer / Delta: readable size, not tiny
+		return math.clamp(shortSide / 560, 0.82, 1.05)
 	end
-	if shortSide <= 768 then
-		return math.clamp(shortSide / 980, 0.62, 0.78)
+	if shortSide <= 900 then
+		return math.clamp(shortSide / 780, 0.86, 0.98)
 	end
-	if vp.X >= 1600 then
-		return math.clamp(0.88 + (vp.X - 1600) / 6000, 0.88, 1.0)
-	end
-	return 0.84
+	return 0.94
 end
 
 function getMiniFabSize()
 	if isMobileHub() or isDeltaExecutor() then
-		return 54
+		return 62
 	end
-	return 46
+	return 50
 end
 
 function getDefaultMiniFabPosition()
