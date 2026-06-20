@@ -223,8 +223,6 @@ local MAX_LUCK_LEVEL = 125
 local LEVEL_PRICES = PriceTables.LEVEL_PRICES
 local DEFAULT_SELL_THRESHOLD = 200000
 local HUB_DISPLAY_ORDER = 1000
-local AFK_DISPLAY_ORDER = 50
-local AFK_DOUBLE_TAP_WINDOW = 0.45
 local FALLBACK_BRAINROT_IMAGE = "rbxassetid://6031094677"
 
 local State = {
@@ -235,7 +233,6 @@ local State = {
 	autoJoinMinLuck = false,
 	autoJoinRandom = false,
 	autoJoinRandomChair = false,
-	autoJoinSmart = false,
 	autoDecision = true,
 	autoLuck = true,
 	autoChair = true,
@@ -279,7 +276,6 @@ local State = {
 	fpsBoost = false,
 	antiAfk = false,
 	hideOtherPlayers = false,
-	afkScreen = false,
 	autoQuickChatLetsSplit = false,
 	autoStealOnRarity = false,
 	stealRarities = {},
@@ -289,7 +285,6 @@ local State = {
 	fpsBoostConn = nil,
 	antiAfkConn = nil,
 	hidePlayerConns = {},
-	afkLastTap = 0,
 	isForceLeaving = false,
 	isJoining = false,
 	lastJoin = 0,
@@ -365,7 +360,7 @@ local SELL_COOLDOWN = 2
 local QUICK_CHAT_INTERVAL = 1.1
 local QUICK_CHAT_LETS_SPLIT = "Let's split"
 local SELL_RARITY_LIST_H = 108
-local TAB_BOTTOM_H = { 448, 272, 196, 360, 310 }
+local TAB_BOTTOM_H = { 376, 272, 196, 360, 318 }
 local MINI_FAB_IMAGE = "rbxassetid://84197231119169"
 local DRAG_CLICK_THRESHOLD = 6
 
@@ -392,7 +387,6 @@ local getPlayerTableStatus
 local isLocalSeated
 local isLocalPlayerAtTable
 local getBestOwnedChair
-local updateAfkStats
 local isDecisionOpen
 local decisionToken = 0
 
@@ -1793,9 +1787,6 @@ function updateProfileLabels()
 				UI.indexRewardLabel.TextColor3 = Color3.fromRGB(140, 150, 170)
 			end
 		end
-		if State.afkScreen and updateAfkStats then
-			updateAfkStats()
-		end
 		local top = getTopBrainrots(3)
 		for i = 1, 3 do
 			local label = UI.brainrotLabels[i]
@@ -2413,7 +2404,8 @@ function applyHubSavedPosition()
 		return
 	end
 	if State.hubUserPlaced and State.hubCustomPos then
-		UI.hubRoot.Position = UDim2.new(0, State.hubCustomPos.x, 0, State.hubCustomPos.y)
+		UI.hubRoot.Position = clampHubDragPosition(UDim2.new(0, State.hubCustomPos.x, 0, State.hubCustomPos.y))
+		State.hubCustomPos = { x = UI.hubRoot.Position.X.Offset, y = UI.hubRoot.Position.Y.Offset }
 		return
 	end
 	local hubH = UI.hubRoot.Size.Y.Offset
@@ -2451,14 +2443,31 @@ function toggleHubMinimized()
 	setHubMinimized(not State.hubMinimized)
 end
 
-function clampHubDragPosition(pos)
-	local scale = UI.hubUiScale and UI.hubUiScale.Scale or 1
-	local width = UI.hubRoot.Size.X.Offset * scale
-	local height = UI.hubRoot.Size.Y.Offset * scale
+function getHubGuiBounds()
 	local vp = getViewportSize()
-	local top = getHubTopInset()
-	local x = math.clamp(pos.X.Offset, 4, math.max(4, vp.X - width - 4))
-	local y = math.clamp(pos.Y.Offset, top, math.max(top, vp.Y - height - 4))
+	local insetY = 0
+	if UI.hubGui and not UI.hubGui.IgnoreGuiInset then
+		insetY = game:GetService("GuiService"):GetGuiInset().Y
+	end
+	return vp.X, vp.Y - insetY, insetY
+end
+
+function clampHubDragPosition(pos)
+	if not UI.hubRoot then
+		return pos
+	end
+	local width = UI.hubRoot.Size.X.Offset
+	local height = UI.hubRoot.Size.Y.Offset
+	local vpX, vpY = getHubGuiBounds()
+	local margin = 6
+	local x = math.clamp(pos.X.Offset, margin, math.max(margin, vpX - width - margin))
+	local minY = margin
+	local maxY = vpY - height - margin
+	if maxY < minY then
+		minY = vpY - height
+		maxY = margin
+	end
+	local y = math.clamp(pos.Y.Offset, math.min(minY, maxY), math.max(minY, maxY))
 	return UDim2.new(0, x, 0, y)
 end
 
@@ -2497,12 +2506,11 @@ function wireDraggable(target, handles, config)
 		if delta.Magnitude > DRAG_CLICK_THRESHOLD then
 			moved = true
 		end
-		local scale = config.scaleParent and config.scaleParent.Scale or 1
 		local newPos = UDim2.new(
 			startPos.X.Scale,
-			startPos.X.Offset + delta.X / scale,
+			startPos.X.Offset + delta.X,
 			startPos.Y.Scale,
-			startPos.Y.Offset + delta.Y / scale
+			startPos.Y.Offset + delta.Y
 		)
 		if config.clamp then
 			newPos = config.clamp(newPos)
@@ -2553,6 +2561,14 @@ function wireDraggable(target, handles, config)
 				dragInput = input
 				dragStart = inputPos(input)
 				startPos = target.Position
+				if config.onDragStart then
+					config.onDragStart()
+				end
+			end)
+			handle.InputChanged:Connect(function(input)
+				if dragging and input == dragInput then
+					onChanged(input)
+				end
 			end)
 		end
 	end
@@ -2569,8 +2585,10 @@ function wireHubDrag(extraHandles)
 		end
 	end
 	wireDraggable(UI.hubRoot, handles, {
-		scaleParent = UI.hubUiScale,
 		clamp = clampHubDragPosition,
+		onDragStart = function()
+			State.hubUserPlaced = true
+		end,
 		onDragEnd = function(pos)
 			State.hubUserPlaced = true
 			State.hubCustomPos = { x = pos.X.Offset, y = pos.Y.Offset }
@@ -2641,91 +2659,6 @@ function tryAutoRebirth()
 	return true
 end
 
-function getAfkLayout()
-	local vp = getViewportSize()
-	local marginX = math.clamp(math.floor(vp.X * 0.03), 8, 32)
-	local marginY = math.clamp(math.floor(vp.Y * 0.03), 8, 32)
-	local usableW = vp.X - marginX * 2
-	local usableH = vp.Y - marginY * 2
-	local topPad = math.clamp(math.floor(vp.Y * 0.035), 14, 36)
-	local titleSize = math.clamp(math.floor(vp.Y * 0.032), 16, 28)
-	local subSize = math.clamp(math.floor(vp.Y * 0.017), 10, 14)
-	local statSize = math.clamp(math.floor(vp.Y * 0.019), 11, 16)
-	local headerH = topPad + titleSize + subSize + statSize + 20
-	local bottomPad = math.clamp(math.floor(vp.Y * 0.02), 10, 24)
-	local rowCount = 10
-	local rowGap = 6
-	local maxListH = usableH - headerH - bottomPad
-	local rowH = math.clamp(math.floor((maxListH - rowGap * (rowCount - 1)) / rowCount), 32, 88)
-	local listH = rowCount * rowH + rowGap * (rowCount - 1)
-	if headerH + listH + bottomPad > usableH then
-		rowH = math.max(28, math.floor((maxListH - rowGap * (rowCount - 1)) / rowCount))
-		listH = rowCount * rowH + rowGap * (rowCount - 1)
-	end
-	local iconSize = math.clamp(rowH - 12, 20, rowH - 8)
-	local listWidth = math.floor(math.min(usableW, 920))
-	local nameSize = math.clamp(math.floor(rowH * 0.26), 11, 18)
-	local infoSize = math.clamp(math.floor(rowH * 0.2), 10, 14)
-	return {
-		rowH = rowH,
-		iconSize = iconSize,
-		listWidth = listWidth,
-		listH = listH,
-		titleSize = titleSize,
-		subSize = subSize,
-		statSize = statSize,
-		nameSize = nameSize,
-		infoSize = infoSize,
-		topPad = topPad,
-		bottomPad = bottomPad,
-		marginX = marginX,
-		marginY = marginY,
-	}
-end
-
-updateAfkStats = function()
-	if not UI.afkStatsLabel then
-		return
-	end
-	UI.afkStatsLabel.Text = string.format(
-		"Cash: %s   |   Luck: %s   |   Chair: %s",
-		formatMoney(getLocalMoney()),
-		formatLuckText(LocalPlayer),
-		formatChairName(getBestOwnedChair())
-	)
-end
-
-function layoutAfkScreen()
-	if not UI.afkListHolder or not UI.afkScreenFrame then
-		return
-	end
-	local layout = getAfkLayout()
-	local topPad = layout.topPad
-	local title = UI.afkScreenFrame:FindFirstChild("AfkTitle")
-	local sub = UI.afkScreenFrame:FindFirstChild("AfkSub")
-	if title then
-		title.Position = UDim2.new(0.5, 0, 0, topPad)
-		title.TextSize = layout.titleSize
-	end
-	if sub then
-		sub.Position = UDim2.new(0.5, 0, 0, topPad + layout.titleSize + 4)
-		sub.TextSize = layout.subSize
-	end
-	local statsY = topPad + layout.titleSize + layout.subSize + 10
-	if UI.afkStatsLabel then
-		UI.afkStatsLabel.Position = UDim2.new(0.5, 0, 0, statsY)
-		UI.afkStatsLabel.Size = UDim2.new(0, layout.listWidth, 0, layout.statSize + 4)
-		UI.afkStatsLabel.TextSize = layout.statSize
-	end
-	UI.afkListHolder.Size = UDim2.new(0, layout.listWidth, 0, layout.listH)
-	UI.afkListHolder.Position = UDim2.new(0.5, -math.floor(layout.listWidth / 2), 0, statsY + layout.statSize + 10)
-	if UI.afkStatsLabel then
-		UI.afkStatsLabel.TextScaled = false
-		UI.afkStatsLabel.TextWrapped = true
-	end
-	return layout
-end
-
 function updateMiscSectionLayout()
 	local listExtra = UI.webhookRarityDropdownOpen and (SELL_RARITY_LIST_H + 6) or 0
 	if UI.webhookOnRarityToggle then
@@ -2743,129 +2676,8 @@ function updateMiscSectionLayout()
 	if UI.hidePlayersToggle then
 		UI.hidePlayersToggle.frame.Position = UDim2.new(0, 10, 0, 250 + listExtra)
 	end
-	if UI.afkScreenToggle then
-		UI.afkScreenToggle.frame.Position = UDim2.new(0, 10, 0, 282 + listExtra)
-	end
 	if UI.discordJoinBtn then
-		UI.discordJoinBtn.Position = UDim2.new(0, 10, 0, 314 + listExtra)
-	end
-end
-
-function updateAfkScreenList()
-	if not UI.afkBrainrotList then
-		return
-	end
-	updateAfkStats()
-	local layout = layoutAfkScreen() or getAfkLayout()
-	for _, child in ipairs(UI.afkBrainrotList:GetChildren()) do
-		if child:IsA("GuiObject") and child.Name ~= "Layout" and child.Name ~= "Pad" then
-			child:Destroy()
-		end
-	end
-	local top = getTopBrainrots(10)
-	for i, item in ipairs(top) do
-		local row = Instance.new("Frame")
-		row.Name = "Row" .. i
-		row.Size = UDim2.new(1, -8, 0, layout.rowH)
-		row.BackgroundColor3 = Color3.fromRGB(22, 24, 32)
-		row.BorderSizePixel = 0
-		row.Parent = UI.afkBrainrotList
-		Instance.new("UICorner", row).CornerRadius = UDim.new(0, 10)
-
-		local imgHolder = Instance.new("Frame", row)
-		imgHolder.Size = UDim2.new(0, layout.iconSize, 0, layout.iconSize)
-		imgHolder.Position = UDim2.new(0, 8, 0.5, -math.floor(layout.iconSize / 2))
-		imgHolder.BackgroundColor3 = Color3.fromRGB(32, 34, 44)
-		imgHolder.BorderSizePixel = 0
-		Instance.new("UICorner", imgHolder).CornerRadius = UDim.new(0, 10)
-
-		local img = Instance.new("ImageLabel", imgHolder)
-		img.Size = UDim2.new(1, -6, 1, -6)
-		img.Position = UDim2.new(0, 3, 0, 3)
-		img.BackgroundTransparency = 1
-		img.ScaleType = Enum.ScaleType.Fit
-		local icon = getBrainrotImage(item.name, item.variant)
-		if icon and icon ~= "" then
-			img.Image = icon
-		else
-			img.Image = FALLBACK_BRAINROT_IMAGE
-		end
-
-		local qMark = Instance.new("TextLabel", imgHolder)
-		qMark.Size = UDim2.new(1, 0, 1, 0)
-		qMark.BackgroundTransparency = 1
-		qMark.Font = Enum.Font.GothamBlack
-		qMark.TextSize = math.floor(layout.iconSize * 0.45)
-		qMark.TextColor3 = Color3.fromRGB(200, 200, 220)
-		qMark.Text = (icon and icon ~= "") and "" or "?"
-		qMark.ZIndex = 2
-
-		local textX = layout.iconSize + 20
-		local nameLabel = Instance.new("TextLabel", row)
-		nameLabel.BackgroundTransparency = 1
-		nameLabel.Position = UDim2.new(0, textX, 0, math.floor(layout.rowH * 0.16))
-		nameLabel.Size = UDim2.new(1, -(textX + 8), 0, layout.nameSize)
-		nameLabel.Font = Enum.Font.GothamBold
-		nameLabel.TextSize = layout.nameSize
-		nameLabel.TextXAlignment = Enum.TextXAlignment.Left
-		nameLabel.TextColor3 = Color3.fromRGB(235, 240, 255)
-		nameLabel.TextTruncate = Enum.TextTruncate.AtEnd
-		nameLabel.Text = "#" .. i .. "  " .. item.name
-
-		local infoLabel = Instance.new("TextLabel", row)
-		infoLabel.BackgroundTransparency = 1
-		infoLabel.Position = UDim2.new(0, textX, 0, math.floor(layout.rowH * 0.52))
-		infoLabel.Size = UDim2.new(1, -(textX + 8), 0, layout.infoSize + 4)
-		infoLabel.Font = Enum.Font.Gotham
-		infoLabel.TextSize = layout.infoSize
-		infoLabel.TextXAlignment = Enum.TextXAlignment.Left
-		infoLabel.TextColor3 = RARITY_COLORS[item.rarity] or Color3.fromRGB(160, 170, 190)
-		infoLabel.TextTruncate = Enum.TextTruncate.AtEnd
-		infoLabel.Text = string.format(
-			"%s · %s · %s",
-			item.rarity or "?",
-			item.variant or "Normal",
-			formatDPS(getBrainrotDPS(item))
-		)
-	end
-	if #top == 0 then
-		local empty = Instance.new("TextLabel")
-		empty.Size = UDim2.new(1, -8, 0, 40)
-		empty.BackgroundTransparency = 1
-		empty.Font = Enum.Font.Gotham
-		empty.TextSize = layout.statSize
-		empty.TextColor3 = Color3.fromRGB(140, 150, 170)
-		empty.Text = "No brainrots in inventory"
-		empty.Parent = UI.afkBrainrotList
-	end
-end
-
-function setAfkScreenEnabled(enabled)
-	State.afkScreen = enabled
-	if UI.afkScreenGui then
-		UI.afkScreenGui.Enabled = enabled
-	end
-	if enabled then
-		updateAfkScreenList()
-		if UI.afkViewportConn then
-			UI.afkViewportConn:Disconnect()
-		end
-		local camera = workspace.CurrentCamera
-		if camera then
-			UI.afkViewportConn = camera:GetPropertyChangedSignal("ViewportSize"):Connect(function()
-				if State.afkScreen then
-					updateAfkScreenList()
-				end
-			end)
-		end
-	else
-		if UI.afkViewportConn then
-			UI.afkViewportConn:Disconnect()
-			UI.afkViewportConn = nil
-		end
-	end
-	if UI.afkScreenToggle then
-		UI.afkScreenToggle.set(enabled, true)
+		UI.discordJoinBtn.Position = UDim2.new(0, 10, 0, 282 + listExtra)
 	end
 end
 
@@ -3004,23 +2816,30 @@ function shouldForceLeaveSeat()
 		end
 		return true
 	end
+	if State.autoJoin and State.selectedPlayer and opponent == State.selectedPlayer then
+		return false
+	end
 	if State.autoJoinHighestLuck then
 		local top = getHighestLuckEntry()
-		if top and opponent ~= top.player then
-			return true
-		end
-	elseif State.autoJoinMinLuck then
-		if getLuck(opponent) < MIN_LUCK_JOIN then
-			return true
-		end
-	elseif State.autoJoinRandom or State.autoJoinRandomChair then
-		return false
-	elseif State.autoJoin and State.selectedPlayer then
-		if opponent ~= State.selectedPlayer then
-			return true
+		if top and opponent == top.player then
+			return false
 		end
 	end
-	return false
+	if State.autoJoinMinLuck and getLuck(opponent) >= MIN_LUCK_JOIN then
+		return false
+	end
+	if State.autoJoinRandom or State.autoJoinRandomChair then
+		return false
+	end
+	return true
+end
+
+function hasAnyAutoJoinMode()
+	return State.autoJoin
+		or State.autoJoinHighestLuck
+		or State.autoJoinMinLuck
+		or State.autoJoinRandom
+		or State.autoJoinRandomChair
 end
 
 function canJoinPlayer(target)
@@ -3122,46 +2941,6 @@ function findRandomJoinTarget()
 	end
 	local pick = list[math.random(1, #list)]
 	return pick.player, pick.luck, "join"
-end
-
-function findSmartJoinTarget()
-	if State.selectedPlayer and canJoinPlayer(State.selectedPlayer) then
-		return State.selectedPlayer, getLuck(State.selectedPlayer), "selected", "join"
-	end
-
-	local topTarget, topLuck, _, topMode = findHighestLuckJoinTarget()
-	if topTarget then
-		return topTarget, topLuck, "highest", "join"
-	end
-	if topMode == "wait" then
-		local top = getHighestLuckEntry()
-		if top then
-			return top.player, top.luck, "highest", "wait"
-		end
-	end
-
-	local minList = getPlayersWithMinLuck(MIN_LUCK_JOIN)
-	for _, entry in ipairs(minList) do
-		if canJoinPlayer(entry.player) then
-			return entry.player, entry.luck, "minluck", "join"
-		end
-	end
-	for _, entry in ipairs(minList) do
-		if getPlayerTableStatus(entry.player) then
-			return entry.player, entry.luck, "minluck", "wait"
-		end
-	end
-
-	local randomTarget, randomLuck, randomMode = findRandomJoinTarget()
-	if randomTarget and randomMode == "join" then
-		return randomTarget, randomLuck, "random", "join"
-	end
-
-	if findRandomTableSeat() then
-		return nil, 0, "random_table", "join_table"
-	end
-
-	return nil, 0, "none", "none"
 end
 
 function tryJoinWithRetries(joinFn)
@@ -4466,8 +4245,8 @@ function switchTab(tabIndex)
 	if tabIndex == 4 then
 		updateTraitTabLabels()
 	end
-	if tabIndex == 5 and State.afkScreen then
-		updateAfkScreenList()
+	if tabIndex == 5 then
+		updateMiscSectionLayout()
 	end
 	if tabIndex == 5 then
 		updateWebhookLabels()
@@ -5150,9 +4929,6 @@ function bindRemotes()
 		end
 		updateProfileLabels()
 		updateSellLabels()
-		if State.afkScreen then
-			updateAfkScreenList()
-		end
 	end)
 
 	local luckBroadcast = PlayerEvents:FindFirstChild("LuckBroadcast")
@@ -5459,39 +5235,6 @@ function createToggleSwitch(parent, config)
 			return enabled
 		end,
 	}
-end
-
-function disableJoinModeTogglesExcept(keepToggle)
-	local all = {
-		UI.autoJoinSmartToggle,
-		UI.joinModeToggle,
-		UI.luckJoinModeToggle,
-		UI.minLuckJoinModeToggle,
-		UI.autoJoinRandomToggle,
-		UI.autoJoinRandomChairToggle,
-	}
-	for _, toggle in ipairs(all) do
-		if toggle and toggle ~= keepToggle then
-			toggle.set(false, true)
-		end
-	end
-end
-
-function clearJoinModeFlags()
-	State.autoJoin = false
-	State.autoJoinHighestLuck = false
-	State.autoJoinMinLuck = false
-	State.autoJoinRandom = false
-	State.autoJoinRandomChair = false
-	State.autoJoinSmart = false
-end
-
-function revertToSelectedJoinMode()
-	State.autoJoin = true
-	if UI.joinModeToggle then
-		UI.joinModeToggle.set(true, true)
-	end
-	updateTableStatusLabel()
 end
 
 function resetHubGuiState()
@@ -5949,63 +5692,33 @@ function createUITableJoinControlsUI()
 	UI.tableStatusLabel.Text = "Table: pick a player"
 	UI.tableStatusLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
 
-	UI.autoJoinSmartToggle = createToggleSwitch(UI.bottomSection, {
-		name = "JoinSmartToggle",
-		position = UDim2.new(0, 10, 0, 44),
-		label = "AUTO JOIN SMART (ALL MODES)",
-		default = false,
-		onColor = Color3.fromRGB(255, 210, 80),
-		onChange = function(on)
-			if on then
-				clearJoinModeFlags()
-				State.autoJoinSmart = true
-				disableJoinModeTogglesExcept(UI.autoJoinSmartToggle)
-				if UI.tableStatusLabel then
-					UI.tableStatusLabel.Text = "Table: smart join (all modes)"
-					UI.tableStatusLabel.TextColor3 = Color3.fromRGB(255, 210, 100)
-				end
-				State.joinCooldownReset = true
-			else
-				State.autoJoinSmart = false
-				revertToSelectedJoinMode()
-			end
-		end,
-	})
-
 	UI.joinModeToggle = createToggleSwitch(UI.bottomSection, {
 		name = "JoinSelectedToggle",
-		position = UDim2.new(0, 10, 0, 80),
+		position = UDim2.new(0, 10, 0, 44),
 		label = "AUTO JOIN SELECTED USER",
 		default = true,
 		onColor = Color3.fromRGB(45, 130, 220),
 		onChange = function(on)
+			State.autoJoin = on
 			if on then
-				clearJoinModeFlags()
-				State.autoJoin = true
-				disableJoinModeTogglesExcept(UI.joinModeToggle)
 				updateLuckWaitLabel(nil, 0, "off")
 				State.joinCooldownReset = true
-			else
-				State.autoJoin = false
 			end
 		end,
 	})
 
 	UI.luckJoinModeToggle = createToggleSwitch(UI.bottomSection, {
 		name = "JoinHighestLuckToggle",
-		position = UDim2.new(0, 10, 0, 116),
+		position = UDim2.new(0, 10, 0, 80),
 		label = "AUTO JOIN HIGHEST LUCK",
 		default = false,
 		onColor = Color3.fromRGB(130, 80, 255),
 		onChange = function(on)
-			if on then
-				clearJoinModeFlags()
-				State.autoJoinHighestLuck = true
-				disableJoinModeTogglesExcept(UI.luckJoinModeToggle)
-			else
-				State.autoJoinHighestLuck = false
-				revertToSelectedJoinMode()
+			State.autoJoinHighestLuck = on
+			if not on then
 				updateLuckWaitLabel(nil, 0, "off")
+			end
+			if on then
 				State.joinCooldownReset = true
 			end
 		end,
@@ -6013,19 +5726,16 @@ function createUITableJoinControlsUI()
 
 	UI.minLuckJoinModeToggle = createToggleSwitch(UI.bottomSection, {
 		name = "JoinMinLuckToggle",
-		position = UDim2.new(0, 10, 0, 152),
+		position = UDim2.new(0, 10, 0, 116),
 		label = "AUTO JOIN 1000%+ LUCK",
 		default = false,
 		onColor = Color3.fromRGB(255, 160, 60),
 		onChange = function(on)
+			State.autoJoinMinLuck = on
+			if not on then
+				updateMinLuckWaitLabel("", Color3.fromRGB(180, 160, 255))
+			end
 			if on then
-				clearJoinModeFlags()
-				State.autoJoinMinLuck = true
-				disableJoinModeTogglesExcept(UI.minLuckJoinModeToggle)
-			else
-				State.autoJoinMinLuck = false
-				revertToSelectedJoinMode()
-				updateLuckWaitLabel(nil, 0, "off")
 				State.joinCooldownReset = true
 			end
 		end,
@@ -6033,54 +5743,44 @@ function createUITableJoinControlsUI()
 
 	UI.autoJoinRandomToggle = createToggleSwitch(UI.bottomSection, {
 		name = "JoinRandomToggle",
-		position = UDim2.new(0, 10, 0, 186),
+		position = UDim2.new(0, 10, 0, 150),
 		label = "AUTO JOIN RANDOM PLAYER",
 		default = false,
 		onColor = Color3.fromRGB(80, 200, 160),
 		onChange = function(on)
+			State.autoJoinRandom = on
 			if on then
-				clearJoinModeFlags()
-				State.autoJoinRandom = true
-				disableJoinModeTogglesExcept(UI.autoJoinRandomToggle)
 				if UI.tableStatusLabel then
 					UI.tableStatusLabel.Text = "Table: joining random player"
 					UI.tableStatusLabel.TextColor3 = Color3.fromRGB(100, 255, 180)
 				end
 				State.joinCooldownReset = true
-			else
-				State.autoJoinRandom = false
-				revertToSelectedJoinMode()
 			end
 		end,
 	})
 
 	UI.autoJoinRandomChairToggle = createToggleSwitch(UI.bottomSection, {
 		name = "JoinRandomChairToggle",
-		position = UDim2.new(0, 10, 0, 222),
+		position = UDim2.new(0, 10, 0, 186),
 		label = "AUTO JOIN RANDOM TABLE",
 		default = false,
 		onColor = Color3.fromRGB(255, 140, 80),
 		onChange = function(on)
+			State.autoJoinRandomChair = on
 			if on then
-				clearJoinModeFlags()
-				State.autoJoinRandomChair = true
-				disableJoinModeTogglesExcept(UI.autoJoinRandomChairToggle)
 				if UI.tableStatusLabel then
 					UI.tableStatusLabel.Text = "Table: joining random open table"
 					UI.tableStatusLabel.TextColor3 = Color3.fromRGB(255, 180, 100)
 				end
 				updateLuckWaitLabel(nil, 0, "off")
 				State.joinCooldownReset = true
-			else
-				State.autoJoinRandomChair = false
-				revertToSelectedJoinMode()
 			end
 		end,
 	})
 
 	UI.rollPredictToggle = createToggleSwitch(UI.bottomSection, {
 		name = "RollPredictToggle",
-		position = UDim2.new(0, 10, 0, 258),
+		position = UDim2.new(0, 10, 0, 222),
 		label = "AUTO ROLL PREDICT",
 		default = true,
 		onColor = Color3.fromRGB(255, 120, 200),
@@ -6109,7 +5809,7 @@ function createUITableJoinControlsUI()
 
 	UI.luckWaitLabel = Instance.new("TextLabel", UI.bottomSection)
 	UI.luckWaitLabel.BackgroundTransparency = 1
-	UI.luckWaitLabel.Position = UDim2.new(0, 12, 0, 292)
+	UI.luckWaitLabel.Position = UDim2.new(0, 12, 0, 256)
 	UI.luckWaitLabel.Size = UDim2.new(1, -24, 0, 22)
 	UI.luckWaitLabel.Font = Enum.Font.Gotham
 	UI.luckWaitLabel.TextSize = 10
@@ -6905,20 +6605,9 @@ function createUIMiscTogglesUI()
 		end,
 	})
 
-	UI.afkScreenToggle = createToggleSwitch(UI.miscSection, {
-		name = "AfkScreenToggle",
-		position = UDim2.new(0, 10, 0, 282),
-		label = "AFK SCREEN",
-		default = false,
-		onColor = Color3.fromRGB(90, 90, 110),
-		onChange = function(on)
-			setAfkScreenEnabled(on)
-		end,
-	})
-
 	UI.discordJoinBtn = Instance.new("TextButton", UI.miscSection)
 	UI.discordJoinBtn.Name = "DiscordJoinBtn"
-	UI.discordJoinBtn.Position = UDim2.new(0, 10, 0, 314)
+	UI.discordJoinBtn.Position = UDim2.new(0, 10, 0, 282)
 	UI.discordJoinBtn.Size = UDim2.new(1, -20, 0, 32)
 	UI.discordJoinBtn.Font = Enum.Font.GothamBold
 	UI.discordJoinBtn.TextSize = 11
@@ -6930,94 +6619,6 @@ function createUIMiscTogglesUI()
 	Instance.new("UICorner", UI.discordJoinBtn).CornerRadius = UDim.new(0, 8)
 	wireButtonAnim(UI.discordJoinBtn)
 	UI.discordJoinBtn.MouseButton1Click:Connect(openDiscordInvite)
-end
-
-function createUIAfkOverlayUI()
-	UI.afkScreenGui = Instance.new("ScreenGui")
-	UI.afkScreenGui.Name = "DutwareAfkScreen"
-	UI.afkScreenGui.ResetOnSpawn = false
-	UI.afkScreenGui.DisplayOrder = AFK_DISPLAY_ORDER
-	UI.afkScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-	UI.afkScreenGui.Enabled = false
-	UI.afkScreenGui.Parent = getGuiParent()
-
-	UI.afkScreenFrame = Instance.new("TextButton", UI.afkScreenGui)
-	UI.afkScreenFrame.Name = "AfkOverlay"
-	UI.afkScreenFrame.Size = UDim2.new(1, 0, 1, 0)
-	UI.afkScreenFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-	UI.afkScreenFrame.BackgroundTransparency = 0
-	UI.afkScreenFrame.BorderSizePixel = 0
-	UI.afkScreenFrame.AutoButtonColor = false
-	UI.afkScreenFrame.Text = ""
-	UI.afkScreenFrame.ZIndex = 1
-
-	local afkTitle = Instance.new("TextLabel", UI.afkScreenFrame)
-	afkTitle.Name = "AfkTitle"
-	afkTitle.BackgroundTransparency = 1
-	afkTitle.AnchorPoint = Vector2.new(0.5, 0)
-	afkTitle.Position = UDim2.new(0.5, 0, 0, 24)
-	afkTitle.Size = UDim2.new(0.94, 0, 0, 32)
-	afkTitle.Font = Enum.Font.GothamBlack
-	afkTitle.TextSize = 22
-	afkTitle.TextColor3 = Color3.fromRGB(235, 240, 255)
-	afkTitle.Text = "AFK Screen"
-
-	local afkSub = Instance.new("TextLabel", UI.afkScreenFrame)
-	afkSub.Name = "AfkSub"
-	afkSub.BackgroundTransparency = 1
-	afkSub.AnchorPoint = Vector2.new(0.5, 0)
-	afkSub.Position = UDim2.new(0.5, 0, 0, 56)
-	afkSub.Size = UDim2.new(0.94, 0, 0, 18)
-	afkSub.Font = Enum.Font.Gotham
-	afkSub.TextSize = 11
-	afkSub.TextColor3 = Color3.fromRGB(140, 150, 170)
-	afkSub.Text = "Top 10 brainrots · Double tap anywhere to exit"
-
-	UI.afkStatsLabel = Instance.new("TextLabel", UI.afkScreenFrame)
-	UI.afkStatsLabel.Name = "AfkStats"
-	UI.afkStatsLabel.BackgroundTransparency = 1
-	UI.afkStatsLabel.AnchorPoint = Vector2.new(0.5, 0)
-	UI.afkStatsLabel.Position = UDim2.new(0.5, 0, 0, 78)
-	UI.afkStatsLabel.Size = UDim2.new(0.94, 0, 0, 20)
-	UI.afkStatsLabel.Font = Enum.Font.GothamBold
-	UI.afkStatsLabel.TextSize = 13
-	UI.afkStatsLabel.TextColor3 = Color3.fromRGB(255, 220, 120)
-	UI.afkStatsLabel.Text = "Cash: $0   |   Luck: 0%   |   Chair: Default"
-
-	UI.afkListHolder = Instance.new("Frame", UI.afkScreenFrame)
-	UI.afkListHolder.Name = "AfkListHolder"
-	UI.afkListHolder.BackgroundTransparency = 1
-	UI.afkListHolder.AnchorPoint = Vector2.new(0.5, 0)
-	UI.afkListHolder.Position = UDim2.new(0.5, 0, 0, 104)
-	UI.afkListHolder.Size = UDim2.new(0.94, 0, 1, -120)
-
-	UI.afkBrainrotList = Instance.new("ScrollingFrame", UI.afkListHolder)
-	UI.afkBrainrotList.BackgroundTransparency = 1
-	UI.afkBrainrotList.Size = UDim2.new(1, 0, 1, 0)
-	UI.afkBrainrotList.BorderSizePixel = 0
-	UI.afkBrainrotList.ScrollBarThickness = 6
-	UI.afkBrainrotList.CanvasSize = UDim2.new(0, 0, 0, 0)
-	UI.afkBrainrotList.AutomaticCanvasSize = Enum.AutomaticSize.Y
-	local afkLayout = Instance.new("UIListLayout", UI.afkBrainrotList)
-	afkLayout.Name = "Layout"
-	afkLayout.Padding = UDim.new(0, 6)
-	local afkPad = Instance.new("UIPadding", UI.afkBrainrotList)
-	afkPad.Name = "Pad"
-	afkPad.PaddingTop = UDim.new(0, 4)
-	afkPad.PaddingBottom = UDim.new(0, 4)
-
-	UI.afkScreenFrame.InputBegan:Connect(function(input)
-		if
-			input.UserInputType == Enum.UserInputType.MouseButton1
-			or input.UserInputType == Enum.UserInputType.Touch
-		then
-			local now = tick()
-			if now - State.afkLastTap <= AFK_DOUBLE_TAP_WINDOW then
-				setAfkScreenEnabled(false)
-			end
-			State.afkLastTap = now
-		end
-	end)
 end
 
 function createUIPredictPanelUI()
@@ -7097,7 +6698,6 @@ end
 function createUIMiscPanelUI()
 	createUIMiscWebhookUI()
 	createUIMiscTogglesUI()
-	createUIAfkOverlayUI()
 	createUIPredictPanelUI()
 end
 
@@ -7273,95 +6873,22 @@ RunService.Heartbeat:Connect(function()
 		State.aloneAtTableSince = nil
 	end
 
-	if State.autoJoinSmart then
-		if isLocalSeated() then
-			return
-		end
-		if State.isJoining then
-			return
-		end
-		local target, luck, modeName, mode = findSmartJoinTarget()
-		if mode == "join" and target then
-			queueJoinPlayer(target, function(ok, msg)
-				if ok then
-					setStatus(string.format("Smart join [%s] — %s", modeName, msg))
-					if UI.tableStatusLabel then
-						UI.tableStatusLabel.Text = "Table: smart — " .. target.DisplayName
-						UI.tableStatusLabel.TextColor3 = Color3.fromRGB(100, 255, 150)
-					end
-				end
-			end)
-		elseif mode == "join_table" then
-			queueJoinRandomChair(function(ok, msg)
-				if ok and UI.tableStatusLabel then
-					UI.tableStatusLabel.Text = "Table: smart — random table"
-					UI.tableStatusLabel.TextColor3 = Color3.fromRGB(255, 180, 100)
-				end
-			end)
-		elseif mode == "wait" and target then
-			if now - State.lastJoin >= 2 then
-				State.lastJoin = now
-				setStatus(string.format("Smart join waiting [%s] — %s (%s)", modeName, target.DisplayName, formatLuckText(target)))
-			end
-		elseif now - State.lastJoin >= 2 then
-			State.lastJoin = now
-			setStatus("Smart join: searching table...")
-		end
-		return
-	elseif State.autoJoinHighestLuck then
-		local top = getHighestLuckEntry()
-		if top then
-			if isLocalSeated() then
+	if not hasAnyAutoJoinMode() then
+		updateLuckWaitLabel(nil, 0, "off")
+	elseif isLocalSeated() then
+		if State.autoJoinHighestLuck then
+			local top = getHighestLuckEntry()
+			if top then
 				local opponent = getTableOpponent()
-				if opponent and opponent ~= top.player then
-					if isDecisionOpen() or State.localRollActive then
-						updateLuckWaitLabel(top.player, top.luck, "wait")
-					elseif now - State.lastLeave >= 0.35 and not State.isForceLeaving then
-						State.lastLeave = now
-						forceLeaveTable(function(left)
-							if left then
-								updateLuckWaitLabel(top.player, top.luck, "left")
-								setStatus(string.format("Left — waiting for %s (%d%%)", top.player.DisplayName, top.luck))
-							else
-								updateLuckWaitLabel(top.player, top.luck, "wait")
-								setStatus("Jumping to leave table...")
-							end
-						end)
-					end
-				elseif opponent == top.player then
+				if opponent == top.player then
 					updateLuckWaitLabel(top.player, top.luck, "joined")
 				else
-					updateLuckWaitLabel(top.player, top.luck, "wait")
+					updateLuckWaitLabel(top.player, top.luck, opponent and "wait" or "wait")
 				end
-				return
 			end
-
-			if State.isJoining then
-				return
-			end
-
-			local target, luck, _, mode = findHighestLuckJoinTarget()
-			if target then
-				queueJoinPlayer(target, function(ok, msg)
-					if ok then
-						updateLuckWaitLabel(target, luck, "joined")
-						setStatus(string.format("Joined %s (%d%%) — %s", target.DisplayName, luck, msg))
-					end
-				end)
-			elseif mode == "wait" then
-				updateLuckWaitLabel(top.player, top.luck, "wait")
-				if now - State.lastJoin >= 2 then
-					State.lastJoin = now
-					setStatus(string.format("Waiting for %s (%d%%) to join", top.player.DisplayName, top.luck))
-				end
-			else
-				updateLuckWaitLabel(top.player, top.luck, "wait")
-			end
-			return
 		end
-		return
-	elseif State.autoJoinMinLuck then
-		if isLocalSeated() then
+
+		if State.autoJoinMinLuck then
 			local opponent = getTableOpponent()
 			local oppLuck = opponent and getLuck(opponent) or 0
 			if opponent and oppLuck >= MIN_LUCK_JOIN then
@@ -7369,184 +6896,118 @@ RunService.Heartbeat:Connect(function()
 					string.format("Playing with %s (%s)", opponent.DisplayName, formatLuckText(opponent)),
 					Color3.fromRGB(100, 255, 150)
 				)
-				return
-			end
-			if opponent and oppLuck < MIN_LUCK_JOIN then
-				if isDecisionOpen() or State.localRollActive then
-					updateMinLuckWaitLabel("In match — waiting to leave", Color3.fromRGB(180, 160, 255))
-				elseif now - State.lastLeave >= 0.35 and not State.isForceLeaving then
-					State.lastLeave = now
-					forceLeaveTable(function(left)
-						if left then
-							updateMinLuckWaitLabel("Left — partner under 1000% luck", Color3.fromRGB(255, 180, 100))
-							setStatus("Left — partner under 1000% luck")
-						else
-							setStatus("Jumping to leave table...")
-						end
-					end)
-				end
-				return
-			end
-			local target = findMinLuckJoinTarget()
-			if target and now - State.lastLeave >= 0.35 and not State.isForceLeaving then
-				State.lastLeave = now
-				forceLeaveTable(function(left)
-					if left then
-						setStatus("Left — joining 1000%+ table")
-					end
-				end)
+			elseif opponent and oppLuck < MIN_LUCK_JOIN then
+				updateMinLuckWaitLabel("In match — waiting to leave", Color3.fromRGB(180, 160, 255))
 			else
 				updateMinLuckWaitLabel("At table — waiting for partner", Color3.fromRGB(180, 160, 255))
 			end
-			return
 		end
 
-		if State.isJoining then
-			return
-		end
-
-		local target, luck = findMinLuckJoinTarget()
-		if target then
-			queueJoinPlayer(target, function(ok, msg)
-				if ok then
-					updateMinLuckWaitLabel(
-						string.format("Joined %s (%s)", target.DisplayName, formatLuckText(target)),
-						Color3.fromRGB(100, 255, 150)
-					)
-					setStatus(string.format("Joined %s (%d%%) — %s", target.DisplayName, luck, msg))
-				end
-			end)
-		else
-			updateMinLuckWaitLabel("Waiting for 1000%+ player at table", Color3.fromRGB(180, 160, 255))
-		end
-		return
-	elseif State.autoJoinRandom then
-		if isLocalSeated() then
-			if UI.tableStatusLabel then
-				local opponent = getTableOpponent()
-				if opponent then
-					UI.tableStatusLabel.Text = "Table: random player — " .. opponent.DisplayName
-					UI.tableStatusLabel.TextColor3 = Color3.fromRGB(100, 255, 150)
-				else
-					UI.tableStatusLabel.Text = "Table: random player — waiting for partner"
-					UI.tableStatusLabel.TextColor3 = Color3.fromRGB(255, 200, 100)
-				end
+		if State.autoJoinRandom and UI.tableStatusLabel then
+			local opponent = getTableOpponent()
+			if opponent then
+				UI.tableStatusLabel.Text = "Table: random player — " .. opponent.DisplayName
+				UI.tableStatusLabel.TextColor3 = Color3.fromRGB(100, 255, 150)
+			else
+				UI.tableStatusLabel.Text = "Table: random player — waiting for partner"
+				UI.tableStatusLabel.TextColor3 = Color3.fromRGB(255, 200, 100)
 			end
-			return
+		elseif State.autoJoinRandomChair and UI.tableStatusLabel then
+			local opponent = getTableOpponent()
+			if opponent then
+				UI.tableStatusLabel.Text = "Table: random table — " .. opponent.DisplayName
+				UI.tableStatusLabel.TextColor3 = Color3.fromRGB(100, 255, 150)
+			else
+				UI.tableStatusLabel.Text = "Table: random table — waiting for partner"
+				UI.tableStatusLabel.TextColor3 = Color3.fromRGB(255, 200, 100)
+			end
 		end
-
-		if State.isJoining then
-			return
-		end
-
-		local target, luck, mode = findRandomJoinTarget()
-		if target and mode == "join" then
-			queueJoinPlayer(target, function(ok, msg)
+	elseif not State.isJoining then
+		if State.autoJoin and State.selectedPlayer then
+			queueJoinPlayer(State.selectedPlayer, function(ok, msg)
 				if ok then
-					setStatus(string.format("Joined random player %s (%d%%) — %s", target.DisplayName, luck, msg))
+					setStatus("Joined selected user — " .. msg)
 					if UI.tableStatusLabel then
-						UI.tableStatusLabel.Text = "Table: joined " .. target.DisplayName
+						UI.tableStatusLabel.Text = "Table: " .. State.selectedPlayer.DisplayName
 						UI.tableStatusLabel.TextColor3 = Color3.fromRGB(100, 255, 150)
 					end
 				end
 			end)
-		elseif now - State.lastJoin >= 2 then
-			State.lastJoin = now
-			setStatus("Waiting for random player at table...")
-			if UI.tableStatusLabel then
-				UI.tableStatusLabel.Text = "Table: searching random player..."
-				UI.tableStatusLabel.TextColor3 = Color3.fromRGB(180, 160, 255)
-			end
-		end
-		return
-	elseif State.autoJoinRandomChair then
-		if isLocalSeated() then
-			if UI.tableStatusLabel then
-				local opponent = getTableOpponent()
-				if opponent then
-					UI.tableStatusLabel.Text = "Table: random table — " .. opponent.DisplayName
-					UI.tableStatusLabel.TextColor3 = Color3.fromRGB(100, 255, 150)
-				else
-					UI.tableStatusLabel.Text = "Table: random table — waiting for partner"
-					UI.tableStatusLabel.TextColor3 = Color3.fromRGB(255, 200, 100)
-				end
-			end
-			return
-		end
-
-		if State.isJoining then
-			return
-		end
-
-		if queueJoinRandomChair(function(ok, msg)
-			if ok and UI.tableStatusLabel then
-				UI.tableStatusLabel.Text = "Table: joined random table"
-				UI.tableStatusLabel.TextColor3 = Color3.fromRGB(100, 255, 150)
-			end
-		end) then
-			return
-		end
-
-		if now - State.lastJoin >= 2 then
-			State.lastJoin = now
-			local openCount = #getJoinableRandomTableSeats()
-			setStatus("Waiting for open table... (" .. openCount .. " found)")
-			if UI.tableStatusLabel then
-				UI.tableStatusLabel.Text = "Table: searching open table..."
-				UI.tableStatusLabel.TextColor3 = Color3.fromRGB(255, 180, 100)
-			end
-		end
-		return
-	else
-		updateLuckWaitLabel(nil, 0, "off")
-	end
-
-	if
-		State.autoJoin
-		and State.selectedPlayer
-		and not State.autoJoinHighestLuck
-		and not State.autoJoinMinLuck
-		and not State.autoJoinRandom
-		and not State.autoJoinRandomChair
-	then
-		local seated, myTable = getPlayerTableStatus(LocalPlayer)
-		if seated then
-			local opponent = getTableOpponent()
-			local selAtTable, selTable = getPlayerTableStatus(State.selectedPlayer)
-			if opponent == State.selectedPlayer then
-				return
-			end
-			if opponent and opponent ~= State.selectedPlayer then
-				if now - State.lastLeave >= 0.35 and not State.isForceLeaving then
-					State.lastLeave = now
-					forceLeaveTable(function(left)
-						if left then
-							setStatus("Left — rejoining selected user")
+		elseif State.autoJoinHighestLuck then
+			local top = getHighestLuckEntry()
+			if top then
+				local target, luck, _, mode = findHighestLuckJoinTarget()
+				if target then
+					queueJoinPlayer(target, function(ok, msg)
+						if ok then
+							updateLuckWaitLabel(target, luck, "joined")
+							setStatus(string.format("Joined %s (%d%%) — %s", target.DisplayName, luck, msg))
 						end
 					end)
+				elseif mode == "wait" then
+					updateLuckWaitLabel(top.player, top.luck, "wait")
+					if now - State.lastJoin >= 2 then
+						State.lastJoin = now
+						setStatus(string.format("Waiting for %s (%d%%) to join", top.player.DisplayName, top.luck))
+					end
+				else
+					updateLuckWaitLabel(top.player, top.luck, "wait")
 				end
-				return
 			end
-			if selAtTable and selTable and myTable ~= selTable and now - State.lastLeave >= 0.35 and not State.isForceLeaving then
-				State.lastLeave = now
-				forceLeaveTable(function(left)
-					if left then
-						setStatus("Left — joining selected user's table")
+		elseif State.autoJoinMinLuck then
+			local target, luck = findMinLuckJoinTarget()
+			if target then
+				queueJoinPlayer(target, function(ok, msg)
+					if ok then
+						updateMinLuckWaitLabel(
+							string.format("Joined %s (%s)", target.DisplayName, formatLuckText(target)),
+							Color3.fromRGB(100, 255, 150)
+						)
+						setStatus(string.format("Joined %s (%d%%) — %s", target.DisplayName, luck, msg))
 					end
 				end)
+			else
+				updateMinLuckWaitLabel("Waiting for 1000%+ player at table", Color3.fromRGB(180, 160, 255))
+			end
+		elseif State.autoJoinRandom then
+			local target, luck, mode = findRandomJoinTarget()
+			if target and mode == "join" then
+				queueJoinPlayer(target, function(ok, msg)
+					if ok then
+						setStatus(string.format("Joined random player %s (%d%%) — %s", target.DisplayName, luck, msg))
+						if UI.tableStatusLabel then
+							UI.tableStatusLabel.Text = "Table: joined " .. target.DisplayName
+							UI.tableStatusLabel.TextColor3 = Color3.fromRGB(100, 255, 150)
+						end
+					end
+				end)
+			elseif now - State.lastJoin >= 2 then
+				State.lastJoin = now
+				setStatus("Waiting for random player at table...")
+				if UI.tableStatusLabel then
+					UI.tableStatusLabel.Text = "Table: searching random player..."
+					UI.tableStatusLabel.TextColor3 = Color3.fromRGB(180, 160, 255)
+				end
+			end
+		elseif State.autoJoinRandomChair then
+			if queueJoinRandomChair(function(ok, msg)
+				if ok and UI.tableStatusLabel then
+					UI.tableStatusLabel.Text = "Table: joined random table"
+					UI.tableStatusLabel.TextColor3 = Color3.fromRGB(100, 255, 150)
+				end
+			end) then
 				return
 			end
-			return
-		end
-
-		if State.isJoining then
-			return
-		end
-		queueJoinPlayer(State.selectedPlayer, function(ok, msg)
-			if ok then
-				setStatus("Joined selected user — " .. msg)
+			if now - State.lastJoin >= 2 then
+				State.lastJoin = now
+				local openCount = #getJoinableRandomTableSeats()
+				setStatus("Waiting for open table... (" .. openCount .. " found)")
+				if UI.tableStatusLabel then
+					UI.tableStatusLabel.Text = "Table: searching open table..."
+					UI.tableStatusLabel.TextColor3 = Color3.fromRGB(255, 180, 100)
+				end
 			end
-		end)
+		end
 	end
 end)
 
@@ -7605,8 +7066,6 @@ _G.DutwareTableHub = {
 	SendWebhook = sendBrainrotWinWebhook,
 	SendTraitWebhook = sendTraitRerollWebhook,
 	ConfirmWebhook = confirmWebhook,
-	SetAfkScreen = setAfkScreenEnabled,
-	UpdateAfkScreen = updateAfkScreenList,
 	OpenDiscordInvite = openDiscordInvite,
 }
 
